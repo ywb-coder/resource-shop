@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>{$seo_title|default='在线测试'}</title>
+<meta name="description" content="{$seo_description|default=''}" />
+<link rel="icon" href="{$siteConfig.site_favicon|default='/favicon.ico'}" />
+<link rel="stylesheet" href="/static/lib/fontawesome/css/all.min.css" />
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef0f5;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:16px 12px 40px}
+.bar{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bar a.back{display:inline-flex;align-items:center;gap:6px;color:#2b2d3a;text-decoration:none;font-size:14px;background:#fff;border:1px solid #ecedf2;border-radius:999px;padding:7px 14px}
+.bar .t{font-size:15px;font-weight:600;color:#2b2d3a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frame{width:100%;height:calc(100vh - 120px);min-height:560px;border:0;border-radius:18px;background:#f4f5fa;box-shadow:0 8px 36px rgba(0,0,0,.1);display:block}
+@media(max-width:600px){.frame{height:calc(100vh - 108px);min-height:520px;border-radius:12px}.wrap{padding:10px 8px 24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="back" href="/test"><i class="fa-solid fa-arrow-left"></i> 全部测试</a>
+    <span class="t">{$test.title}</span>
+  </div>
+  <iframe class="frame" src="{$iframeUrl}" title="{$test.title}" allow="fullscreen"></iframe>
+</div>
+</body>
+</html>

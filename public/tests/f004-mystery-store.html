@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="原创趣味自我观察小测试，没有标准答案，看看你的选择更靠近哪种主题倾向。">
+<meta name="x-optimization-version" content="V3-result-layout-refresh">
+<meta name="theme-color" content="#eef8fb">
+<title>奇怪便利店：你会带走什么？</title>
+<style>
+:root{
+  --accent:#22b8cf; --accent-dark:#0e7490; --accent-soft:#e2f6fa;
+  --bg:#eef8fb; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#0e7490,#22d3ee); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* 可访问性与移动端优化 */
+button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.opt{min-height:60px;line-height:1.55}.opt .lbl{min-width:0;overflow-wrap:anywhere}
+.secondary-result{font-size:16px;font-weight:700;color:var(--accent-dark);padding:12px 14px;background:var(--accent-soft);border-radius:12px;line-height:1.6}
+.q-factor[hidden]{display:none}
+@media(max-width:420px){.wrap{padding:12px 12px 32px}.hero{padding:30px 18px 36px;margin-top:12px}.q-card{padding:22px 16px}.exam-foot{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+body{background-image:radial-gradient(ellipse at 50% 0%,rgba(34,184,207,.12),transparent 55%),linear-gradient(180deg,#eef8fb,#e8f3f6)}
+.hero{border-radius:12px;box-shadow:0 0 0 5px rgba(34,184,207,.08),0 14px 34px rgba(14,116,144,.2);border:1px solid rgba(255,255,255,.7)}
+.hero-badge{border:1px solid rgba(255,255,255,.38);background:rgba(3,52,67,.18)}
+.q-card{border-radius:12px 12px 22px 22px;border-top:4px solid var(--accent)}
+.opt{border-radius:12px;background:linear-gradient(110deg,#fff,#f5fcfd)}
+
+
+/* ===== 统一可读性规范 V2：文字优先，装饰退后 ===== */
+:root{
+  --text:#242938;
+  --sub:#5c6474;
+  --line:#dfe3ea;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{color:#242938;background:#f7f8fb;background-image:none!important}
+.hero,.report-hero{
+  background:#ffffff!important;color:#242938!important;
+  border:1px solid #e2e6ed;
+  box-shadow:0 8px 24px rgba(26,35,52,.07)!important;
+}
+.hero:before,.hero:after,.report-hero:before,.report-hero:after{display:none!important}
+.hero h1,.hero p,.report-hero h2,.report-hero .time,.report-hero .hero-time{color:#242938!important;opacity:1!important}
+.hero p{font-size:15px!important;line-height:1.9!important}
+.hero-badge{background:var(--accent-soft)!important;color:var(--accent-dark)!important;border:1px solid var(--accent)!important;letter-spacing:.02em}
+.info-card,.legend,.q-card,.score-card{background:#fff!important;color:#242938!important;border:1px solid #e2e6ed;box-shadow:0 5px 18px rgba(26,35,52,.055)!important}
+.legend-item,.legend p,.narrative,.fa-desc,.list li,.tip-item .t-body,.thing .d{color:#424b5b!important}
+.exam-top{background:#f7f8fb!important}
+.exam-title{color:#242938!important}
+.progress-text{color:#4b5565!important}
+.q-factor{background:var(--accent-soft)!important;color:var(--accent-dark)!important;font-weight:700}
+.q-text{font-size:21px!important;line-height:1.75!important;color:#202637!important;font-weight:750!important}
+.opt{background:#fff!important;border:1.5px solid #d8dee8!important;min-height:60px!important}
+.opt .tag{background:#eef1f6!important;color:#394254!important}
+.opt .lbl{font-size:16px!important;line-height:1.65!important;color:#30394a!important;font-weight:500}
+.opt.selected{background:var(--accent-soft)!important;border:2px solid var(--accent-dark)!important}
+.opt.selected .tag{background:var(--accent-dark)!important;color:#fff!important}
+.opt.selected .lbl{color:#202637!important;font-weight:700!important}
+.btn-main,.btn-next{background:var(--accent-dark)!important;color:#fff!important;min-height:50px!important;font-size:16px!important;font-weight:750!important}
+.btn-ghost{background:#fff!important;color:#30394a!important;border:1.5px solid #cbd2de!important;min-height:48px!important}
+button:focus-visible,.opt:focus-visible{outline:3px solid #202637!important;outline-offset:3px}
+.score-card h3{font-size:17px!important;color:#242938!important}
+.overall-sub{font-size:14px!important;color:#566071!important}
+.big-score{color:var(--accent-dark)!important}
+.level-badge{background:var(--accent-dark)!important;color:#fff!important}
+.level-sub{color:#394254!important;font-size:14px!important}
+.narrative{background:#f6f7fa!important;color:#30394a!important;font-size:15px!important;line-height:1.9!important}
+.factor-table{font-size:14px!important}
+.factor-table th{color:#4b5565!important}
+.factor-table td{color:#30394a!important}
+.radar-note{font-size:13px!important;color:#596273!important}
+.f-analysis .fa-name{font-size:15px!important;color:#242938!important}
+.f-analysis .fa-score{font-size:13px!important;color:#4b5565!important}
+.f-analysis .fa-desc{font-size:14.5px!important;line-height:1.9!important;color:#424b5b!important}
+.badge{font-size:12px!important}
+.strength-card{background:#fff!important;border:1.5px solid var(--accent)!important}
+.strength-item .s-name{font-size:15px!important;color:#242938!important}
+.strength-item .s-desc{font-size:14px!important;line-height:1.85!important;color:#424b5b!important}
+.list li,.tip-item .t-body{font-size:14.5px!important;line-height:1.9!important;color:#30394a!important}
+.tip-item .t-from{font-size:12.5px!important;color:#596273!important}
+.thing{background:#fff!important;border:1.5px solid var(--accent)!important}
+.thing .t{font-size:16px!important;color:#242938!important}
+.thing .d{font-size:14.5px!important;line-height:1.9!important;color:#424b5b!important}
+.warm-note{background:#fff!important;color:#242938!important;border:1.5px solid var(--accent)!important;box-shadow:0 5px 18px rgba(26,35,52,.05)!important}
+.warm-note:before,.warm-note:after{display:none!important}
+.warm-note .w-title{font-size:17px!important;color:#242938!important}
+.warm-note .w-body{font-size:15px!important;line-height:2!important;color:#30394a!important;opacity:1!important}
+.warm-note .w-sign{font-size:13px!important;color:#596273!important;opacity:1!important}
+.secondary-result{color:#242938!important;background:var(--accent-soft)!important;border:1px solid var(--accent)!important}
+.result-note,.tip{background:#fff!important;border:1px solid #d7dee8!important;color:#424b5b!important;font-size:14px!important;line-height:1.9!important}
+.toast{font-size:14px!important}
+@media(max-width:480px){
+  .wrap{padding-left:14px!important;padding-right:14px!important}
+  .q-card{padding:22px 16px!important}
+  .q-text{font-size:20px!important}
+  .opt{padding:13px 14px!important}
+  .opt .lbl{font-size:16px!important}
+  .score-card{padding:20px 16px!important}
+  .warm-note{padding:22px 18px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+.section-hint{font-size:13px;color:#566071;line-height:1.7;text-align:center;margin:-5px 0 12px}
+
+/* ===== 结果页视觉重构 V3：层级、留白、背景与对比度 ===== */
+:root{
+  --page-bg:#f3f5fa;
+  --surface:#ffffff;
+  --ink:#20283a;
+  --muted:#667085;
+  --stroke:#e5e9f0;
+  --soft-shadow:0 10px 30px rgba(35,48,72,.065);
+}
+html,body{min-height:100%;background:var(--page-bg)!important}
+body{
+  color:var(--ink)!important;
+  background-image:
+    radial-gradient(ellipse at 8% 4%,rgba(255,255,255,.95),transparent 34%),
+    radial-gradient(ellipse at 95% 22%,rgba(225,232,248,.48),transparent 32%)!important;
+}
+.wrap{
+  width:min(100% - 32px,820px)!important;
+  max-width:820px!important;
+  padding:28px 0 64px!important;
+}
+#screen-result{padding-bottom:24px}
+.report-hero{
+  margin:0 0 20px!important;
+  padding:30px 28px 28px!important;
+  min-height:132px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  border:0!important;border-radius:24px!important;
+  background:var(--grad)!important;
+  color:#fff!important;
+  box-shadow:0 12px 28px rgba(48,58,80,.12)!important;
+}
+.report-hero .time{font-size:12px!important;letter-spacing:.03em;color:rgba(255,255,255,.92)!important}
+.report-hero h2{
+  max-width:680px;margin:10px auto 0!important;
+  color:#fff!important;font-size:clamp(21px,3vw,27px)!important;
+  line-height:1.45!important;font-weight:800!important;letter-spacing:.01em;
+}
+.score-card{
+  margin:0 0 18px!important;
+  padding:26px 28px!important;
+  border:1px solid rgba(226,231,240,.95)!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  box-shadow:var(--soft-shadow)!important;
+}
+.score-card h3{
+  justify-content:flex-start!important;
+  margin:0 0 18px!important;
+  padding-bottom:13px;
+  border-bottom:1px solid #edf0f5;
+  color:#273247!important;font-size:16px!important;font-weight:800!important;
+}
+.score-card:first-of-type{
+  text-align:center;
+  padding:30px 34px!important;
+  border-top:4px solid var(--accent)!important;
+}
+.score-card:first-of-type h3{justify-content:center!important}
+.overall-sub{color:var(--muted)!important;font-size:13px!important;line-height:1.7!important}
+.level-badge{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  min-height:58px;max-width:100%;width:auto!important;
+  margin:12px auto 10px!important;padding:12px 30px!important;
+  border-radius:16px!important;
+  background:var(--accent-dark)!important;color:#fff!important;
+  box-shadow:0 7px 18px color-mix(in srgb,var(--accent-dark) 22%,transparent)!important;
+  font-size:25px!important;font-weight:850!important;line-height:1.3!important;
+  overflow-wrap:anywhere;
+}
+.level-sub{color:#485368!important;font-size:14px!important;line-height:1.75!important;margin:0 auto 14px}
+.narrative{
+  max-width:700px;margin:18px auto 0!important;padding:18px 20px!important;
+  border:1px solid #edf0f5!important;border-radius:16px!important;
+  background:#f7f8fb!important;color:#394458!important;
+  font-size:15px!important;line-height:1.95!important;text-align:left;
+}
+.score-card:first-of-type .overall-sub[style]{margin-top:22px!important}
+.secondary-result{
+  display:block;max-width:650px;margin:10px auto 0!important;
+  padding:14px 18px!important;border-radius:14px!important;
+  background:var(--accent-soft)!important;border:1px solid color-mix(in srgb,var(--accent) 32%,white)!important;
+  color:var(--accent-dark)!important;font-size:16px!important;font-weight:750!important;
+  line-height:1.7!important;text-align:center;
+}
+.criteria{
+  margin:0 0 14px!important;padding:12px 16px!important;
+  border-radius:12px!important;background:#f6f8fb!important;
+  color:#596579!important;font-size:13px!important;line-height:1.7!important;
+}
+.factor-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px!important}
+.factor-table th{padding:12px 10px!important;color:#667085!important;font-weight:700!important;background:#f8f9fc}
+.factor-table th:first-child{border-radius:10px 0 0 10px}
+.factor-table th:last-child{border-radius:0 10px 10px 0}
+.factor-table td{padding:14px 10px!important;color:#344054!important;border-bottom:1px solid #edf0f4}
+.factor-table tr:last-child td{border-bottom:0}
+.factor-table td:first-child{font-weight:700;color:#273247}
+.factor-table td:nth-child(2){font-variant-numeric:tabular-nums;font-weight:700}
+.radar-wrap{max-width:520px;margin:0 auto}
+.radar-note{margin-top:10px!important;color:#667085!important;font-size:12px!important;line-height:1.7!important;text-align:center}
+.f-analysis{gap:14px!important;padding:14px 0!important;border-bottom:1px solid #edf0f4}
+.f-analysis .fa-name{color:#273247!important;font-weight:750!important}
+.f-analysis .fa-desc{color:#596579!important;line-height:1.85!important}
+.strength-card,.thing,.warm-note{
+  margin-top:12px!important;border-radius:17px!important;
+  box-shadow:none!important;
+}
+.strength-card{background:#fbfcfe!important;border:1px solid #e7ebf2!important}
+.thing{
+  background:var(--accent-soft)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 30%,white)!important;
+  padding:20px!important;
+}
+.thing .t{font-size:16px!important;color:#273247!important;line-height:1.6!important}
+.thing .d{font-size:14px!important;color:#596579!important;line-height:1.85!important}
+.warm-note{
+  background:#fff9f1!important;color:#344054!important;
+  border:1px solid #f4e5d2!important;padding:24px 26px!important;
+}
+.warm-note .w-title{color:#9b4d1d!important;font-size:16px!important;margin-bottom:12px!important}
+.warm-note .w-body{color:#394458!important;font-size:15px!important;line-height:2!important}
+.warm-note .w-sign{color:#667085!important}
+.result-note,.tip{border-radius:14px!important;background:#f8f9fc!important;color:#596579!important}
+.result-actions{margin-top:22px!important;gap:12px!important}
+.result-actions button{min-height:48px!important;border-radius:13px!important}
+#screen-result .score-card:last-child{margin-bottom:0!important}
+@media(max-width:640px){
+  .wrap{width:calc(100% - 24px)!important;padding:14px 0 40px!important}
+  .report-hero{min-height:112px;padding:24px 18px!important;border-radius:19px!important;margin-bottom:14px!important}
+  .report-hero h2{font-size:21px!important}
+  .score-card,.score-card:first-of-type{padding:21px 17px!important;border-radius:18px!important;margin-bottom:14px!important}
+  .score-card h3{font-size:15px!important;margin-bottom:14px!important}
+  .level-badge{font-size:22px!important;min-height:52px;padding:10px 22px!important}
+  .narrative{padding:15px 15px!important;font-size:14px!important;line-height:1.9!important}
+  .factor-table th,.factor-table td{padding:11px 7px!important;font-size:12.5px!important}
+  .warm-note{padding:20px 18px!important}
+  .warm-note .w-body{font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero 文字) ===== */
+.hero,.report-hero{background:#fff!important;color:#26303f!important}
+.hero h1,.hero h2,.hero p,.hero .time,.hero-time,
+.report-hero h2,.report-hero p{color:#26303f!important;opacity:1!important}
+.hero-badge{background:var(--accent-soft,rgba(120,120,160,.12))!important;
+  color:var(--accent-dark,#4a4266)!important;border:0!important}
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero 文字) end ===== */
+
+
+
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero) ===== */
+.hero,.report-hero{
+  background:#fff!important;color:#26303f!important;
+  border:1px solid #e6e9f0!important;border-top:1px solid #e6e9f0!important;
+  box-shadow:0 10px 26px rgba(26,35,52,.07)!important;
+}
+.hero::before,.report-hero::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:120px;
+  background:linear-gradient(180deg,var(--accent-soft,rgba(120,120,160,.12)),rgba(255,255,255,0));
+  pointer-events:none;z-index:0;
+}
+.hero::after,.report-hero::after{display:none!important}
+.hero>*,.report-hero>*{position:relative;z-index:1}
+.hero h1,.hero h2,.hero p,.hero .time,.hero-time,
+.report-hero h2,.report-hero p{color:#26303f!important;opacity:1!important}
+.hero-badge{background:var(--accent-soft,rgba(120,120,160,.12))!important;
+  color:var(--accent-dark,#4a4266)!important;border:0!important}
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero) end ===== */
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+
+/* ===== 开始页视觉统一 v2 (f 组：主题色渐变 hero) ===== */
+.hero,.report-hero{
+  background:var(--grad)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 16px 34px rgba(40,36,70,.16)!important;
+}
+.hero::before,.report-hero::before{display:none!important}
+.hero::after,.report-hero::after{display:none!important}
+.hero>*,.report-hero>*{position:relative;z-index:1}
+.hero h1,.hero h2,.hero p,.hero .icon,.hero .time,.hero-time,
+.report-hero h2,.report-hero p,.report-hero .time{color:#fff!important;opacity:.96!important}
+.hero-badge{background:rgba(255,255,255,.22)!important;color:#fff!important;
+  border:0!important;letter-spacing:1px}
+/* ===== 开始页视觉统一 v2 (f 组：主题色渐变 hero) end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🌙</div>
+    <div class="hero-badge">趣味探索 · 自我观察</div>
+    <h1>奇怪便利店：你会带走什么？</h1>
+    <p>深夜 3 点，这家便利店只卖「你正需要」的东西。15 个剧情关卡，找到你会带走的那样东西。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">15</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">4</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">6</div><div class="lbl">个探索维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">你推开一扇挂着风铃的玻璃门，收银台后的人头也不抬：「欢迎。本店商品概不标价，但每一件都只能带走一件。」<b>15 个场景之后，你会知道自己真正想带走的是什么。</b></div>
+  </div>
+  <div class="tip">
+    没有标准答案，请按平时更自然的反应作答，不必选择“看起来更好”的答案。<br><br>⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <div class="tip">ℹ️ 本测试为原创趣味内容，仅用于自我观察与娱乐，不是心理测验、临床量表或诊断工具。答案仅保存在当前浏览器；清除浏览器数据可能导致记录丢失。</div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">奇怪便利店：你会带走什么？</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 15</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>奇怪便利店：你会带走什么？ · 分析报告</h2>
+  </div>
+  <div class="score-card"><h3>✨ 总体评估 · 本次探索结果</h3><div class="overall-sub">你的主导主题</div><div class="level-badge" id="resLevel">—</div><div class="level-sub" id="resLevelDesc"></div><div class="narrative" id="resNarrative"></div><div class="overall-sub" style="margin-top:16px">与你接近的另一种倾向</div><div id="secondaryResult" class="secondary-result">计算中…</div></div>
+  <div class="score-card">
+    <h3>📋 因子维度详情 · 主题维度一览</h3>
+    <div class="criteria"><span>指数越高，代表本次作答中该主题越突出</span></div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>主题维度</th><th>相对指数</th><th>本次表现</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 主题倾向雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示本次作答中该主题相对突出，不代表能力高低</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 特征分析 · 各主题倾向解读</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 优势 · 你可以发挥的部分</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 困扰 · 可能遇到的小卡点</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 建议 · 给自己的小建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌱 优势区 · 其他安静的主题</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">相对不突出的维度只是本次选择较少涉及，不代表你缺少相关特质</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"u004","file":"project/04-mystery-store.html","title":"奇怪便利店：你会带走什么？","badge":"趣味探索 · 自我观察","icon":"🌙","subtitle":"深夜 3 点，这家便利店只卖「你正需要」的东西。15 个剧情关卡，找到你会带走的那样东西。","minutes":4,"intro":"你推开一扇挂着风铃的玻璃门，收银台后的人头也不抬：「欢迎。本店商品概不标价，但每一件都只能带走一件。」<b>15 个场景之后，你会知道自己真正想带走的是什么。<\/b>","theme":{"accent":"#22b8cf","accentDark":"#0e7490","soft":"#e2f6fa","bg":"#eef8fb","grad":"linear-gradient(135deg,#0e7490,#22d3ee)"},"overallLabel":"你的专属身份","scoreNote":"每题选项会为不同主题维度累积分值；系统依据本问卷各题选项的理论分值范围，将各维度换算为 0–100 的相对倾向指数。指数只用于比较本次作答中各主题的相对突出程度，不代表常模、临床量表或客观能力。主导结果取指数最高的维度；若并列，按本测试预设顺序判定。","match":"max","tieOrder":["keeper","explorer","guardian","adventurer","now","writer"],"dims":[{"k":"keeper","name":"记忆珍藏倾向","w":1},{"k":"explorer","name":"未来探索倾向","w":1},{"k":"guardian","name":"温柔守护倾向","w":1},{"k":"adventurer","name":"未知冒险倾向","w":1},{"k":"now","name":"当下体验倾向","w":1},{"k":"writer","name":"故事记录倾向","w":1}],"dimShort":{"keeper":"珍藏","explorer":"探索","guardian":"守护","adventurer":"冒险","now":"当下","writer":"记录"},"questions":[{"factor":"第 1 关 · 进店","text":"凌晨三点，你走进便利店。灯光是旧旧的暖黄色，货架比外面看起来深得多。你最先注意到什么？","opts":[{"t":"收银台上那台老式收音机在放一首旧歌","s":{"keeper":3,"writer":1}},{"t":"最里面的货架尽头，有扇半开的门","s":{"explorer":3,"adventurer":1}},{"t":"冷柜前站着一个很疲惫的人","s":{"guardian":3,"now":1}},{"t":"今日特价：新鲜出炉的热包子","s":{"now":3,"writer":1}}],"n":1},{"factor":"第 2 关 · 快乐饮料","text":"货架上有一瓶发光的饮料，标签写着「保存快乐」。你会买下它吗？","opts":[{"t":"买。快乐太容易流失了，存起来","s":{"keeper":3}},{"t":"不买。我想留着肚子尝别的","s":{"now":3,"explorer":1}},{"t":"问店员：这瓶饮料是谁的快乐做的？","s":{"writer":3,"guardian":1}},{"t":"买两瓶，一瓶给自己一瓶备着","s":{"keeper":2,"adventurer":1}}],"n":2},{"factor":"第 3 关 · 记忆盒子","text":"角落有个木盒，写着「陌生人的记忆」。你会怎么处理？","opts":[{"t":"打开看看，我想知道 TA 的故事","s":{"writer":3,"explorer":1}},{"t":"不打开。别人的记忆不该被翻看","s":{"guardian":3,"keeper":1}},{"t":"买下来，替 TA 保管","s":{"keeper":3,"guardian":1}},{"t":"举起来晃一晃，听听声音","s":{"adventurer":3,"now":1}}],"n":3},{"factor":"第 4 关 · 能力兑换","text":"店员说：「今晚特惠：兑换一项能力，代价是忘掉一段记忆。」你会换吗？","opts":[{"t":"换！我有一段记忆正好想扔掉","s":{"adventurer":3,"explorer":1}},{"t":"不换。我的每段记忆都要留着","s":{"keeper":3}},{"t":"问清楚：能换什么能力？","s":{"writer":2,"explorer":2}},{"t":"不换，但想听听店员自己的故事","s":{"guardian":3,"writer":1}}],"n":4},{"factor":"第 5 关 · 陌生来客","text":"门口进来一个人说：「我在找一样很久以前丢掉的东西。」你会？","opts":[{"t":"帮 TA 一起找。人多力量大","s":{"guardian":3,"adventurer":1}},{"t":"问 TA：那东西长什么样？","s":{"writer":3}},{"t":"提醒 TA 本店规矩：一人只能带走一件","s":{"keeper":2,"explorer":1}},{"t":"陪 TA 在店里坐一会儿","s":{"guardian":2,"now":2}}],"n":5},{"factor":"第 6 关 · 未知车票","text":"货架底层躺着一张车票，终点站写着「未知」。发车时间是今晚。你会用吗？","opts":[{"t":"用。未知就是要现在出发","s":{"adventurer":3,"explorer":2}},{"t":"不用。我明天还有事","s":{"now":3,"keeper":1}},{"t":"把车票留给更需要的人","s":{"guardian":3}},{"t":"买下车票，收藏起来","s":{"keeper":3,"writer":1}}],"n":6},{"factor":"第 7 关 · 最后一件","text":"打烊前特价，只剩最后一件商品。你希望它是什么？","opts":[{"t":"一盏永远不会熄灭的灯","s":{"guardian":3,"keeper":1}},{"t":"一本写满未来的空白笔记本","s":{"writer":3,"explorer":1}},{"t":"一张随时可以回家的返程票","s":{"keeper":3,"now":1}},{"t":"一扇通往任何地方的小门","s":{"adventurer":3,"explorer":2}}],"n":7},{"factor":"第 8 关 · 离店留言","text":"天快亮了。店员说：「走之前，每位客人要在店里留下点什么。」你会留下什么？","opts":[{"t":"留下一个秘密","s":{"writer":3,"keeper":1}},{"t":"留下一句给陌生客人的话","s":{"guardian":3,"writer":1}},{"t":"留下一颗糖","s":{"now":3,"guardian":1}},{"t":"什么都不留，带走一份好心情","s":{"adventurer":2,"now":2}}],"n":8},{"factor":"第 9 关 · 深夜电台","text":"收音机突然点名你：「给十年前的自己点一首歌。」你会点哪类？","opts":[{"t":"那年夏天一起听过的老歌","s":{"keeper":3}},{"t":"一首充满希望、向前看的歌","s":{"explorer":2,"writer":1}},{"t":"TA 当时最爱哼的那首","s":{"guardian":3}},{"t":"随便放，听到哪首算哪首","s":{"now":3,"adventurer":1}}],"n":9},{"factor":"第 10 关 · 镜子货架","text":"一面镜子上写着「照见你最想成为的样子」。你看到的自己在做什么？","opts":[{"t":"在整理一屋子珍藏的回忆","s":{"keeper":3,"writer":1}},{"t":"在收拾行囊准备出发","s":{"explorer":3,"adventurer":1}},{"t":"在给一个受伤的人包扎","s":{"guardian":3}},{"t":"在阳光下发呆，什么都不干","s":{"now":3}}],"n":10},{"factor":"第 11 关 · 时间罐头","text":"货架上有一罐「暂停时间」。你会在什么时候使用它？","opts":[{"t":"在某个幸福得想哭的瞬间","s":{"keeper":3,"now":1}},{"t":"在出发前夜，好好准备","s":{"explorer":2,"writer":1}},{"t":"在朋友最需要我的时候","s":{"guardian":3}},{"t":"现在就用，先享受一下","s":{"now":3,"adventurer":1}}],"n":11},{"factor":"第 12 关 · 无名礼物","text":"店员递给你一份包装好的礼物：「这是你应得的。」你猜里面是？","opts":[{"t":"一封来自过去的信","s":{"keeper":3,"writer":1}},{"t":"一张通往新地图的通行证","s":{"explorer":3}},{"t":"一瓶能让身边人开心的香水","s":{"guardian":3}},{"t":"打开才知道，留个悬念","s":{"adventurer":3,"now":1}}],"n":12},{"factor":"第 13 关 · 影子客人","text":"你发现货架影子里站着另一个你。TA 想买什么？","opts":[{"t":"买回那些被你遗忘的时光","s":{"keeper":3}},{"t":"买一张你不敢买的车票","s":{"explorer":2,"adventurer":2}},{"t":"买一份「好好照顾你」的服务","s":{"guardian":2,"now":1}},{"t":"TA 什么都不买，只想被看见","s":{"writer":3,"guardian":1}}],"n":13},{"factor":"第 14 关 · 记账本","text":"收银台的记账本上写着每个客人「付出了什么」。你觉得你会写什么？","opts":[{"t":"一段舍不得的旧时光","s":{"keeper":3}},{"t":"一次说走就走的勇气","s":{"explorer":2,"adventurer":2}},{"t":"一次把人照顾好的坚持","s":{"guardian":3}},{"t":"一个还没讲完的故事","s":{"writer":3}}],"n":14},{"factor":"第 15 关 · 关门时刻","text":"风铃最后一次响起。跨出店门前，你回头看一眼这家店，心里想的是？","opts":[{"t":"「这些回忆我都会好好留着」","s":{"keeper":3}},{"t":"「下一站，去哪呢？」","s":{"explorer":3,"adventurer":1}},{"t":"「希望那个疲惫的人也买到想要的」","s":{"guardian":3}},{"t":"「今晚真奇妙，值了」","s":{"now":3,"writer":1}}],"n":15}],"results":[{"key":"keeper","name":"记忆收藏家","label":"你不收集物品，你收集的是「发生过的瞬间」","summary":"在这家便利店里，你走过的每排货架都会让你放慢脚步。东西会坏、人会散，但被认真收藏过的瞬间不会。你带走的那样东西，其实心里早就有位置。","strengths":["你重感情、念旧，把日子过成收藏品","你让身边的人感到被珍惜"],"troubles":["容易困在过去的影子里","放手对你来说格外难"],"advice":["每月整理一次回忆，留最亮的几颗","给过去写一封告别信，也是一种收藏","给新回忆留一点空间"],"warm":["念旧的人，是把日子过成收藏品的人。","你珍惜过的每一刻都没有消失，它们都在你身上。","往前走的时候，那些旧时光会一直给你照路。"]},{"key":"explorer","name":"未来探索者","label":"你买的从来不是商品，是「可能性」","summary":"你的手最先伸向的，永远是没标签的那件东西。对未知的好奇是你的导航系统。你带走的，是明天的入口。","strengths":["你敢想敢走，人生半径很大","你的适应力让你在哪儿都能活得好"],"troubles":["容易忽略已经拥有的美好","新鲜感消退后可能又想出发"],"advice":["出发前先盘点已有的宝藏","把「探索」变成有积累的远征","偶尔停下来，让灵魂跟上"],"warm":["敢走向未知的人，生活永远不会无聊。","你身上最珍贵的，是「万一呢」的勇气。","继续推开下一扇门吧，惊喜都藏在门后。"]},{"key":"guardian","name":"温柔守夜人","label":"你最先看见的，永远是别人的需要","summary":"你走进店里，注意到的不是商品，而是那个疲惫的人、那个找东西的人。你的雷达永远先扫描「谁需要帮助」。你带走的东西一定能让某个陌生人好过一点。","strengths":["你的善良和责任感是世界的暖源","在你身边，人会自动放松下来"],"troubles":["把自己排在最后，容易被掏空","接受帮助时浑身不自在"],"advice":["每天做一件只让自己开心的事","练习接受别人的好意","把「我没事」换成「我有点累」"],"warm":["你照亮过很多人，而你自己也是值得被照亮的。","温柔是有力量的，你一直在用它托住别人。","今晚起，也给自己留一盏灯吧。"]},{"key":"adventurer","name":"未知冒险家","label":"规则是别人的，你是来玩的","summary":"店员说「只能带走一件」的时候，你脑子里想的是「那把整家店玩一遍再说」。你不被规则吓住，反而在规则里玩出花样。你根本不是来买东西的——你是来体验的。","strengths":["你的胆量和玩心是无聊世界的解药","你敢闯敢试，人生故事特别多"],"troubles":["容易三分钟热度","冲动决策偶尔要交学费"],"advice":["给冒险加一点底线：先想退路再跳","把玩心用在一个长期项目上","冒险完记得复盘，学费不能白交"],"warm":["好玩的人，到哪儿都能把日子变成冒险。","你的胆量和玩心，是无聊世界的解药。","继续撒野吧，规则会为你让路的。"]},{"key":"now","name":"当下体验派","label":"你认真对待此刻，这就是你的超能力","summary":"别人在货架前沉思过去与未来，你在看今晚的热包子还有没有。你不是没有心事，你是清楚地知道：先把眼前的日子过好。热的吃下去、困了就睡、开心就笑。","strengths":["你的踏实和烟火气让人羡慕","你不容易焦虑，幸福感强"],"troubles":["可能缺乏长远布局","容易安于现状，错过变化"],"advice":["给未来做一点点小准备","在踏实里加一点小野心","享受当下也规划明天"],"warm":["能把眼前过好的人，其实已经掌握了生活的真谛。","热气腾腾的日子，就是最好的日子。","今晚也好好吃饭、好好睡觉，你已经做得很好了。"]},{"key":"writer","name":"故事记录员","label":"你买的不是商品，是每个商品背后的故事","summary":"你问的问题比店员见过的任何客人都多：这瓶饮料是谁做的？那张车票谁用过？对你来说，万物都有叙事，人人都是主角。你带走的那件东西，连同它的故事，会成为你收藏里最特别的一件。","strengths":["你的观察力和表达力出众","你让普通的日子有了叙事的光"],"troubles":["想得深，情绪也容易被故事卷走","容易沉浸在记录里忘了生活"],"advice":["把记录变成创造：写下来、画下来","也去成为故事的主角，而不只是记录者","给情绪留出出口，别都存进文档"],"warm":["会记录的人，等于把人生过了两遍。","你眼里的世界比别人多一层故事的滤镜，这很浪漫。","继续写下去吧，你的记录会比记忆更长久。"]}],"loMap":{"keeper":{"e":["你不太留恋过去，向前看是你的本能。"],"s":["你洒脱、翻篇快"],"a":["偶尔回头看看，也有值得留的东西"]},"explorer":{"e":["你不太追求新鲜，安定更让你舒服。"],"s":["你踏实、专注当下"],"a":["偶尔试试新事物，世界会变大"]},"guardian":{"e":["你不太习惯照顾别人，先顾好自己。"],"s":["你边界清晰、自我完整"],"a":["对在乎的人多给一点温度"]},"adventurer":{"e":["你行事谨慎，不爱冒险。"],"s":["你稳妥、风险意识强"],"a":["偶尔大胆一次，会很好玩"]},"now":{"e":["你心思更多在过去或未来。"],"s":["你有远见、有回忆的厚度"],"a":["把注意力拉回此刻，感受正在发生的生活"]},"writer":{"e":["你不太琢磨故事和意义，活在当下。"],"s":["你简单、直接、不内耗"],"a":["偶尔给生活加一点叙事，会更有滋味"]}}};
+// 三个情绪价值区块各含 30 条独立、确定性模板；相同答案始终匹配相同文案。
+const RESULT_COPY_TEMPLATES = {
+  strength:["你在「{dim}」上的选择相对克制，不必把每一种特质都放到最前面；知道自己的舒适区，本身就是一种自我理解。","这次的答案里，「{dim}」没有成为主旋律。你可以把精力留给真正让自己自在的部分。","你不需要在「{dim}」上表现得很突出。允许自己有偏好、有边界，也是一种值得珍惜的状态。","「{dim}」在本次结果中相对安静，说明它不是你此刻最想强调的主题；这并不意味着你缺少相关能力。","你的选择提醒你：不必每个方向都做到满格，知道哪些事情无需勉强自己，也是一种清醒。","比起追求面面俱到，你似乎更愿意把空间留给真正重要的事。这个取舍值得被看见。","「{dim}」并没有占据你的答案中心。把注意力放回更自然的选择，可能会让你轻松一些。","这份结果不是能力排名，而是偏好切片；「{dim}」相对靠后，只说明它这次没有那么突出。","你可以不必迎合所有期待。对「{dim}」保持自己的节奏，也完全说得通。","本次作答中，你没有特别强调「{dim}」。这给了你一个机会，重新确认什么才真正适合自己。","你有权选择自己的重点，而不是把所有方向都当作必修课。「{dim}」可以暂时不抢戏。","「{dim}」处于相对低位，不代表短板；它也可能只是你当前不优先投入的方向。","这次答案呈现出一种取舍：你把更多注意力交给了更有共鸣的主题，而不是每件事都平均用力。","不必为了显得完整而补齐每一种特质。你可以允许「{dim}」只是生活里的一个小角落。","你的选择有自己的重心。与其比较哪里更强，不如留意哪些事情让你更有能量。","「{dim}」在这次画像里比较安静，提醒你不必把别人的节奏当成自己的标准。","你可以把不擅长、不喜欢或暂时不在意的部分放轻一点，不需要因此否定自己。","这份结果只记录你当下的选择。「{dim}」不突出，也不妨碍你拥有完整而丰富的自己。","你对自己的偏好正在变得清晰：有些方向值得投入，有些方向可以先放一放。","「{dim}」不是本次最明显的主题。你可以把这份空间留给休息、探索，或真正想做的事。","你不需要把每个标签都穿在身上。选择更贴近自己的部分，比追求全面更重要。","这次的低位倾向可以理解为一种留白，而不是缺陷；留白也让你的选择更有弹性。","你有自己的优先级。允许「{dim}」暂时退后一点，不代表以后不能重新靠近它。","本次答案没有把「{dim}」推到前台。请把它当作一个观察结果，而不是对自己的评价。","你可以保留一点不被定义的空间。并不是每一种倾向，都需要成为你的代表色。","在「{dim}」上少一点用力，也许正是你给自己留出的余地；不必把每件事都变成任务。","这份画像更像一张即时快照。今天的「{dim}」比较安静，未来也可以有不同的选择。","你的价值不由某一个维度决定。把「{dim}」放在次要位置，也是一种合理的个人排序。","比起努力符合某个理想形象，你更可以关注真实的舒适度；「{dim}」不必被刻意放大。","你已经给出了自己的选择。请允许它保持原样，不必为了迎合任何标准再做修饰。"],
+  thing:["给「{main}」留出 10 分钟：做一件与它有关、但不需要做到完美的小事，完成就可以停。","把今天最想做的一件事写成一句话，再拆成一个 5 分钟就能开始的动作。","给自己安排一次短暂的无目的时间：不刷信息、不追进度，只观察此刻真正想做什么。","找一个安静角落，写下最近最占据注意力的三件事，再圈出今天只需要处理的一件。","把一个想法记录下来，不急着执行；给它一个标题，留待你真正有空时再继续。","今天主动拒绝一件并非必须、却会消耗你的安排，为自己保留一点余量。","给最近在意的人发一句真诚但不需要长篇解释的话，让连接保持轻松。","为自己准备一个小小的舒适角落：一杯水、一盏灯，或一段喜欢的音乐。","从待办事项里挑一件最小的，完成后就休息，不额外追加任务。","用三句话记录今天：一件顺利的事、一件不确定的事、一件想感谢自己的事。","把一个反复出现的念头写下来，旁边补上一句：我现在能做的最小一步是什么？","给自己一次低成本的新鲜体验：换条路、听一首新歌，或尝试一种不同的安排。","整理一个很小的区域，例如桌面一角或手机首页，让环境给思绪一点清爽感。","把今天的节奏调慢一点：在两件事情之间留出五分钟，不急着立刻切换。","选一件你一直想尝试的小事，先体验 10 分钟，不要求立刻喜欢或擅长。","找一个值得信任的人聊聊近况，只分享事实和感受，不急着寻求解决方案。","为接下来的一天提前准备一件小事，让明天的自己少一点临时慌乱。","把一件暂时不重要的事从今天清单里移走，允许计划根据真实精力调整。","给自己的兴趣留一个具体入口：收藏一篇资料、打开一本书，或写下第一个问题。","今天留意一次让你感到自在的瞬间，并记下当时的环境、节奏或陪伴方式。","给一个长期目标设一个很轻的里程碑，只要开始，不需要一次完成。","暂停比较，把注意力拉回自己的进度：写下本周已经完成的三件小事。","为自己设定一个温和边界，例如某个时间后不再回复非紧急消息。","挑一件可以让身体舒展的小活动，散步、拉伸或晒太阳都可以，按舒服程度来。","把最近一次开心的体验记下来，写清楚它为什么让你觉得值得。","给「{main}」找一个现实中的小出口：做一个微小行动，而不是只停留在想象里。","把一个复杂问题拆成「现在知道什么」「还不知道什么」「下一步问谁」三栏。","给今天的自己一个明确的结束信号：收起工作页面、整理桌面，或写下明天第一步。","从熟悉的事情里挑一件，用新的方式完成一次，让日常出现一点点变化。","睡前用一句话收尾今天：我已经做了足够的一部分，剩下的可以明天再继续。"],
+  warm:["你这次的选择更靠近「{main}」，也带着一点「{second}」的影子。它们不是固定标签，只是此刻你愿意靠近的生活方式。愿你既能认真选择，也能随时调整。","如果把这份结果当作一封小小的回信，它想告诉你：你不必急着成为某种标准答案。真实的偏好，已经值得被认真对待。","你有自己的节奏，也有自己的取舍。今天的答案只是一个切面，不需要替未来做决定。愿你在变化里仍然保留选择的自由。","「{main}」是这次最明亮的线索，「{second}」则像另一束微光。它们可以同时存在，不必互相排斥。","谢谢你认真完成这次探索。无论结果像不像你，都请把解释权留在自己手里；你比任何一个标签都丰富。","有时了解自己，不是为了立刻改变，而是终于知道哪些事情让自己舒服。希望这份小小的发现能陪你轻松一点。","愿你不必把每一天都过成挑战，也不必时时证明自己。偶尔停下来，听听真实的需要，也很重要。","你可以喜欢热闹，也可以需要安静；可以勇敢尝试，也可以暂时观望。矛盾的部分并不冲突，它们共同组成你。","这份结果没有给你下定义，只是把你刚刚做出的选择整理成一面小镜子。看见之后，仍然由你决定下一步。","请记得，偏好会随着经历和环境变化。今天的答案不必成为明天的约束，你始终可以重新选择。","你不需要把所有潜力一次用完。留一点空间给休息、好奇和偶然，生活也会因此更有弹性。","如果最近有些事情还没有答案，也没有关系。先照顾好眼前的自己，再慢慢决定想去的方向。","愿你对自己少一点苛刻，多一点具体的理解。不是空泛地鼓励自己，而是看见自己真实的节奏。","「{main}」只是这次的主旋律，不是全部的你。那些没有被题目问到的部分，同样重要。","你可以带着「{second}」继续生活，也可以在某一天发现自己更靠近另一种选择。变化不是反复无常，而是成长的一部分。","谢谢你把几分钟留给自己。希望这份结果不只是一个名字，也能成为一次轻松的自我观察。","当你觉得必须马上做出正确选择时，试着给自己一点缓冲。慢一点并不等于停滞，调整也不等于失败。","愿你保留喜欢的东西，也允许自己放下不再合适的东西。生活不需要永远沿着同一条路线前进。","有些答案会在行动之后变清楚。先做一件很小的事，再观察自己的感受，不必一次想明白全部。","你可以认真，也可以玩心很重；可以有计划，也可以临时改变主意。允许自己拥有不同面向，会更自在。","请把这次结果当成一张便签，而不是一张判决书。它提醒你看见某些偏好，却不限制你成为谁。","如果这份画像有一部分让你会心一笑，就把那一点带走；如果有些地方不符合你，也完全可以放下。","你值得拥有不被催促的时间。愿你能把一点耐心留给自己，让想做的事慢慢长出形状。","有时最好的进步不是更快，而是更知道为什么出发。愿你找到让自己愿意持续前进的理由。","今天不需要把所有问题解决。把眼前的一小步走稳，剩下的留给之后的自己。","你不是单一的性格标签，也不是某次选择的总和。你会变化、会犹豫，也会在不同阶段找到新的答案。","愿你在照顾别人和回应世界的时候，也记得问问自己：我现在真正需要什么？","「{main}」和「{second}」可以在你身上同时出现。无需选边站，你可以拥有自己的混合版本。","这次探索到这里就好。把轻松留下，把不适合自己的解释放下，继续用自己的方式生活。","愿你对未知保留好奇，对当下保持温柔。你不必急着抵达某个终点，正在经历的过程也有意义。"]
+};
+
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-u004"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-u004", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  const factorEl = document.getElementById("qFactor"); factorEl.textContent = q.factor || ""; factorEl.hidden = !q.factor;
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.setAttribute("aria-pressed", answers[q.n]===v ? "true" : "false");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      const at = current;
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      // 选完选项自动跳下一题（用户若手动点了「下一题」则不重复跳）
+      setTimeout(()=>{
+        if(current !== at) return;
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「生成我的结果」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "生成我的结果 →" : "下一题 →";
+  document.getElementById("nextBtn").disabled = !answers[q.n];
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const span = max[d.k]-min[d.k];
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = score[d.k]/20; // 兼容旧变量，界面统一展示 0–100 相对指数
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(score){
+  if(score >= 67) return {label:"较突出",sub:"本次选择较多",cls:"b-good",color:"#5b8f78"};
+  if(score >= 34) return {label:"中等呈现",sub:"本次有所体现",cls:"b-mild",color:"#8a78b5"};
+  return {label:"相对安静",sub:"本次选择较少",cls:"b-mid",color:"#a58a72"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  if(top.length > 1) narr += " 除了主导的「" + top[0].n + "」，「" + top[1].n + "」也在你的选择中有所体现。";
+  document.getElementById("resNarrative").textContent = narr;
+  const secondType = SPEC.results.find(x=>x.key===top[1].k);
+  const secondary = document.getElementById("secondaryResult");
+  if(secondary) secondary.textContent = secondType ? secondType.name + " · " + secondType.label : top[1].n;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(score[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td>' +
+      '<td style="color:' + s.color + '">' + Math.round(score[d.k]) + '/100</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(score[d.k]);
+    const hiLo = score[d.k] >= 58 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区：低分维度代表本次相对不突出的主题，不将其误称为客观能力短板。
+  const lo = [...hi].reverse().slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  lo.forEach((x, i) => {
+    const raw = pick(RESULT_COPY_TEMPLATES.strength, fp + i * 7, x.v|0);
+    const s = raw.replace(/\{dim\}/g, x.n).replace(/\{main\}/g, type.name);
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 相对指数 ' + Math.round(x.v) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 写给你的一段话：30 条模板按作答指纹和主导结果确定性匹配。
+  const secondName = (SPEC.results.find(x=>x.key===top[1].k)||{}).name || top[1].n;
+  const warm = pick(RESULT_COPY_TEMPLATES.warm, fp, score[top[0].k]|0)
+    .replace(/\{main\}/g, type.name)
+    .replace(/\{second\}/g, secondName);
+  document.getElementById("warmNote").textContent = warm;
+
+  // 给你的小事：30 条模板按作答指纹和本次最高维度确定性匹配。
+  const thing = pick(RESULT_COPY_TEMPLATES.thing, fp, score[top[0].k]|0)
+    .replace(/\{main\}/g, top[0].n)
+    .replace(/\{second\}/g, secondName);
+  document.getElementById("thingNote").textContent = thing;
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote + " 本结果仅用于轻松探索，不代表稳定人格、专业评估或任何诊断。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

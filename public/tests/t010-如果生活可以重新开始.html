@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>如果生活可以重新开始，你最想改变什么？</title>
+<style>
+:root{
+  --accent:#e8834a; --accent-dark:#c45f28; --accent-soft:#fdf1e7;
+  --bg:#fdf8f3; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#c45f28,#e8834a 55%,#f2c14e); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🌅</div>
+    <div class="hero-badge">人生 · 内心探索</div>
+    <h1>如果生活可以重新开始，你最想改变什么？</h1>
+    <p>15 个关于「重来」的假设，听见你心里最真实的渴望。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">17</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">5</div><div class="lbl">个因子维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">如果人生可以重来——这句假设里藏着你此刻最真的渴望。<b>你想改变的，往往是你现在最缺的；你想保留的，往往是已经拥有的宝藏。</b>这个测试不卖后悔药，它只是借「重来」这个角度，帮你把心里的优先级理清楚：你最想要的到底是什么？</div>
+  </div>
+  <div class="tip">
+    ⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">如果生活可以重新开始，你最想改变什么？</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 17</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>如果生活可以重新开始，你最想改变什么？ · 分析报告</h2>
+  </div>
+  <div class="score-card">
+    <h3>📊 总体评估结果</h3>
+    <div class="overall-sub">总均分</div>
+    <div class="big-score" id="resAvg">0</div>
+    <div class="overall-sub">满分 5 分</div>
+    <div class="overall-sub" style="margin-top:14px">整体状态</div>
+    <div class="level-badge" id="resLevel">—</div>
+    <div class="level-sub" id="resLevelDesc"></div>
+    <div class="narrative" id="resNarrative"></div>
+  </div>
+  <div class="score-card">
+    <h3>📋 因子维度详情</h3>
+    <div class="criteria">
+      <span><i style="background:#22c55e"></i>良好（&lt; 1.5）</span>
+      <span><i style="background:#3b82f6"></i>轻度（1.5-2.49）</span>
+      <span><i style="background:#f59e0b"></i>中度（2.5-3.49）</span>
+      <span><i style="background:#ef4444"></i>明显（≥ 3.5）</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>维度</th><th>原始分</th><th>均分</th><th>水平</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 因子雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示该维度信号越强</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 详细因子特征分析</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 你的优势</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 可能的困扰</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 给你的生活建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌟 你的优势区</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">这些维度得分较低（信号弱），是你目前稳得住的部分</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"T010","title":"如果生活可以重新开始，你最想改变什么？","badge":"人生 · 内心探索","icon":"🌅","subtitle":"15 个关于「重来」的假设，听见你心里最真实的渴望。","minutes":3,"intro":"如果人生可以重来——这句假设里藏着你此刻最真的渴望。\u003cb>你想改变的，往往是你现在最缺的；你想保留的，往往是已经拥有的宝藏。\u003c/b>这个测试不卖后悔药，它只是借「重来」这个角度，帮你把心里的优先级理清楚：你最想要的到底是什么？","audience":["对未来迷茫","偶尔怀念过去","想改变现状","需要听听内心的声音"],"theme":{"accent":"#e8834a","accentDark":"#c45f28","soft":"#fdf1e7","grad":"linear-gradient(135deg,#c45f28,#e8834a 55%,#f2c14e)","bg":"#fdf8f3"},"dims":[{"k":"freedom","name":"自由需求","w":1.1},{"k":"stable","name":"稳定需求","w":1.05},{"k":"realize","name":"自我实现","w":1.15},{"k":"connect","name":"情感连接","w":1.1},{"k":"outlook","name":"人生期待","w":1}],"questions":[{"text":"如果可以回到过去改一件事，你会改？","opts":[{"t":"某个重要选择：专业、城市、工作","s":{"realize":2,"freedom":1,"outlook":1}},{"t":"某段关系：不该错过或不该开始","s":{"connect":3,"outlook":1}},{"t":"自己的性格：勇敢一点、自由一点","s":{"freedom":3,"realize":1}},{"t":"什么都不改，走到今天都是我","s":{"outlook":3,"stable":1,"realize":1}}],"n":1},{"text":"「重新开始」这四个字，最吸引你的是？","opts":[{"t":"可以甩掉所有包袱，轻装上阵","s":{"freedom":3,"outlook":2}},{"t":"可以修复那些遗憾","s":{"connect":2,"outlook":1,"realize":1}},{"t":"可以再勇敢一次","s":{"realize":3,"freedom":1}},{"t":"可以好好珍惜已经拥有的","s":{"stable":2,"connect":2,"outlook":2}}],"n":2},{"text":"你目前生活里最缺的是？","opts":[{"t":"自由：想走就走的底气","s":{"freedom":3,"stable":0}},{"t":"稳定：确定的安全感","s":{"stable":3,"freedom":0}},{"t":"意义：做值得的事","s":{"realize":3,"outlook":1}},{"t":"陪伴：被理解被惦记","s":{"connect":3}}],"n":3},{"text":"你羡慕别人的生活，通常是因为？","opts":[{"t":"他们活得很自由","s":{"freedom":3}},{"t":"他们很稳定、很安稳","s":{"stable":3}},{"t":"他们做着热爱的事","s":{"realize":3}},{"t":"他们身边有很爱他们的人","s":{"connect":3}}],"n":4},{"text":"深夜回想人生，你最容易冒出来的情绪是？","opts":[{"t":"不甘心：我本可以更勇敢","s":{"realize":2,"freedom":2,"outlook":1}},{"t":"怀念：那时候真好","s":{"connect":2,"stable":1,"outlook":1}},{"t":"期待：以后一定会更好","s":{"outlook":3,"realize":1}},{"t":"平静：都过去了","s":{"stable":2,"outlook":2}}],"n":5},{"text":"如果你的人生是一本书，你希望读者读完后觉得？","opts":[{"t":"「他活得真自由」","s":{"freedom":3,"outlook":1}},{"t":"「他被好好爱过」","s":{"connect":3}},{"t":"「他做了很多有意义的事」","s":{"realize":3}},{"t":"「他过得踏实而温暖」","s":{"stable":2,"connect":1,"outlook":2}}],"n":6},{"text":"「稳定」和「精彩」二选一，你的直觉是？","opts":[{"t":"稳定，稳稳的幸福最难得","s":{"stable":3,"connect":1}},{"t":"精彩，平庸比失败更可怕","s":{"freedom":2,"realize":2,"outlook":1}},{"t":"能不能都要","s":{"realize":1,"stable":1,"freedom":1,"outlook":1}},{"t":"看阶段，现在想要稳定","s":{"stable":2,"outlook":1}}],"n":7},{"text":"你最想对「过去的自己」说什么？","opts":[{"t":"「勇敢一点，别怕」","s":{"freedom":2,"realize":2}},{"t":"「好好珍惜身边的人」","s":{"connect":3}},{"t":"「别太为难自己」","s":{"stable":1,"connect":1,"outlook":2}},{"t":"「你做得很好，继续」","s":{"outlook":3,"realize":1}}],"n":8},{"text":"你做过最「为自己活」的一件事是？","opts":[{"t":"说走就走的旅行或离开","s":{"freedom":3,"realize":1}},{"t":"选择了一条少有人走的路","s":{"realize":3,"freedom":1}},{"t":"对一个人说了真心话","s":{"connect":3,"realize":1}},{"t":"认真经营自己的小日子","s":{"stable":3,"connect":1}}],"n":9},{"text":"如果你现在可以「暂停」一年，你会？","opts":[{"t":"去旅行、去体验、去看看世界","s":{"freedom":3,"outlook":2}},{"t":"陪家人、修复重要的关系","s":{"connect":3}},{"t":"学一个一直想学的东西","s":{"realize":3,"outlook":1}},{"t":"什么都不干，好好休息","s":{"stable":2,"outlook":1,"freedom":1}}],"n":10},{"text":"你人生里最舍不得放下的是？","opts":[{"t":"自由和可能性","s":{"freedom":3}},{"t":"家人和重要的关系","s":{"connect":3,"stable":1}},{"t":"正在做的事和梦想","s":{"realize":3,"outlook":1}},{"t":"已经拥有的安稳生活","s":{"stable":3}}],"n":11},{"text":"「后悔」这个词对你来说？","opts":[{"t":"常有，总觉得错过了什么","s":{"outlook":1,"realize":1,"freedom":1,"connect":1,"stable":1}},{"t":"偶尔，但会往前看","s":{"outlook":3}},{"t":"很少，每一步都算数","s":{"outlook":2,"stable":1,"realize":1}},{"t":"有，但后悔也没用了","s":{"outlook":1,"stable":1}}],"n":12},{"text":"你希望自己的孩子（或未来的自己）从你身上学到？","opts":[{"t":"勇敢和自由","s":{"freedom":3,"realize":1}},{"t":"爱与被爱的能力","s":{"connect":3}},{"t":"把热爱的事做到极致","s":{"realize":3}},{"t":"踏实、善良、好好生活","s":{"stable":2,"outlook":2,"connect":1}}],"n":13},{"text":"如果生活是一场旅行，你现在的状态是？","opts":[{"t":"被固定路线困住了，想换条路","s":{"freedom":3,"realize":1}},{"t":"在等一个人同行","s":{"connect":3}},{"t":"在准备行囊，即将出发","s":{"outlook":3,"realize":1}},{"t":"在好风景前驻足，岁月静好","s":{"stable":2,"connect":1,"outlook":2}}],"n":14},{"text":"看到这个问题：「如果生活可以重新开始」，你心里冒出的第一个词？","opts":[{"t":"自由","s":{"freedom":3}},{"t":"珍惜","s":{"connect":2,"stable":2,"outlook":1}},{"t":"勇敢","s":{"realize":2,"freedom":1,"outlook":1}},{"t":"意义","s":{"realize":3,"outlook":1}}],"n":15},{"text":"回头看你人生里最开心的一段时光，它最大的特点是？","opts":[{"t":"想去哪就去哪，无拘无束","s":{"freedom":3,"outlook":1}},{"t":"身边有很爱很懂我的人","s":{"connect":3,"stable":1}},{"t":"在做自己真心喜欢的事","s":{"realize":3,"outlook":1}},{"t":"日子安稳，心里踏实","s":{"stable":3,"connect":1}}],"n":16},{"text":"假如八十岁的你给现在的你捎一句话，你猜会是？","opts":[{"t":"「别怕，去过你想过的生活」","s":{"freedom":2,"realize":2,"outlook":2}},{"t":"「多陪陪身边的人」","s":{"connect":3,"stable":1}},{"t":"「别把身体搞垮了」","s":{"stable":2,"outlook":1}},{"t":"「你做得很好，慢慢来」","s":{"outlook":3,"connect":1}}],"n":17}],"rules":[{"result":"freedom","all":[{"dim":"freedom","min":60}]},{"result":"understand","all":[{"dim":"connect","min":58},{"dim":"stable","max":55}]},{"result":"restart","all":[{"dim":"outlook","max":42},{"dim":"realize","min":45}]},{"result":"passion","all":[{"dim":"realize","min":58}]},{"result":"stable","all":[{"dim":"stable","min":55},{"dim":"freedom","max":50}]},{"result":"meaning","all":[{"dim":"outlook","min":45}]},{"result":"meaning","all":[]}],"results":[{"key":"freedom","name":"渴望自由型","label":"你想要的，是一阵穿堂风","summary":"如果生活重来，你最想改掉的，是那些「被绑住」的部分：被规则绑住、被期待绑住、被习惯绑住。你心里最深的渴望，是自由——想走就走、想说就说、想成为谁就成为谁。","explain":"你的作答里「自由需求」压倒性地高。\u003cb>自我决定论把「自主」列为人类三大基本心理需求之一\u003c/b>——当人感到被控制、被框住时，会产生真实的窒息感。你要的自由不是放纵，是「选择权」：对自己的人生有发言权。现在开始，试着在现有生活里找自由的缝隙：拒绝一件不想做的事、走一条没走过的路、做一个不用向任何人交代的决定。自由不一定要惊天动地，它是很多个「我可以」的累积。","strengths":["对自我主权有清晰渴望","不甘被定义，生命力强","敢想敢要，内心有火"],"troubles":["被约束时容易烦躁、想逃","可能为了自由付出不稳定代价","把「责任」误当成「束缚」"],"advice":["在现有生活里找「自由缝隙」：每天做一件完全自主的小事","把「财务/时间/选择」三类自由列成清单，逐项建设","练习「负责任的自由」：想清楚再走，而不是一言不合就逃","把大自由拆成小自由，先拿到一个再说"],"warm":["你心里那阵穿堂风，谁都关不住。愿你早日过上「我可以」的人生——轻盈、辽阔、属于你自己。","自由不是任性，是把人生的遥控器拿回自己手里。你已经在伸手了，继续。","被绑住的滋味不好受，但请相信：绳子是可以一根根解开的。先解开离你最近的那根。","愿你永远保有「想走就走」的勇气，也拥有「想留就留」的底气。这才是真的自由。"]},{"key":"understand","name":"希望被理解型","label":"你想要的，是一句「我懂」","summary":"如果生活重来，你最想改掉的，是那些「没人懂」的时刻。你渴望被理解、被看见、被好好回应——你要的不是热闹，是心和心的对上暗号。","explain":"你的核心渴望是「深度连接」：\u003cb>被理解是人类最温柔的需要之一\u003c/b>。你可能有很多朋友，但真正「懂你」的人不多；你可能一直在表达，但总觉得没被听见。这种孤独不是人缘问题，是深度问题。你的出路是双向的：找到/培养能懂你的关系，同时练习更精准地表达自己。被理解的前提是「被看见」，而被看见的前提是「愿意露出来」。","strengths":["对关系有深度的追求","共情力强，能懂别人","真心、不敷衍、重感情"],"troubles":["在热闹中依然孤独","怕真实的样子不被接受","把「没人懂」归咎于自己"],"advice":["对信任的人练习「说真话」，哪怕笨拙","主动创造深度对话：少客套，多走心","加入和你同频的圈子：兴趣、价值观、生活方式","练习自我理解：写日记、自我对话，先做自己的知己"],"warm":["你想要的那句「我懂」，一定会来的。在它来之前，先做最懂自己的人。你值得被深深理解。","被理解是运气，也是能力。当你愿意露出来，对的人就看得见。","你不奇怪，你不难懂。你只是还没遇到对的耳朵。别急，保持真实。","愿你遇到那个不用解释太多的人。在那之前，请好好珍惜自己这份「渴望被懂」的心——它是柔软，也是勇敢。"]},{"key":"restart","name":"想重新开始型","label":"你想要的，是一次清零的机会","summary":"如果生活重来，你想推倒重来：换个城市、换种活法、换个身份。你不是厌世，是对「现在的剧本」意难平——你知道自己值得一个更好的版本。","explain":"你的作答里有一种「意难平」：\u003cb>对过去的遗憾、对现状的不甘、对重来的渴望\u003c/b>交织在一起。这种情绪很正常，尤其当你隐约觉得自己「本可以」。但重来的关键不在「清零」，在「重启」——你不需要真的回到过去，你需要的是从今天开始，像重生一样做选择。心理学上，人随时都可以「重新叙事」：把人生从「我失败了」改写成「我在转折点」。你手里一直握着的，就是重启键。","strengths":["不甘平庸，有改变的勇气","对自己的潜能有直觉","敢于想象另一种人生"],"troubles":["对过去意难平，难释怀","容易把「重来」当逃避","对现状的不满消耗心力"],"advice":["把「重来」具体化：你到底想改哪一件事？","做一次「重启仪式」：删掉旧账、重新规划、从今天算第一天","把对过去的意难平写下来，然后写「我从中学到了什么」","给自己一个「微型重来」：换发型、换路线、换习惯"],"warm":["人生没有白走的路，每一步都算数——包括让你意难平的那些。它们正在把你推向更好的版本。","重启键不在过去，在现在。你随时可以按下它，然后像重生一样去活。","不甘心的人，心里都有一团火。别让它烧到自己，拿它去点亮新的路。","你值得一个自己满意的人生。而它，从你决定的这一刻就开始了。"]},{"key":"passion","name":"仍然怀有热爱型","label":"你想要的，是为热爱再拼一次","summary":"如果生活重来，你最想改掉的，是「向现实低头」的那些瞬间。你心里还有热爱、有火种、有没实现的梦——你想要的，是把它们重新点燃。","explain":"你的作答显示你对「自我实现」有强烈的渴望：\u003cb>你想做的不是安稳度日，是把心里的热爱活出来\u003c/b>。也许现实让你暂时收起了画笔、相机、吉他、或者某个梦想。但火种没灭，它只是在等风。你不需要孤注一掷，你需要「双轨并行」：白天谋生，晚上追梦；先小规模试错，再逐步加码。热爱的意义不在于一定成功，而在于你为自己活过。","strengths":["心里有火，眼里有光","不甘心把热爱只当爱好","有创造的冲动和能力"],"troubles":["被现实磨得不敢想","想追梦又怕不切实际","把热爱藏起来，觉得矫情"],"advice":["给热爱一个「每周 5 小时」的固定时间","小规模试错：把梦想做成 side project","找一个「同温层」：让热爱的人互相打气","把「养活自己」和「喂养灵魂」分成两条轨，都认真跑"],"warm":["心里有火的人，走到哪里都会发光。别把它藏起来——世界需要你的光，你也需要它。","热爱可抵岁月漫长。为了它吃苦，苦里都带着甜。去吧，哪怕从每周 5 小时开始。","你不是空想家，你只是还没给自己发许可证。今天，把许可证发给自己。","愿你出走半生，归来仍是那个眼里有光的少年。火种还在，一切都来得及。"]},{"key":"stable","name":"追求稳定型","label":"你想要的，是稳稳的幸福","summary":"如果生活重来，你想改掉的，是那些动荡和不确定。你渴望安稳的日子、可靠的关系、看得见的未来——你要的不是大富大贵，是「心安」。","explain":"你的核心渴望是「稳定与安全」。\u003cb>这在心理学里是人的底层需求：当安全满足了，人才有力气去追求更高层次的东西\u003c/b>。你可能经历过或目睹过动荡，所以格外珍惜「稳」。这不是没出息，这是看透了生活本质后的选择。你的功课是：把稳定变成「有根基的稳」——财务底气、健康身体、可靠关系、一技之长。真正的稳不是一动不动，是无论风怎么吹，你都有落脚的地方。","strengths":["踏实、靠谱、不折腾","懂得珍惜已拥有的","给身边人带来安全感"],"troubles":["错过一些值得一搏的机会","把「稳定」变成「僵化」","对不确定的焦虑"],"advice":["把稳定「地基化」：存款、技能、健康、关系，各打一根桩","偶尔给自己一个「小冒险」，练练胆量","区分「真稳定」和「假稳定」：温水煮青蛙不是稳","投资长期主义：复利、健康、口碑"],"warm":["稳稳的幸福，是看遍繁华后的选择。你选的这条路，踏实而温暖，走得稳的人走得远。","你不需要向任何人证明「有出息」。把日子过稳、过暖，就是最大的出息。","稳定不是平庸，是把平凡的日子过出光。你在做的，就是这件事。","愿你的生活：三餐四季、温暖有趣、有人相伴、心有所安。这已经是很了不起的人生了。"]},{"key":"meaning","name":"寻找人生意义型","label":"你想要的，是一个「值得」的答案","summary":"如果生活重来，你想改掉的，是「不知道为了什么」的虚无感。你渴望意义、价值、值得付出的东西——你要的不是更好的日子，是「有分量」的日子。","explain":"你的作答指向对「意义」的深层寻找。\u003cb>意义感研究发现：意义不是被找到的，是被创造的\u003c/b>——在投入一件事、爱一个人、承担一份责任的过程中长出来。你不需要等一个「天启」的答案，你需要的是「行动中生成意义」：去做让你觉得「值得」的小事，去爱身边具体的人，去承担一份你能扛的责任。意义就藏在这些具体里。","strengths":["不满足于表面生活，有精神追求","对生命有真诚的思考","愿意为「值得」付出"],"troubles":["虚无感和空虚感","觉得做什么都没意思","在等待「答案」中蹉跎"],"advice":["做「有意义的小事」：帮助一个人、完成一件作品、学一样东西","写你的「意义清单」：什么事让你觉得「值了」？","去爱具体的人、做具体的事，意义在其中生长","找一个比自己更大的目标：使命、责任、贡献"],"warm":["寻找意义的人，本身就是有意义的——因为你拒绝麻木。答案不在远方，在你接下来做的每一件小事里。","人生的意义不是一道选择题，是一道填空题。你正在一笔一笔填上它，认真又郑重。","虚无感只是暂时的雾。往前走，做点什么，太阳会出来。你在创造属于你的意义。","愿你找到那个「值得」的事，然后用尽全力。那时候你会发现：日子是有分量的，而你也是。"]}],"dimContent":{"freedom":{"hi":{"e":["「想走就走、想说就说」——自由是你心里排第一的关键词。"],"s":["你对自我主权有清晰渴望，生命力强","你敢想敢要，不被定义"],"t":["被约束时容易烦躁、想逃","可能为自由付出不稳定代价"],"a":["在现有生活里找「自由缝隙」：每天做一件完全自主的小事","练习「负责任的自由」：想清楚再走"],"w":["你心里那阵穿堂风，谁都关不住。愿你早日过上「我可以」的人生。"]},"lo":{"e":["自由对你不是最重要的——比起漂泊，你更想要有根的生活。"],"s":["你安定、踏实、能深耕","你不被「远方」的幻觉带跑"],"a":["在稳定里也留 5% 的冒险配额，防止日子变凉"]}},"stable":{"hi":{"e":["「稳稳的幸福」是你真正的向往——确定感是你的氧气。"],"s":["你踏实可靠，是身边人的定心丸","你懂得珍惜已拥有的"],"t":["错过一些值得一搏的机会","对不确定的焦虑"],"a":["把稳定「地基化」：存款、技能、健康、关系各打一根桩","偶尔给自己一个「小冒险」练胆"],"w":["把日子过稳、过暖，就是最大的出息。你选的路，踏实而值得。"]},"lo":{"e":["一成不变让你发闷——你需要变化和新鲜感来确认自己在活着。"],"s":["你拥抱变化，适应力强","你的生活半径比别人大"],"a":["在变化里也留一点「不变的锚」：重要的人、小习惯"]}},"realize":{"hi":{"e":["你心里有团火——把热爱活出来、把潜能兑现，是你最深的渴望。"],"s":["你不甘平庸，有创造的冲动和能力","你为了热爱愿意吃苦"],"t":["被现实磨得不敢想","想追梦又怕不切实际"],"a":["给热爱一个「每周 5 小时」的固定时间","小规模试错：把梦想做成 side project"],"w":["心里有火的人，走到哪里都会发光。别把它藏起来——世界需要你的光。"]},"lo":{"e":["比起「实现自我」，你更看重平凡日子里的小确幸。"],"s":["你知足、踏实、不容易被野心烧到","你把生活本身过成了目的"],"a":["也留意心里那颗小火苗，偶尔给它添点柴"]}},"connect":{"hi":{"e":["被理解、被惦记、有人同行——这是你人生拼图里最重要的一块。"],"s":["你重感情、有温度，是别人的归处","你有爱与被爱的能力"],"t":["关系波动时你会格外受影响","可能为了留住关系而委屈自己"],"a":["主动经营 2-3 段深度关系，它们是你的能量站","练习在关系里也说「我需要」"],"w":["你想要的那句「我懂」，一定会来的。在它来之前，先做最懂自己的人。"]},"lo":{"e":["你不太依赖关系来定义自己——一个人也能把日子过好。"],"s":["你独立、自洽、精神世界丰富","你不为「合群」而合群"],"a":["也留几扇窗给对的人，亲密会让世界更暖"]}},"outlook":{"hi":{"e":["你对「以后」是期待的——这份乐观是穿越低谷的隐形燃料。"],"s":["你有面向未来的能量和盼头","你能在困境里看到可能"],"t":["期待过高时现实容易显得不够好","可能为了未来的图景忽略此刻"],"a":["把期待拆成 90 天小里程碑，让希望落地","每天留 10 分钟给「此刻的快乐」"],"w":["好日子是朝你走来的，你也在朝它走去。保持期待，保持耐心。"]},"lo":{"e":["想到未来你有些发虚——不是没有可能，是还没攒够底气。"],"s":["你对不确定有敬畏，不盲目乐观","你更关注当下，活得具体"],"a":["从一件「明天会更好」的小事开始攒确定性","少看贩卖焦虑的内容，多看真实可及的路径"],"w":["日子是过出来的，不是想出来的。今天的每一步，都在把你送到更好的以后。"]}}},"things":{"freedom":["今天做一件不用向任何人交代的小事","对一件不想做的事说「不」","走一条没走过的路，哪怕只是绕个弯","给自己 1 小时「想干嘛就干嘛」的时间","做一次小小的「说走就走」：换个地方吃午饭"],"connect":["给一个重要的人发一句真心话","今天认真听一个人说话，不打断","给自己写一句话，像写给最好的朋友","约一个你想念的人见一面或通话","对身边人说一句具体的感谢"],"realize":["给你的热爱 30 分钟：动手做，不求结果","写下一件「一直想做没做」的事，做它的第一步","回忆一次「因为热爱而发光」的时刻","今天为「想成为的自己」做一件小事","把一个模糊的梦想写成一句清晰的话"],"stable":["为「安全感」做一件小事：存一笔钱、整理房间、早睡","给未来的自己列一个 3 个月的小计划","和家人或老朋友通个话，感受稳稳的连接","把房间收拾出一个让你安心的角落","今天按时吃饭睡觉，把节奏稳住"],"outlook":["写下「一年后想成为的样子」，越具体越好","做一件让明天更好的小事","睡前想 3 件值得期待的事","给半年后的自己写一张明信片","今天收集一个「好消息」，给心里添点亮"],"_default":["出门看一次日落或晚霞，什么都不想","今晚认真吃一顿热乎的饭","给自己写一句温柔的话，存起来"]},"scoreNote":"每题选项对应「自由需求 / 稳定需求 / 自我实现 / 情感连接 / 人生期待」五个维度的 0-3 分，累加归一化后换算 1-5 均分；结果按维度组合规则链判定。"};
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-T010"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-T010", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  document.getElementById("qFactor").textContent = q.factor || "";
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      setTimeout(()=>{
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「下一题」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "提交测评 ✓" : "下一题 →";
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const w = d.w || 1;
+    const span = (max[d.k]-min[d.k]) * w;
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) * w / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = 1 + score[d.k]/100*4; // 0-100 → 1-5 均分口径
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(a){ // a 为 1-5 均分
+  if(a < 1.5) return {label:"良好", sub:"状态不错", cls:"b-good", color:"#22c55e"};
+  if(a < 2.5) return {label:"轻度", sub:"有些信号", cls:"b-mild", color:"#3b82f6"};
+  if(a < 3.5) return {label:"中度", sub:"信号比较明显", cls:"b-mid", color:"#f59e0b"};
+  return {label:"明显", sub:"信号突出", cls:"b-sev", color:"#ef4444"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const sev = severity(totalAvg);
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  document.getElementById("resAvg").textContent = totalAvg.toFixed(2);
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "rgba(0,0,0,.18)";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.filter(x=>x.v>=58).slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  document.getElementById("resNarrative").textContent = narr;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td><td>' + rawOut[d.k] + '</td>' +
+      '<td style="color:' + s.color + '">' + avg5[d.k].toFixed(2) + '</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const hiLo = avg5[d.k] >= 2.5 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区（低分维度正向解读）
+  const lo = [...hi].reverse().filter(x=>x.v<=42).slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  (lo.length ? lo : hi.slice(-2)).forEach(x => {
+    const s = pick((dc[x.k]&&dc[x.k].lo&&dc[x.k].lo.s)||[], fp, x.v|0) || (x.n + " 目前信号较弱，是你的稳态区。");
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 均分 ' + x.a.toFixed(2) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 寄语（类型变体 + 高分维度安慰句，去重拼接）
+  let warm = pick(type.warm, fp, 1) || type.summary;
+  if (hi.length) {
+    const w2 = pick((dc[hi[0].k]&&dc[hi[0].k].hi&&dc[hi[0].k].hi.w)||[], fp, hi[0].v|0);
+    if (w2 && warm.indexOf(w2) < 0 && w2.indexOf(warm) < 0) {
+      if (warm && !/[。！？…」”")）]$/.test(warm)) warm += "。";
+      warm += w2;
+    }
+  }
+  document.getElementById("warmNote").textContent = warm;
+
+  // 一件小事（最高分维度池）
+  const pool = (SPEC.things && SPEC.things[hi[0].k]) || (SPEC.things && SPEC.things._default) || [];
+  document.getElementById("thingNote").textContent = pick(pool, fp, hi[0].v|0) || "今晚比平时早 30 分钟躺下，把睡眠当成正经事。";
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote +
+    " 本结果由你的作答经固定规则计算得出（相同答案永远得到相同结果），仅代表自编探索性测试中的相对指标，<b>不构成任何诊断或专业评估</b>。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

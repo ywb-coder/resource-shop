@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>{$seo_title|default='在线心理测试'}</title>
+<meta name="description" content="{$seo_description|default=''}" />
+<link rel="icon" href="{$siteConfig.site_favicon|default='/favicon.ico'}" />
+<link rel="stylesheet" href="/static/lib/fontawesome/css/all.min.css" />
+<style>
+:root{--text:#2b2d3a;--muted:#8a8fa3;--line:#ecedf2;--primary:#3b5bdb}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f7fb;color:var(--text);font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:18px;position:sticky;top:0;z-index:10}
+.topbar .brand{font-weight:700;font-size:17px;color:var(--text);text-decoration:none}
+.topbar nav{margin-left:auto;display:flex;gap:16px}
+.topbar nav a{color:var(--muted);text-decoration:none;font-size:14px}
+.topbar nav a:hover{color:var(--primary)}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 18px 60px}
+.hero{text-align:center;padding:24px 12px 22px}
+.hero h1{font-size:30px;margin:0 0 10px}
+.hero p{color:var(--muted);margin:0;font-size:15px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 30px}
+.filters a{padding:7px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--text);font-size:14px;text-decoration:none;transition:.15s}
+.filters a.active,.filters a:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:.18s}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.card .cover{aspect-ratio:16/10;background:#eef0f5;overflow:hidden}
+.card .cover img{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card .cat{font-size:12px;color:var(--primary);font-weight:600}
+.card h3{font-size:16px;margin:0;line-height:1.45}
+.card p{font-size:13px;color:var(--muted);margin:0;line-height:1.6;flex:1}
+.card .meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+@media(max-width:600px){.topbar nav a:nth-child(3){display:none}.hero h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="/">{$siteConfig.site_name|default='资料站'}</a>
+  <nav>
+    <a href="/">发现</a><a href="/list">全部资料</a><a href="/test">在线测试</a><a href="/free">免费领取</a>
+  </nav>
+</div>
+<div class="wrap">
+  <div class="hero">
+    <h1>在线心理测试</h1>
+    <p>打开即测 · 共 {$testCount} 份 · 涵盖自我探索、情绪压力、心理健康与趣味测试</p>
+  </div>
+  <div class="filters">
+    <a href="/test" class="{if $currentCat==''}active{/if}">全部</a>
+    {foreach $testCats as $cat=>$n}
+    <a href="/test?cat={$cat|urlencode}" class="{if $currentCat==$cat}active{/if}">{$cat}（{$n}）</a>
+    {/foreach}
+  </div>
+  <div class="grid">
+    {foreach $tests as $t}
+    <a class="card" href="/test?play={$t.uri|urlencode}">
+      <div class="cover"><img src="{$t.cover}" alt="{$t.title}" loading="lazy" /></div>
+      <div class="body">
+        <span class="cat">{$t.category}</span>
+        <h3>{$t.title}</h3>
+        <p>{$t.description}</p>
+        <span class="meta"><i class="fa-solid fa-eye"></i> {$t.views_total} 次浏览 · 立即测试 →</span>
+      </div>
+    </a>
+    {/foreach}
+  </div>
+  {if empty($tests)}
+  <div class="empty"><p>没有匹配的测试题</p></div>
+  {/if}
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7c5cbf"/><stop offset="1" stop-color="#ab97d6"/>
+  </linearGradient>
+  <radialGradient id="glow" cx=".22" cy=".16" r=".8">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity=".82"/>
+  </linearGradient>
+</defs>
+<style>
+  .fl{animation:breathe 4.5s ease-in-out infinite alternate}
+  .tw{animation:twinkle 3.2s ease-in-out infinite alternate}
+  @keyframes breathe{from{opacity:.78}to{opacity:1}}
+  @keyframes twinkle{from{opacity:.3}to{opacity:1}}
+</style>
+<rect width="640" height="400" fill="url(#bg)"/>
+<rect width="640" height="400" fill="url(#glow)"/>
+<circle cx="586" cy="42" r="112" fill="#fff" opacity=".08"/>
+<circle cx="44" cy="366" r="96" fill="#fff" opacity=".07"/>
+<g class="fl" opacity="0.4" transform="translate(112,84) scale(0.75)"><ellipse cx="0" cy="0" rx="46" ry="21" fill="#fff"/><circle cx="-21" cy="-9" r="20" fill="#fff"/><circle cx="7" cy="-16" r="25" fill="#fff"/><circle cx="30" cy="-6" r="17" fill="#fff"/><rect x="-46" y="-2" width="92" height="20" rx="10" fill="#fff"/></g><polygon points="520.0,54.0 524.1,64.3 535.2,65.1 526.7,72.2 529.4,82.9 520.0,77.0 510.6,82.9 513.3,72.2 504.8,65.1 515.9,64.3" fill="#fff" opacity="0.8" class="tw"/><rect x="130" y="292" width="104" height="38" rx="10" fill="#fff" opacity=".9"/><rect x="130" y="292" width="104" height="12" rx="6" fill="#5b3ea6" opacity=".8"/><rect x="234" y="246" width="104" height="84" rx="10" fill="#fff" opacity=".9"/><rect x="234" y="246" width="104" height="12" rx="6" fill="#7c5cbf" opacity=".8"/><rect x="338" y="200" width="104" height="130" rx="10" fill="#fff" opacity=".9"/><rect x="338" y="200" width="104" height="12" rx="6" fill="#5b3ea6" opacity=".8"/><rect x="442" y="154" width="104" height="176" rx="10" fill="#fff" opacity=".9"/><rect x="442" y="154" width="104" height="12" rx="6" fill="#7c5cbf" opacity=".8"/><g transform="translate(470,116)"><circle r="26" fill="#ffd9a8"/><circle cx="-8.58" cy="-2.08" r="3.4" fill="#3a3550"/><circle cx="8.58" cy="-2.08" r="3.4" fill="#3a3550"/><path d="M-7 7.280000000000001 Q0 10.92 7 7.280000000000001" stroke="#3a3550" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="-16.12" cy="4.68" rx="6" ry="3.5" fill="#ff8fa8" opacity=".55"/><ellipse cx="16.12" cy="4.68" rx="6" ry="3.5" fill="#ff8fa8" opacity=".55"/></g><path d="M470 142 l-18 34 h36 z" fill="#7c5cbf"/><path d="M490 106 l30 -18" stroke="#4a4266" stroke-width="5" stroke-linecap="round"/><path d="M516 78 l-4 34 h36 z" fill="#5b3ea6" stroke="#fff" stroke-width="3"/>
+<g>
+  <rect x="28" y="20" width="256" height="56" rx="28" fill="#fff" opacity=".95"/>
+  <circle cx="56" cy="48" r="9" fill="#7c5cbf"/>
+  <text x="86" y="57" font-size="26" font-weight="800" letter-spacing="2.6" fill="#413a5c" font-family="'PingFang SC','Microsoft YaHei',sans-serif">心屿 · 探索</text>
+</g>
+<g>
+  <rect x="28" y="306" width="386" height="66" rx="26" fill="url(#bar)"/>
+  <circle cx="58" cy="339" r="9" fill="#5b3ea6"/>
+  <text x="86" y="351" font-size="25" font-weight="800" letter-spacing="1.8" fill="#393352" font-family="'PingFang SC','Microsoft YaHei',sans-serif">人生阶段 · 此刻坐标</text>
+</g>
+<circle cx="600" cy="352" r="6" fill="#fff" opacity=".8"/>
+<circle cx="580" cy="352" r="4" fill="#fff" opacity=".55"/>
+<circle cx="562" cy="352" r="3" fill="#fff" opacity=".4"/>
+</svg>

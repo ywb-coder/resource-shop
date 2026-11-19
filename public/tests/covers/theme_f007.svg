@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#c9a13c"/><stop offset="1" stop-color="#dbc07c"/>
+  </linearGradient>
+  <radialGradient id="glow" cx=".22" cy=".16" r=".8">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".38"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".96"/>
+    <stop offset="1" stop-color="#ffffff" stop-opacity=".82"/>
+  </linearGradient>
+</defs>
+<style>
+  .fl{animation:breathe 4.5s ease-in-out infinite alternate}
+  .tw{animation:twinkle 3.2s ease-in-out infinite alternate}
+  @keyframes breathe{from{opacity:.78}to{opacity:1}}
+  @keyframes twinkle{from{opacity:.3}to{opacity:1}}
+</style>
+<rect width="640" height="400" fill="url(#bg)"/>
+<rect width="640" height="400" fill="url(#glow)"/>
+<circle cx="586" cy="42" r="112" fill="#fff" opacity=".08"/>
+<circle cx="44" cy="366" r="96" fill="#fff" opacity=".07"/>
+<circle cx="100" cy="68" r="6" fill="#fff" opacity="0.6" class="tw"/><polygon points="540.0,56.0 543.6,65.0 553.3,65.7 545.9,71.9 548.2,81.3 540.0,76.2 531.8,81.3 534.1,71.9 526.7,65.7 536.4,65.0" fill="#ffe9a3" opacity="0.9" class="tw"/><rect x="176" y="146" width="288" height="168" rx="14" fill="#fff" opacity=".96"/><rect x="192" y="162" width="256" height="136" rx="8" fill="#c9a13c" opacity=".22"/><g transform="rotate(-9 320 218)"><rect x="222" y="176" width="196" height="96" rx="8" fill="#3a3550"/><path d="M222 200 h196" stroke="#fff" stroke-width="7"/><path d="M246 176 l24 24 h-24z M294 176 l24 24 h-24z M342 176 l24 24 h-24z M390 176 l24 24 h-24z" fill="#9a7520"/><path d="M258 232 l34 -18 -34 -18z M348 214 h58" stroke="#fff" stroke-width="5" fill="none"/></g><rect x="196" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><rect x="232" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><rect x="268" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><rect x="372" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><rect x="408" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><rect x="444" y="316" width="16" height="14" rx="3" fill="#fff" opacity=".65"/><path d="M470 270 q-18 -40 14 -58 q34 -18 44 14 q6 26 -20 44z" fill="#fff" opacity=".9" class="fl"/><polygon points="498.0,235.0 500.8,242.1 508.5,242.6 502.6,247.5 504.5,254.9 498.0,250.8 491.5,254.9 493.4,247.5 487.5,242.6 495.2,242.1" fill="#ffe9a3" opacity="0.9" class="no"/>
+<g>
+  <rect x="28" y="20" width="256" height="56" rx="28" fill="#fff" opacity=".95"/>
+  <circle cx="56" cy="48" r="9" fill="#c9a13c"/>
+  <text x="86" y="57" font-size="26" font-weight="800" letter-spacing="2.6" fill="#413a5c" font-family="'PingFang SC','Microsoft YaHei',sans-serif">心屿 · 探索</text>
+</g>
+<g>
+  <rect x="28" y="306" width="412" height="66" rx="26" fill="url(#bar)"/>
+  <circle cx="58" cy="339" r="9" fill="#9a7520"/>
+  <text x="86" y="351" font-size="25" font-weight="800" letter-spacing="1.8" fill="#393352" font-family="'PingFang SC','Microsoft YaHei',sans-serif">电影世界 · 你属于哪部</text>
+</g>
+<circle cx="600" cy="352" r="6" fill="#fff" opacity=".8"/>
+<circle cx="580" cy="352" r="4" fill="#fff" opacity=".55"/>
+<circle cx="562" cy="352" r="3" fill="#fff" opacity=".4"/>
+</svg>

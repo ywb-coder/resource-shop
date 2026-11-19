@@ -1,0 +1,156 @@
+[
+  {
+    "uri": "t001",
+    "file": "t001-辞职还是太累了.html",
+    "title": "你是真的想辞职，还是只是太累了？",
+    "description": "17 个真实工作场景，看清此刻的「不想干了」，到底是累了、失望了，还是真的该换个方向了。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t002",
+    "file": "t002-人生处于哪个阶段.html",
+    "title": "你现在的人生，处于哪个阶段？",
+    "description": "定位你此刻的人生坐标——是在探索、在积累、在重建，还是在等一阵风。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t003",
+    "file": "t003-考研还是害怕进入社会.html",
+    "title": "你是真的想考研，还是害怕进入社会？",
+    "description": "帮你看清「想读书」和「想躲一躲」的分界线。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t004",
+    "file": "t004-为什么不愿意开始.html",
+    "title": "你的大脑为什么总是不愿意开始？",
+    "description": "找到「明明该做事却做不动」的那个心理开关。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t005",
+    "file": "t005-隐藏起来的另一面.html",
+    "title": "你隐藏起来的另一面是什么？",
+    "description": "揭开你人前人后那道温柔的缝隙。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t006",
+    "file": "t006-人际关系中害怕失去什么.html",
+    "title": "你在人际关系中，最害怕失去什么？",
+    "description": "看清你在关系里最深的怕，和你最真的需要。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t007",
+    "file": "t007-情绪在传递什么.html",
+    "title": "你的情绪，最近在向你传递什么？",
+    "description": "翻译你心里那些没说出口的情绪信号。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t008",
+    "file": "t008-究竟在为什么事情消耗自己.html",
+    "title": "你究竟在为什么事情消耗自己？",
+    "description": "定位你的内耗源头。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t009",
+    "file": "t009-有没有真正关心自己.html",
+    "title": "你有多长时间没有真正关心自己了？",
+    "description": "重新认识那个被你忽略的人——你自己。",
+    "require_auth": 0
+  },
+  {
+    "uri": "t010",
+    "file": "t010-如果生活可以重新开始.html",
+    "title": "如果生活可以重新开始，你最想改变什么？",
+    "description": "借「重来」这个角度，听清你心里最真实的渴望。",
+    "require_auth": 0
+  },
+  {
+    "uri": "1",
+    "file": "1-心理健康自评问卷.html",
+    "title": "心理健康自评问卷",
+    "description": "90 题心理健康自评（改编版），供自我觉察参考。",
+    "require_auth": 1
+  },
+  {
+    "uri": "yali",
+    "file": "yali-压力应对风格小测验.html",
+    "title": "压力应对风格小测验",
+    "description": "15 道小题，看看遇到压力时你习惯用哪种方式应对。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f001",
+    "file": "f001-spirit-creature.html",
+    "title": "你的精神世界住着什么小生物？",
+    "description": "15 个生活情景题，找到住在你精神世界里的那只小东西。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f002",
+    "file": "f002-life-game.html",
+    "title": "如果你的生活是一款游戏？",
+    "description": "15 道情景题，生成你的游戏玩家身份卡。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f003",
+    "file": "f003-life-manual.html",
+    "title": "你的人生隐藏说明书",
+    "description": "15 道题，生成一份「你」的使用说明书，请正确使用。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f004",
+    "file": "f004-mystery-store.html",
+    "title": "奇怪便利店：你会带走什么？",
+    "description": "深夜便利店 15 个剧情关卡，找到你会带走的那样东西。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f005",
+    "file": "f005-friend-role.html",
+    "title": "你在朋友眼里是什么隐藏角色？",
+    "description": "15 道社交情景题，看看你在朋友的剧本里演的是哪个角色。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f006",
+    "file": "f006-brain-shop.html",
+    "title": "如果你的大脑是一家商店？",
+    "description": "15 道题，开一家只属于你的脑内商店。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f007",
+    "file": "f007-movie-world.html",
+    "title": "你的生活适合哪一种电影世界？",
+    "description": "15 道审美情景题，选出你人生的那部电影。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f008",
+    "file": "f008-life-save.html",
+    "title": "如果人生可以存档，你会保存什么？",
+    "description": "15 道情景题，为你的此刻存一个档。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f009",
+    "file": "f009-daily-habits.html",
+    "title": "你的日常隐藏着多少奇怪小习惯？",
+    "description": "15 道灵魂拷问，把你的小毛病查个底朝天。",
+    "require_auth": 0
+  },
+  {
+    "uri": "f010",
+    "file": "f010-parallel-universe.html",
+    "title": "你的专属平行宇宙是什么？",
+    "description": "15 道幻想题，生成一个属于你的世界。",
+    "require_auth": 0
+  }
+]

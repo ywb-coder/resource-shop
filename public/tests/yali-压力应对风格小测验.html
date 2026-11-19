@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>压力应对风格小测验</title>
+<style>
+:root{
+  --accent:#2f9e6e; --accent-dark:#1f7a52; --accent-soft:#e4f5ec;
+  --bg:#f2faf5; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#1f7a52,#57c785); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🍀</div>
+    <div class="hero-badge">心理健康 · 自评问卷</div>
+    <h1>压力应对风格小测验</h1>
+    <p>15 道小题，看看遇到压力时你习惯用哪种方式应对。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">15</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">4</div><div class="lbl">个因子维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">压力人人都有，但应对方式各不相同：有人迎面而上，有人找人倾诉，有人默默消化，有人先充饱电再说。<b>这 15 道题会告诉你：你的压力出口是什么，以及怎么用好它。</b></div>
+  </div>
+  <div class="tip">
+    ⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">压力应对风格小测验</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 15</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>压力应对风格小测验 · 分析报告</h2>
+  </div>
+  <div class="score-card">
+    <h3>📊 总体评估结果</h3>
+    <div class="overall-sub">总均分</div>
+    <div class="big-score" id="resAvg">0</div>
+    <div class="overall-sub">满分 5 分</div>
+    <div class="overall-sub" style="margin-top:14px">你的主要应对风格</div>
+    <div class="level-badge" id="resLevel">—</div>
+    <div class="level-sub" id="resLevelDesc"></div>
+    <div class="narrative" id="resNarrative"></div>
+  </div>
+  <div class="score-card">
+    <h3>📋 因子维度详情</h3>
+    <div class="criteria">
+      <span><i style="background:#22c55e"></i>良好（&lt; 1.5）</span>
+      <span><i style="background:#3b82f6"></i>轻度（1.5-2.49）</span>
+      <span><i style="background:#f59e0b"></i>中度（2.5-3.49）</span>
+      <span><i style="background:#ef4444"></i>明显（≥ 3.5）</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>维度</th><th>原始分</th><th>均分</th><th>水平</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 因子雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示该维度信号越强</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 详细因子特征分析</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 你的优势</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 可能的困扰</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 给你的生活建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌟 你的优势区</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">这些维度得分较低（信号弱），是你目前稳得住的部分</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"u011","file":"压力应对小测验.html","title":"压力应对风格小测验","badge":"心理健康 · 自评问卷","icon":"🍀","subtitle":"15 道小题，看看遇到压力时你习惯用哪种方式应对。","minutes":3,"intro":"压力人人都有，但应对方式各不相同：有人迎面而上，有人找人倾诉，有人默默消化，有人先充饱电再说。\u003cb>这 15 道题会告诉你：你的压力出口是什么，以及怎么用好它。\u003c/b>","theme":{"accent":"#2f9e6e","accentDark":"#1f7a52","soft":"#e4f5ec","bg":"#f2faf5","grad":"linear-gradient(135deg,#1f7a52,#57c785)"},"overallLabel":"你的主要应对风格","scoreNote":"每题选项对四个「应对倾向」维度计 0-3 分，累加归一化为 0-100 并换算 1-5 均分；得分最高的维度决定你的主要应对风格，同分按固定顺序判定。","match":"max","tieOrder":["action","talk","reflect","recharge"],"dims":[{"k":"action","name":"行动应对倾向","w":1},{"k":"talk","name":"倾诉应对倾向","w":1},{"k":"reflect","name":"沉淀应对倾向","w":1},{"k":"recharge","name":"充电应对倾向","w":1}],"dimShort":{"action":"行动","talk":"倾诉","reflect":"沉淀","recharge":"充电"},"questions":[{"text":"突然接到一个超棘手的任务，你的第一反应是？","opts":[{"t":"先列清单，马上开工","s":{"action":3}},{"t":"找人吐槽一下，然后再说","s":{"talk":3}},{"t":"自己琢磨一会儿，理清思路","s":{"reflect":3}},{"t":"先缓缓，吃饱睡好再处理","s":{"recharge":3}}],"n":1},{"text":"和人发生不愉快后，你通常会？","opts":[{"t":"当场说清楚，解决它","s":{"action":3}},{"t":"找朋友倾诉一通","s":{"talk":3}},{"t":"写下来或自己想明白","s":{"reflect":3}},{"t":"去做点喜欢的事转移注意力","s":{"recharge":3}}],"n":2},{"text":"压力很大的晚上，你最想？","opts":[{"t":"把明天的事安排好","s":{"action":3}},{"t":"和人打个电话聊聊","s":{"talk":3}},{"t":"独处，想点事情","s":{"reflect":3}},{"t":"看剧、吃东西、早点睡","s":{"recharge":3}}],"n":3},{"text":"考试/汇报前，你的解压方式是？","opts":[{"t":"再复习一遍，做足准备","s":{"action":3}},{"t":"和同学互相打气","s":{"talk":3}},{"t":"深呼吸，心里过一遍流程","s":{"reflect":3}},{"t":"该吃吃该睡睡，保持状态","s":{"recharge":3}}],"n":4},{"text":"遇到委屈，你更想？","opts":[{"t":"想办法把问题解决掉","s":{"action":3}},{"t":"哭一场或说出来","s":{"talk":3}},{"t":"自己消化，写写日记","s":{"reflect":3}},{"t":"出去玩一圈，换个心情","s":{"recharge":3}}],"n":5},{"text":"事情多到做不完时，你会？","opts":[{"t":"排优先级，一件件干掉","s":{"action":3}},{"t":"和人说说，听听建议","s":{"talk":3}},{"t":"先静下来想清楚再动","s":{"reflect":3}},{"t":"先睡一觉，明天效率更高","s":{"recharge":3}}],"n":6},{"text":"你更认可哪句话？","opts":[{"t":"行动是缓解焦虑的良药","s":{"action":3}},{"t":"说出来，就解决了一半","s":{"talk":3}},{"t":"想清楚了，路就出来了","s":{"reflect":3}},{"t":"休息好，什么都不怕","s":{"recharge":3}}],"n":7},{"text":"压力会影响你的什么？","opts":[{"t":"让我想立刻动手做点什么","s":{"action":3}},{"t":"让我特别想找人说话","s":{"talk":3}},{"t":"让我容易想很多","s":{"reflect":3}},{"t":"让我容易累、想睡","s":{"recharge":3}}],"n":8},{"text":"你理想中的「解压神器」是？","opts":[{"t":"一张排得满满的待办清单","s":{"action":3}},{"t":"一个随叫随到的朋友","s":{"talk":3}},{"t":"一个没人打扰的小角落","s":{"reflect":3}},{"t":"一张软到陷进去的床","s":{"recharge":3}}],"n":9},{"text":"被领导/老师批评后，你会？","opts":[{"t":"马上改进，用结果说话","s":{"action":3}},{"t":"和人说说，平复心情","s":{"talk":3}},{"t":"复盘哪里可以做得更好","s":{"reflect":3}},{"t":"先休息一下，别想太多","s":{"recharge":3}}],"n":10},{"text":"长期压力下，你的身体会？","opts":[{"t":"停不下来，越忙越亢奋","s":{"action":3}},{"t":"话变多，总想找人聊","s":{"talk":3}},{"t":"失眠，脑子停不下来","s":{"reflect":3}},{"t":"嗜睡、乏力、没胃口","s":{"recharge":3}}],"n":11},{"text":"你处理压力的顺序是？","opts":[{"t":"先解决事，再处理心情","s":{"action":3}},{"t":"先找人说，心情好了再做事","s":{"talk":3}},{"t":"先想明白，再决定怎么做","s":{"reflect":3}},{"t":"先照顾好自己，再说别的","s":{"recharge":3}}],"n":12},{"text":"压力大的时候，你的社交状态是？","opts":[{"t":"该干嘛干嘛，不影响","s":{"action":3}},{"t":"比平时更需要人陪","s":{"talk":3}},{"t":"想一个人待着","s":{"reflect":3}},{"t":"提不起劲，想躺平","s":{"recharge":3}}],"n":13},{"text":"你最希望别人怎么帮你解压？","opts":[{"t":"帮我把事情分担掉","s":{"action":3}},{"t":"听我说，陪我说","s":{"talk":3}},{"t":"给我空间和时间","s":{"reflect":3}},{"t":"带我去吃点好的","s":{"recharge":3}}],"n":14},{"text":"压力过去之后，你会？","opts":[{"t":"总结经验，下次更好","s":{"action":3}},{"t":"把这段经历讲给朋友听","s":{"talk":3}},{"t":"写点什么，记录下来","s":{"reflect":3}},{"t":"好好睡一觉，翻篇","s":{"recharge":3}}],"n":15}],"results":[{"key":"action","name":"行动派","label":"你的解压方式：把事情一件件解决掉","summary":"面对压力，你的本能是「动手」：列清单、排优先级、立刻执行。你相信行动是缓解焦虑的良药，而事实证明你是对的——你的问题清单总是比别人短。","strengths":["你的执行力和掌控感让压力变小","你是危机时刻最可靠的人"],"troubles":["容易用忙碌逃避情绪","停不下来，久了会累垮"],"advice":["行动之前，先问自己感受如何","把「解决情绪」也列进清单","允许自己有解决不了的事"],"warm":["你的行动力是超能力，但情绪也需要被处理，不只是被解决。","清单可以很长，但记得把自己排进去。","做不完的事可以明天再做，你的身体不能明天再歇。"]},{"key":"talk","name":"倾诉派","label":"你的解压方式：说出来，就解决了一半","summary":"压力对你来说是「需要被听见」的东西。找人聊聊、被人理解，是你最快的情绪出口。你的朋友都练就了一副好耳朵，因为你是真心把他们当港湾。","strengths":["你的情绪表达健康，不积压","你的关系网是你最大的资源"],"troubles":["过度依赖倾诉，自己难独处","怕给别人添麻烦时会憋着"],"advice":["也练习一些自我安抚的方法","给倾诉找几个固定的安全对象","写下来也是一种「说」"],"warm":["会说出来的人，情绪都不会走丢。","你值得被听见，包括此刻的疲惫。","找一个愿意听的人，今晚就说说吧。"]},{"key":"reflect","name":"沉淀派","label":"你的解压方式：自己想明白，再轻装上阵","summary":"你面对压力的方式是「向内」：独处、复盘、写下来、想清楚。你不需要很多人围观你的战场，你在自己的安静里把问题一个个拆开。","strengths":["你的深度思考让你很少重复踩坑","你的内心世界丰富而有秩序"],"troubles":["想太多，容易内耗","一个人扛，压力不外泄"],"advice":["给思考设一个截止时间","偶尔把想法说给一个人听","行动也是思考的一种"],"warm":["能和自己好好相处的人，都是深藏不露的高手。","你的安静里有力量，但也允许自己被听见。","想不明白的事，睡一觉也许就松了。"]},{"key":"recharge","name":"充电派","label":"你的解压方式：先照顾好自己，再面对世界","summary":"你的智慧在于：知道电量不足时什么都做不好。所以你先睡觉、先吃饭、先做让自己开心的事。看起来像在「逃避」，其实是在高效回血。","strengths":["你的自我照顾能力是长期主义的底牌","你恢复力强，很少崩盘"],"troubles":["被误读成不上心","用「休息」拖延真正的问题"],"advice":["充完电记得回头解决问题","休息时理直气壮，不带愧疚","设定「充电」和「开工」的切换点"],"warm":["会休息的人才会战斗，你只是更懂节奏。","把自己照顾好，就是对世界最大的负责。","今天也先充电吧，满格的你什么都行。"]}],"loMap":{"action":{"e":["你不太用行动解决问题，更依赖其他方式。"],"s":["你不蛮干、懂得借力"],"a":["该动手时也别想太久"]},"talk":{"e":["你不太倾诉，习惯自己扛。"],"s":["你独立、不麻烦人"],"a":["偶尔开口，世界会回应你"]},"reflect":{"e":["你不太爱琢磨，想得浅过得轻。"],"s":["你简单、不内耗"],"a":["大事上多想一步"]},"recharge":{"e":["你不太会休息，习惯硬扛。"],"s":["你拼搏、耐力强"],"a":["记住：休息不是奖励，是必需"]}}};
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-u011"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-u011", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  document.getElementById("qFactor").textContent = q.factor || "";
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      setTimeout(()=>{
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「下一题」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "提交测评 ✓" : "下一题 →";
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const w = d.w || 1;
+    const span = (max[d.k]-min[d.k]) * w;
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) * w / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = 1 + score[d.k]/100*4; // 0-100 → 1-5 均分口径
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(a){ // a 为 1-5 均分
+  if(a < 1.5) return {label:"良好", sub:"状态不错", cls:"b-good", color:"#22c55e"};
+  if(a < 2.5) return {label:"轻度", sub:"有些信号", cls:"b-mild", color:"#3b82f6"};
+  if(a < 3.5) return {label:"中度", sub:"信号比较明显", cls:"b-mid", color:"#f59e0b"};
+  return {label:"明显", sub:"信号突出", cls:"b-sev", color:"#ef4444"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const sev = severity(totalAvg);
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  document.getElementById("resAvg").textContent = totalAvg.toFixed(2);
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "rgba(0,0,0,.18)";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.filter(x=>x.v>=58).slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  document.getElementById("resNarrative").textContent = narr;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td><td>' + rawOut[d.k] + '</td>' +
+      '<td style="color:' + s.color + '">' + avg5[d.k].toFixed(2) + '</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const hiLo = avg5[d.k] >= 2.5 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区（低分维度正向解读）
+  const lo = [...hi].reverse().filter(x=>x.v<=42).slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  (lo.length ? lo : hi.slice(-2)).forEach(x => {
+    const s = pick((dc[x.k]&&dc[x.k].lo&&dc[x.k].lo.s)||[], fp, x.v|0) || (x.n + " 目前信号较弱，是你的稳态区。");
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 均分 ' + x.a.toFixed(2) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 寄语（类型变体 + 高分维度安慰句，去重拼接）
+  let warm = pick(type.warm, fp, 1) || type.summary;
+  if (hi.length) {
+    const w2 = pick((dc[hi[0].k]&&dc[hi[0].k].hi&&dc[hi[0].k].hi.w)||[], fp, hi[0].v|0);
+    if (w2 && warm.indexOf(w2) < 0 && w2.indexOf(warm) < 0) {
+      if (warm && !/[。！？…」”")）]$/.test(warm)) warm += "。";
+      warm += w2;
+    }
+  }
+  document.getElementById("warmNote").textContent = warm;
+
+  // 一件小事（最高分维度池）
+  const pool = (SPEC.things && SPEC.things[hi[0].k]) || (SPEC.things && SPEC.things._default) || [];
+  document.getElementById("thingNote").textContent = pick(pool, fp, hi[0].v|0) || "今晚比平时早 30 分钟躺下，把睡眠当成正经事。";
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote +
+    " 本结果由你的作答经固定规则计算得出（相同答案永远得到相同结果），仅代表自编探索性测试中的相对指标，<b>不构成任何诊断或专业评估</b>。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

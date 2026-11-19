@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你是真的想考研，还是害怕进入社会？</title>
+<style>
+:root{
+  --accent:#2c5f8a; --accent-dark:#1c4265; --accent-soft:#e8f1f8;
+  --bg:#f3f6f9; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#1c4265,#2c5f8a 55%,#c9a227); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🎓</div>
+    <div class="hero-badge">学业 · 自我探索</div>
+    <h1>你是真的想考研，还是害怕进入社会？</h1>
+    <p>15 个备考与毕业季的真实瞬间，帮你看清「想读书」和「想躲一躲」的分界线。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">17</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">5</div><div class="lbl">个因子维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">「我要考研」——这句话背后，可能是对学术的真心热爱，可能是对更高平台的理性规划，也可能只是对「找工作」三个字的深深恐惧。<b>三种动机都真实，但它们指向完全不同的路。</b>这个测试不替你决定考不考，只帮你诚实地分辨：驱动你的到底是什么，以及你准备好为它付出什么。</div>
+  </div>
+  <div class="tip">
+    ⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">你是真的想考研，还是害怕进入社会？</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 17</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>你是真的想考研，还是害怕进入社会？ · 分析报告</h2>
+  </div>
+  <div class="score-card">
+    <h3>📊 总体评估结果</h3>
+    <div class="overall-sub">总均分</div>
+    <div class="big-score" id="resAvg">0</div>
+    <div class="overall-sub">满分 5 分</div>
+    <div class="overall-sub" style="margin-top:14px">整体状态</div>
+    <div class="level-badge" id="resLevel">—</div>
+    <div class="level-sub" id="resLevelDesc"></div>
+    <div class="narrative" id="resNarrative"></div>
+  </div>
+  <div class="score-card">
+    <h3>📋 因子维度详情</h3>
+    <div class="criteria">
+      <span><i style="background:#22c55e"></i>良好（&lt; 1.5）</span>
+      <span><i style="background:#3b82f6"></i>轻度（1.5-2.49）</span>
+      <span><i style="background:#f59e0b"></i>中度（2.5-3.49）</span>
+      <span><i style="background:#ef4444"></i>明显（≥ 3.5）</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>维度</th><th>原始分</th><th>均分</th><th>水平</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 因子雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示该维度信号越强</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 详细因子特征分析</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 你的优势</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 可能的困扰</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 给你的生活建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌟 你的优势区</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">这些维度得分较低（信号弱），是你目前稳得住的部分</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"T003","title":"你是真的想考研，还是害怕进入社会？","badge":"学业 · 自我探索","icon":"🎓","subtitle":"15 个备考与毕业季的真实瞬间，帮你看清「想读书」和「想躲一躲」的分界线。","minutes":3,"intro":"「我要考研」——这句话背后，可能是对学术的真心热爱，可能是对更高平台的理性规划，也可能只是对「找工作」三个字的深深恐惧。\u003cb>三种动机都真实，但它们指向完全不同的路。\u003c/b>这个测试不替你决定考不考，只帮你诚实地分辨：驱动你的到底是什么，以及你准备好为它付出什么。","audience":["大学生与应届生","正在纠结考研","备考中感到动摇","想理清升学动机"],"theme":{"accent":"#2c5f8a","accentDark":"#1c4265","soft":"#e8f1f8","grad":"linear-gradient(135deg,#1c4265,#2c5f8a 55%,#c9a227)","bg":"#f3f6f9"},"dims":[{"k":"inner","name":"内在学习动机","w":1.2},{"k":"expect","name":"外部期待影响","w":1},{"k":"jobfear","name":"就业顾虑","w":1.1},{"k":"clarity","name":"目标清晰度","w":1.15},{"k":"sustain","name":"持续投入意愿","w":1.05}],"questions":[{"text":"关上书本的深夜，你问自己「为什么考研」，最诚实的答案是？","opts":[{"t":"真心想在某个领域继续读下去","s":{"inner":3,"clarity":3}},{"t":"想要个更高的学历做敲门砖","s":{"clarity":2,"expect":1,"jobfear":1}},{"t":"还没想好，先考了再说","s":{"clarity":0,"inner":1,"expect":1}},{"t":"一想到找工作就慌，读书让人安心","s":{"jobfear":3,"inner":0,"clarity":0}}],"n":1},{"text":"刷到同学拿到大厂 offer 的朋友圈，你的第一反应是？","opts":[{"t":"替他高兴，我有自己的计划","s":{"clarity":3,"expect":0,"jobfear":0}},{"t":"有点慌，默默关掉了朋友圈","s":{"jobfear":3,"expect":1}},{"t":"酸了一下，但更坚定要考研","s":{"expect":1,"clarity":1,"jobfear":2}},{"t":"没什么感觉，大家路不同","s":{"clarity":2,"expect":0,"inner":1}}],"n":2},{"text":"你选目标院校和专业的过程更像？","opts":[{"t":"研究了很久，清楚哪个导师、哪个方向","s":{"clarity":3,"inner":3,"sustain":2}},{"t":"看哪个好考、性价比高","s":{"clarity":2,"expect":1,"jobfear":1}},{"t":"家里人帮忙定的","s":{"expect":3,"clarity":0,"inner":0}},{"t":"还没定，海投式复习","s":{"clarity":0,"sustain":1}}],"n":3},{"text":"复习进入第三个小时，支撑你继续的是？","opts":[{"t":"搞懂一个知识点的快感","s":{"inner":3,"sustain":3}},{"t":"考上后的生活想象","s":{"clarity":2,"sustain":2,"jobfear":1}},{"t":"爸妈的期待和已投入的成本","s":{"expect":3,"sustain":1,"inner":0}},{"t":"不学就更慌，被迫的","s":{"jobfear":3,"inner":0,"sustain":1}}],"n":4},{"text":"如果今年没考上，你的真实计划是？","opts":[{"t":"认真评估后决定二战或就业","s":{"clarity":3,"jobfear":0,"sustain":2}},{"t":"大概率会二战，不甘心","s":{"sustain":3,"clarity":1,"inner":2}},{"t":"不敢想，走一步看一步","s":{"jobfear":2,"clarity":0}},{"t":"直接工作，考研本来就是选项之一","s":{"jobfear":0,"clarity":2,"expect":1}}],"n":5},{"text":"父母对考研这件事的态度是？","opts":[{"t":"支持，但尊重我的选择","s":{"expect":1,"clarity":2}},{"t":"强烈支持，觉得必须考","s":{"expect":3,"clarity":1}},{"t":"不太支持，希望我直接工作","s":{"expect":2,"clarity":1}},{"t":"无所谓，我自己决定","s":{"expect":0,"clarity":2,"inner":1}}],"n":6},{"text":"当你想象「研究生的一天」，画面是？","opts":[{"t":"泡实验室/图书馆，钻研喜欢的课题","s":{"inner":3,"clarity":3}},{"t":"跟着导师做项目，积累履历","s":{"clarity":2,"inner":1}},{"t":"其实想不太出来，就是个「更好听的身份」","s":{"clarity":0,"expect":2,"jobfear":1}},{"t":"比现在轻松，可以再缓冲几年","s":{"jobfear":3,"inner":0,"sustain":0}}],"n":7},{"text":"备考里最让你痛苦的部分是？","opts":[{"t":"某个知识点怎么也啃不动","s":{"inner":1,"sustain":2}},{"t":"不确定性：不知道努力有没有用","s":{"sustain":1,"clarity":1,"jobfear":1}},{"t":"和「已经工作的同学」对比的落差","s":{"expect":3,"jobfear":3}},{"t":"坐在书桌前的每一秒","s":{"inner":0,"sustain":0,"jobfear":2}}],"n":8},{"text":"你和「进入社会」这件事的关系是？","opts":[{"t":"不排斥，只是想先读完书","s":{"clarity":3,"jobfear":0,"inner":1}},{"t":"有点怕，感觉自己还没准备好","s":{"jobfear":3,"clarity":1}},{"t":"能晚一点是一点","s":{"jobfear":3,"inner":0}},{"t":"其实挺想早点工作的","s":{"jobfear":0,"clarity":2,"sustain":0}}],"n":9},{"text":"你本科四年，有没有哪个瞬间让你真心觉得「学习很有意思」？","opts":[{"t":"经常有，尤其是专业课深入的时候","s":{"inner":3,"sustain":2}},{"t":"有过，但不多","s":{"inner":1}},{"t":"基本没有，都是为了绩点","s":{"inner":0,"expect":2,"clarity":1}},{"t":"有意思的是社团和实习，不是书本","s":{"inner":1,"jobfear":0,"clarity":1}}],"n":10},{"text":"备考资料摊在桌上却刷了两小时手机后，你会？","opts":[{"t":"有点自责，但能重新拉回来","s":{"sustain":3,"clarity":2}},{"t":"焦虑到破罐破摔，干脆摆烂一天","s":{"sustain":0,"jobfear":2}},{"t":"安慰自己休息一下也没事","s":{"sustain":2,"inner":1}},{"t":"陷入自我怀疑：我是不是不适合考研","s":{"clarity":0,"inner":1,"expect":1}}],"n":11},{"text":"如果考上了，你最期待的是什么？","opts":[{"t":"在喜欢的领域做出点东西","s":{"inner":3,"clarity":3}},{"t":"更高的起点和更多选择权","s":{"clarity":2,"jobfear":1}},{"t":"让爸妈开心，给自己缓冲时间","s":{"expect":3,"jobfear":2,"inner":0}},{"t":"没细想，考上了再说","s":{"clarity":0,"inner":1}}],"n":12},{"text":"关于「读研很辛苦」这件事，你的态度是？","opts":[{"t":"知道，但为喜欢的事辛苦是值得的","s":{"inner":3,"sustain":3}},{"t":"应该比找工作轻松点吧","s":{"jobfear":2,"sustain":0,"clarity":0}},{"t":"辛苦怕什么，考上就好","s":{"expect":2,"sustain":2,"jobfear":1}},{"t":"怕的不是辛苦，是辛苦了还没结果","s":{"sustain":1,"clarity":1,"jobfear":1}}],"n":13},{"text":"身边人怎么评价你考研的决定？","opts":[{"t":"都觉得挺适合我的","s":{"inner":2,"clarity":2,"expect":1}},{"t":"有人觉得我在逃避工作","s":{"jobfear":2,"expect":2,"clarity":1}},{"t":"家里全力支持，我不敢让他们失望","s":{"expect":3,"sustain":1}},{"t":"没人知道，我自己默默准备","s":{"clarity":1,"inner":1,"sustain":1}}],"n":14},{"text":"假如有个「平行世界」：不用考试直接读研，和不用读书直接工作，你选？","opts":[{"t":"选读研，我想读的东西还没读够","s":{"inner":3,"clarity":3}},{"t":"选工作，其实我也想赚钱了","s":{"jobfear":0,"clarity":2,"inner":1}},{"t":"哪个都不选，想再歇一年","s":{"jobfear":3,"sustain":0}},{"t":"纠结，两个都想要又都怕","s":{"clarity":0,"expect":2,"jobfear":2}}],"n":15},{"text":"备考时刷到「读研没用」的帖子，你会？","opts":[{"t":"划走，我的目标很清楚","s":{"clarity":3,"inner":2,"sustain":2}},{"t":"点进去看，然后心里打鼓","s":{"clarity":1,"sustain":1,"jobfear":2,"expect":1}},{"t":"收藏了，当成参考信息","s":{"clarity":2,"expect":1,"inner":1}},{"t":"越看越怀疑自己在干嘛","s":{"clarity":0,"inner":0,"jobfear":2,"sustain":0}}],"n":16},{"text":"想象研究生毕业后，你最希望那时的自己是？","opts":[{"t":"在喜欢的领域有真本事的人","s":{"inner":3,"clarity":3,"sustain":2}},{"t":"手握更多选择权的人","s":{"clarity":2,"jobfear":1,"sustain":1}},{"t":"让父母骄傲的人","s":{"expect":3,"inner":0}},{"t":"没想过，先把眼前这关过了","s":{"clarity":0,"jobfear":2,"sustain":1}}],"n":17}],"rules":[{"result":"firm","all":[{"dim":"clarity","min":62},{"dim":"inner","min":55}]},{"result":"safety","all":[{"dim":"jobfear","min":58},{"dim":"inner","max":45}]},{"result":"external","all":[{"dim":"expect","min":56},{"dim":"inner","max":48}]},{"result":"growth","all":[{"dim":"inner","min":52}]},{"result":"explore","all":[{"dim":"clarity","max":42}]},{"result":"growth","all":[]}],"results":[{"key":"firm","name":"目标坚定型","label":"你是真的想读，而且想清楚了","summary":"驱动你的是对知识和方向的真心渴望，而不是对现实的逃避。你的考研不是退路，是规划过的进路——这种状态下，坚持对你来说不是苦撑，是奔头。","explain":"你的作答呈现出高度一致的模式：\u003cb>内在动机强、目标清晰、对研究生生活有具体想象\u003c/b>。动机研究反复证实：当一个人由兴趣和价值驱动时，长期投入的质量和抗挫折能力都显著更高。你属于「想清楚了再出发」的人。给你的提醒是：坚定不等于闭眼冲，留意信息更新（招生变化、导师动态），并给自己留 Plan B——有退路的人反而跑得更稳。","strengths":["内在动机真实而持久","目标具体，执行有方向感","不被外界比较带偏，内核稳"],"troubles":["可能因过于专注而信息闭塞","对失败的容忍度低，易自我苛责","忽视身体和情绪的补给"],"advice":["把长期目标拆成月度里程碑，每月复盘一次进度","留出「信息时间」：每周看一次招考动态，别闭门造车","准备一个 Plan B 并写下来——它不是退缩，是安全带","每周固定半天彻底离开书本，让大脑沉淀"],"warm":["想清楚的人，路会越走越亮。你不是在躲什么，你是在奔向什么——这本身就是很了不起的事。","为热爱的事情吃苦，苦味里都带着甜。请照顾好自己，别让身体掉队，你的目标值得你健康地抵达。","你的坚定不是固执，是经过思考的选择。放心往前走，时间会给认真的人答案。","当怀疑偶尔敲门时，记得你出发那天的理由。它还在，你也还在。这就够了。"]},{"key":"growth","name":"成长驱动型","label":"你想成为一个更厉害的人","summary":"你考研的核心逻辑是「成长」：想要更高的平台、更宽的视野、更多的选择权。这不是逃避，是投资自己——你清楚学历只是工具，真正的目标是那个被撑大的自己。","explain":"你的动机结构比较健康：\u003cb>既有对自我提升的真实渴望，也有对现实收益的理性计算\u003c/b>。这种「成长型动机」在动机研究里属于可持续的一类：它既不纯粹靠兴趣（兴趣会波动），也不纯靠外界压力（压力会耗竭）。你的挑战在于把「变强」这个模糊愿景落成具体路径：读研期间要拿到什么、要认识谁、要产出什么。想得越具体，这两年的性价比越高。","strengths":["动机务实，既有理想也有算账","对自我成长有真实渴望","把学历当工具而非终点，心态成熟"],"troubles":["目标偏「变强」而不够聚焦，容易广而不深","投入产出比算得太清，偶尔会动摇","对确定性回报的期待可能落空"],"advice":["把「变强」翻译成 3 个具体指标：技能、作品、人脉","入学前就了解目标院校的资源地图：实验室、交换、实习合作","允许自己「不完美投入」：80 分的坚持好过 100 分的三天打鱼","定期和已经在读的学长学姐聊聊真实的读研体验"],"warm":["投资自己的人，运气都不会太差。你要的从来不是一纸文凭，是那个被这段路撑大的自己。","成长从来不是线性的，但每一次向上的选择都算数。你正在做这样的选择，很清醒，也很勇敢。","别把「变强」变成新的焦虑。你已经走在路上了，慢慢走，肌肉是这么长出来的。","未来的你会感谢现在这个愿意为可能性买单的你。这笔投资，稳赚。"]},{"key":"safety","name":"安全感寻求型","label":"你想留在熟悉的校园里","summary":"「找工作」三个字让你心里发慌，而校园是你熟悉的避风港。这没什么可羞耻的——但如果读书只是因为害怕出发，那读完研的那天，同一个问题还会等你。","explain":"你的作答里，「就业顾虑」明显高于「内在学习动机」。把考研当作缓冲带是很多人的选择，心理学上这叫「回避动机」：\u003cb>行动的方向是远离恐惧，而不是接近渴望\u003c/b>。它的问题不在道德层面，而在续航层面：恐惧驱动的坚持很难持久，而且读研结束后，就业问题会原封不动地回来。好消息是：恐惧可以被拆解。先搞清楚你怕的到底是「找不到工作」，还是「被社会评判」，还是「离开熟悉环境」——不同的怕，有不同的解法。","strengths":["你对自己的恐惧有觉察，没有麻木逃避","你依然在行动，哪怕方向还没理清","你对稳定有健康的需求，这是可以建设的"],"troubles":["用读书延迟面对现实，问题会利滚利","恐惧驱动的备考效率和续航都偏弱","容易自我否定：「我是不是在逃避」"],"advice":["做一次「恐惧拆解」：把怕的事写成清单，逐条标注「真的会发生吗/发生最坏是什么」","备考同时做一件「面向社会」的小事：实习、兼职、行业调研，给自己脱敏","把考研从「唯一出路」降级为「选项之一」，压力会立刻下降","如果恐惧已经影响到睡眠和情绪，请认真考虑找咨询师聊聊"],"warm":["害怕不是软弱，是每个人面对未知时的本能。谢谢你诚实。接下来，让我们一点点看清那个让你害怕的东西——它通常比想象的小。","留在原地不可耻，但你值得知道：你比自己以为的更能干。社会没那么可怕，它只是陌生。","无论最后考不考，都别用「逃避」两个字审判自己。你只是在用自己的方式寻找安全感，现在开始，换一种更结实的方式。","把「我怕」换成「我还不熟」，世界会温柔很多。你只是还不熟，练着练着就熟了。"]},{"key":"external","name":"外部期待型","label":"你在为别人的声音考试","summary":"这场考试里，父母的期待、亲戚的评价、社会的眼光占了很大比重。你不是没有自己的想法，只是它被太多「应该」盖住了——听听那个被压小的声音，它很珍贵。","explain":"你的作答模式很清晰：\u003cb>外部期待高，内在动机弱\u003c/b>。自我决定论指出，当行动主要由外部压力驱动时，人会长期消耗却难以获得满足感，因为实现的是别人的愿望清单。这不是说父母的期待都是错的——他们往往是出于爱。但「为爱前行」和「被爱绑架」的区别在于：选择权在不在你手上。你不需要立刻叛逆，只需要开始分辨：哪些期待是我想收下的，哪些是我可以说谢谢然后放下的。","strengths":["你重视关系和责任，共情力强","你有服从的执行力，基础不差","你开始察觉「这不是我要的」，这就是改变的起点"],"troubles":["长期为他人而战，动力会枯竭","考上了也可能空虚：然后呢？","把「听话」误当成「爱」的唯一表达"],"advice":["做一次「期待来源标注」：写下每个考研理由，标注谁的声音","和父母做一次成年人对话：说你的想法，而不是争吵或沉默","给这场考试一个「属于自己的理由」，哪怕很小，它会成为续航","重大决定给自己 72 小时静音期，只听自己"],"warm":["别人的期待是他们的地图，不是你的。你可以尊重它，但不必照着走。你有你自己的路。","为父母努力的孩子都是善良的。但真正的孝顺，是活成一个快乐的大人，而不是一个听话的提线木偶。","那个被压小的声音还在。给它一点空间，让它说话。它可能已经等你很久了。","从今天起，把「我应该」慢慢换成「我想要」。这两个词之间，隔着整个人生的自由。"]},{"key":"explore","name":"方向探索型","label":"你还没想清楚，这很正常","summary":"坦白说，你还没搞懂自己为什么站在考研这条路上：可能是随大流，可能是先试试，也可能只是还没想好。承认「不知道」，恰恰是认真思考的开始。","explain":"你的作答在动机和目标上都比较模糊。这不丢人——\u003cb>「想清楚再做」是理想状态，「边做边想」才是大多数人的现实\u003c/b>。但模糊有个风险：备考是场持久战，没有清晰理由的船，一遇风浪就容易翻。你现在最值得做的不是立刻想通，而是低成本地收集「想清楚」的材料：去旁听研究生的课、和在读的人聊聊、试着做一点研究性的工作。答案会在行动里浮现，不会在空想里。","strengths":["你没有假装确定，对自己诚实","你保有开放性，没有过早锁死","你还在探索，一切都来得及"],"troubles":["方向模糊导致动力不稳","容易被第一个说话的人带跑","「先考着」可能浪费一年黄金时间"],"advice":["给自己 2 周「信息收集期」：旁听、访谈、试读，每天记感受","写下「不考研的 3 个理由」和「考研的 3 个理由」，放在一起看","设定决策截止日：比如 30 天后必须做出倾向性选择","无论选哪条路，都先保证今年有一件可以写进简历的事"],"warm":["「不知道」不是答案的反面，是答案的序章。允许自己慢慢想，但要边想边看，别原地站着。","人生很多大事，都是在模糊里起步的。你不需要看清整条路，看清下一步就够了。","别被「必须想清楚」吓住。真正的清楚，是走着走着走出来的。你先迈出试的那一步。","无论最后考不考，这段诚实面对自己的时光都不会浪费。它叫成长。"]}],"dimContent":{"inner":{"hi":{"e":["支撑你的是「想搞懂」的本心——这种动机最抗造，也最难被消耗。"],"s":["你的学习动力是内生的，续航能力远超硬撑型选手","你能从「搞懂一件事」里获得真实的快乐"],"t":["兴趣有时波动，低谷期容易自我怀疑","可能因为「热爱」而低估现实难度"],"a":["给热爱找一个具象的目标：课题、作品、技能","低谷时回顾「初心笔记」，把心动时刻写下来"],"w":["为热爱的事情吃的苦，苦味里都带着甜。你走在很对的路上。"]},"lo":{"e":["你的动力里，「应该」的成分多过「想要」——这正是续航不稳的根源。"],"s":["你有责任感驱动的执行力，基础不差"],"a":["给这场考试找一个属于自己的小理由，哪怕很小","试着在复习里制造「小成就」，让心先甜起来"]}},"expect":{"hi":{"e":["这场考试里有太多「别人的声音」——你实现的可能不是自己的愿望清单。"],"s":["你重视关系与责任，是有担当的人","你能听见多方意见，信息面广"],"t":["长期为他人而战，动力会枯竭","考上了也可能空虚：然后呢？"],"a":["做一次「期待来源标注」：写下每个考研理由，标注谁的声音","和父母做一次成年人对话：说你的想法"],"w":["别人的期待是他们的地图，不是你的。你可以尊重它，但不必照着走。"]},"lo":{"e":["你做这个决定主要听自己的，这让你的备考心里有底。"],"s":["你有清晰的自主判断，不易被左右"],"a":["把这份自主性保持下去，它是你冲刺期最稳的锚"]}},"jobfear":{"hi":{"e":["「找工作」三个字让你心里发慌——读书某种程度上是你的缓冲带。"],"s":["你对自己的恐惧有觉察，没有麻木逃避","你依然在行动，哪怕方向还没理清"],"t":["用读书延迟面对现实，问题会利滚利","恐惧驱动的坚持很难持久"],"a":["做一次「恐惧拆解」：怕的事逐条写，标注「真的会发生吗」","备考同时做一件面向社会的小事：实习、兼职、行业调研"],"w":["害怕不是软弱。社会没那么可怕，它只是陌生——练着练着就熟了。"]},"lo":{"e":["你对「进入社会」这件事心态坦然，读书是主动选择而非逃离。"],"s":["你对职场有健康的预期，不回避不恐慌"],"a":["把这份坦然保持住，它会让你在任何选择里都从容"]}},"clarity":{"hi":{"e":["你想考哪里、为什么考，心里是有图纸的——这是上岸率最高的备考状态。"],"s":["你的目标具体、路径清晰，执行有方向感","你不打无准备之仗，信息调研充分"],"t":["计划太刚性时，遇到变化容易慌","可能因「必须按计划」而苛责自己"],"a":["给计划留弹性：允许 20% 的变量","每月复盘一次目标是否仍然正确"],"w":["看得清路的人，走得不会差。放心去，你准备得比很多人都充分。"]},"lo":{"e":["「先考着再说」的背后是目标还没定型——这会让你的复习容易失焦。"],"s":["你保持开放，没有过早锁死方向"],"a":["给自己 2 周信息收集期：旁听、访谈、试读","设定决策截止日：30 天后必须做出倾向性选择"]}},"sustain":{"hi":{"e":["你是能坐得住的人——长期投入这件事，你有先天优势。"],"s":["你的耐力和持续投入能力是硬通货","你能在枯燥里保持节奏，不容易弃考"],"t":["硬扛久了会透支，需要主动补给","可能忽略休息，把「坚持」变成「死撑」"],"a":["把复习切成「90 分钟冲刺 + 彻底放松」的循环","每周半天彻底离开书本，让大脑沉淀"],"w":["坐得住的人，老天都偏爱。但也记得给自己松松绑，你不是机器。"]},"lo":{"e":["你的投入像潮汐，一阵一阵——续航是你最大的变数。"],"s":["你爆发力强，冲刺期效率高"],"a":["用「习惯叠加上」：把复习绑定在固定日常上","从每天固定 2 小时开始，比三天打鱼更有效"]}}},"things":{"inner":["今天读 20 分钟「纯粹因为好奇」的书，找找心动的感觉","写下 3 个你真正好奇的问题，和考研方向对照一下","把一个知识点讲给别人听，感受「搞懂了」的快乐","翻一本目标专业的入门读物，看第一章就好","回忆一次「学到眼睛发亮」的时刻，写下来"],"clarity":["用 15 分钟写下「读研两年想做成的 3 件事」","查一位目标导师的论文摘要，看看自己是否真的感兴趣","给「如果没考上」写一个 Plan B，写完会轻松很多","把目标院校的报录比查清楚，让心里有底","画一张「我的备考地图」：阶段目标+里程碑"],"jobfear":["今天投一份实习简历，不是为了去，是为了练胆","和一位已工作的学长聊 15 分钟，问问真实的工作日常","把「找工作」拆成 3 个最小步骤，今天做第 1 个","去招聘网站看 3 个你感兴趣的岗位要求，当情报收集","写下「我能带到工作里的 3 个本事」，找回底气"],"expect":["今天做一次「这是我要的吗」三连问，写下来","给爸妈发一条消息说说你最近的真实想法","做一件「纯粹自己想做」的小事，不为任何人","把「他们希望我」改成「我决定」造一个句子","今天复习时只问自己「我想先学哪块」，按自己的来"],"sustain":["用 25 分钟专注复习，然后奖励自己 5 分钟休息","把今天的复习任务砍到 70%，完成它","睡前记下今天搞懂的一个知识点，给自己点赞","把最难的科目放在精力最好的时段攻 30 分钟","完成今天的目标后，给自己一个明确的小奖励"],"_default":["出门走 15 分钟，给大脑换换气","今晚早 30 分钟躺下，睡眠是记忆的帮手","认真吃一顿热乎饭，身体是革命的本钱"]},"scoreNote":"每题选项对应「内在学习动机 / 外部期待影响 / 就业顾虑 / 目标清晰度 / 持续投入意愿」五个维度的 0-3 分，累加归一化为 0-100 并换算 1-5 均分；结果按维度组合规则链判定。"};
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-T003"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-T003", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  document.getElementById("qFactor").textContent = q.factor || "";
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      setTimeout(()=>{
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「下一题」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "提交测评 ✓" : "下一题 →";
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const w = d.w || 1;
+    const span = (max[d.k]-min[d.k]) * w;
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) * w / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = 1 + score[d.k]/100*4; // 0-100 → 1-5 均分口径
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(a){ // a 为 1-5 均分
+  if(a < 1.5) return {label:"良好", sub:"状态不错", cls:"b-good", color:"#22c55e"};
+  if(a < 2.5) return {label:"轻度", sub:"有些信号", cls:"b-mild", color:"#3b82f6"};
+  if(a < 3.5) return {label:"中度", sub:"信号比较明显", cls:"b-mid", color:"#f59e0b"};
+  return {label:"明显", sub:"信号突出", cls:"b-sev", color:"#ef4444"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const sev = severity(totalAvg);
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  document.getElementById("resAvg").textContent = totalAvg.toFixed(2);
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "rgba(0,0,0,.18)";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.filter(x=>x.v>=58).slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  document.getElementById("resNarrative").textContent = narr;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td><td>' + rawOut[d.k] + '</td>' +
+      '<td style="color:' + s.color + '">' + avg5[d.k].toFixed(2) + '</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const hiLo = avg5[d.k] >= 2.5 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区（低分维度正向解读）
+  const lo = [...hi].reverse().filter(x=>x.v<=42).slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  (lo.length ? lo : hi.slice(-2)).forEach(x => {
+    const s = pick((dc[x.k]&&dc[x.k].lo&&dc[x.k].lo.s)||[], fp, x.v|0) || (x.n + " 目前信号较弱，是你的稳态区。");
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 均分 ' + x.a.toFixed(2) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 寄语（类型变体 + 高分维度安慰句，去重拼接）
+  let warm = pick(type.warm, fp, 1) || type.summary;
+  if (hi.length) {
+    const w2 = pick((dc[hi[0].k]&&dc[hi[0].k].hi&&dc[hi[0].k].hi.w)||[], fp, hi[0].v|0);
+    if (w2 && warm.indexOf(w2) < 0 && w2.indexOf(warm) < 0) {
+      if (warm && !/[。！？…」”")）]$/.test(warm)) warm += "。";
+      warm += w2;
+    }
+  }
+  document.getElementById("warmNote").textContent = warm;
+
+  // 一件小事（最高分维度池）
+  const pool = (SPEC.things && SPEC.things[hi[0].k]) || (SPEC.things && SPEC.things._default) || [];
+  document.getElementById("thingNote").textContent = pick(pool, fp, hi[0].v|0) || "今晚比平时早 30 分钟躺下，把睡眠当成正经事。";
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote +
+    " 本结果由你的作答经固定规则计算得出（相同答案永远得到相同结果），仅代表自编探索性测试中的相对指标，<b>不构成任何诊断或专业评估</b>。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你有多长时间没有真正关心自己了？</title>
+<style>
+:root{
+  --accent:#d98ca4; --accent-dark:#b56480; --accent-soft:#fdf1f4;
+  --bg:#fdf8f5; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#f5e6d3,#d98ca4 60%,#e8c547); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🫧</div>
+    <div class="hero-badge">自我关怀 · 探索</div>
+    <h1>你有多长时间没有真正关心自己了？</h1>
+    <p>15 个关于「对自己好不好」的瞬间，重新认识那个被你忽略的人——你自己。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">15</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">5</div><div class="lbl">个因子维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">你记得给手机充电、给植物浇水、给朋友回消息——但你还记得<b>上一次认真照顾自己</b>是什么时候吗？很多人不是不想对自己好，是忘了、是不敢、是觉得自己不配。这个测试帮你看看：你对自己的关心，还剩多少？从哪里开始补？</div>
+  </div>
+  <div class="tip">
+    ⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">你有多长时间没有真正关心自己了？</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 15</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>你有多长时间没有真正关心自己了？ · 分析报告</h2>
+  </div>
+  <div class="score-card">
+    <h3>📊 总体评估结果</h3>
+    <div class="overall-sub">总均分</div>
+    <div class="big-score" id="resAvg">0</div>
+    <div class="overall-sub">满分 5 分</div>
+    <div class="overall-sub" style="margin-top:14px">整体状态</div>
+    <div class="level-badge" id="resLevel">—</div>
+    <div class="level-sub" id="resLevelDesc"></div>
+    <div class="narrative" id="resNarrative"></div>
+  </div>
+  <div class="score-card">
+    <h3>📋 因子维度详情</h3>
+    <div class="criteria">
+      <span><i style="background:#22c55e"></i>良好（&lt; 1.5）</span>
+      <span><i style="background:#3b82f6"></i>轻度（1.5-2.49）</span>
+      <span><i style="background:#f59e0b"></i>中度（2.5-3.49）</span>
+      <span><i style="background:#ef4444"></i>明显（≥ 3.5）</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>维度</th><th>原始分</th><th>均分</th><th>水平</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 因子雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示该维度信号越强</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 详细因子特征分析</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 你的优势</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 可能的困扰</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 给你的生活建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌟 你的优势区</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">这些维度得分较低（信号弱），是你目前稳得住的部分</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"T009","title":"你有多长时间没有真正关心自己了？","badge":"自我关怀 · 探索","icon":"🫧","subtitle":"15 个关于「对自己好不好」的瞬间，重新认识那个被你忽略的人——你自己。","minutes":3,"intro":"你记得给手机充电、给植物浇水、给朋友回消息——但你还记得\u003cb>上一次认真照顾自己\u003c/b>是什么时候吗？很多人不是不想对自己好，是忘了、是不敢、是觉得自己不配。这个测试帮你看看：你对自己的关心，还剩多少？从哪里开始补？","audience":["习惯照顾别人","总觉得休息有罪","想学着对自己好","最近对自己有点苛刻"],"theme":{"accent":"#d98ca4","accentDark":"#b56480","soft":"#fdf1f4","grad":"linear-gradient(135deg,#f5e6d3,#d98ca4 60%,#e8c547)","bg":"#fdf8f5"},"dims":[{"k":"selfcare","name":"自我关怀","w":1.15},{"k":"need","name":"需求识别","w":1.1},{"k":"rest","name":"休息质量","w":1.05},{"k":"boundary","name":"个人边界","w":1},{"k":"satisfy","name":"生活满意度","w":1}],"questions":[{"text":"上一次纯粹「为了自己开心」做的事，是在什么时候？","opts":[{"t":"就在最近几天","s":{"selfcare":3,"satisfy":2}},{"t":"好像有一个月了","s":{"selfcare":1,"satisfy":1}},{"t":"想不起来了","s":{"selfcare":0,"satisfy":1,"need":0}},{"t":"做那种事会有点心虚","s":{"selfcare":0,"need":1,"boundary":0}}],"n":1},{"text":"忙碌一天回到家，你通常先做什么？","opts":[{"t":"先让自己舒服一下：换衣服、喝水、躺会儿","s":{"selfcare":3,"rest":2}},{"t":"继续忙：家务、消息、明天的准备","s":{"selfcare":0,"boundary":1,"rest":0}},{"t":"瘫着刷手机，直到睡着","s":{"rest":1,"selfcare":1,"need":1}},{"t":"看情况，通常顾不上自己","s":{"selfcare":1,"need":1,"boundary":1}}],"n":2},{"text":"你能察觉到自己「需要什么」吗？","opts":[{"t":"能：累了、饿了、闷了，我都知道","s":{"need":3,"selfcare":2}},{"t":"大概知道，但经常忽略","s":{"need":1,"selfcare":1}},{"t":"通常是身体先垮了才知道","s":{"need":0,"rest":0,"selfcare":1}},{"t":"没想过这个问题","s":{"need":0,"selfcare":0}}],"n":3},{"text":"你最近的睡眠质量怎么样？","opts":[{"t":"睡得够、睡得香","s":{"rest":3,"satisfy":2,"selfcare":2}},{"t":"时间够，但质量一般","s":{"rest":1,"selfcare":1}},{"t":"熬夜或失眠是常态","s":{"rest":0,"selfcare":1,"need":1}},{"t":"报复性熬夜：舍不得睡","s":{"rest":0,"selfcare":1,"need":2}}],"n":4},{"text":"有人提出不合理要求时，你会？","opts":[{"t":"直接拒绝，不委屈自己","s":{"boundary":3,"selfcare":2}},{"t":"犹豫一下，通常还是答应了","s":{"boundary":1,"selfcare":1}},{"t":"答应，然后自己消化","s":{"boundary":0,"selfcare":0,"need":1}},{"t":"看人，对亲近的人更容易答应","s":{"boundary":1,"selfcare":1,"need":1}}],"n":5},{"text":"你对自己说话的方式，更接近？","opts":[{"t":"温和、鼓励，像对好朋友","s":{"selfcare":3,"need":2}},{"t":"有时候苛刻，有时候还好","s":{"selfcare":1,"need":1}},{"t":"经常批评自己：你怎么又这样","s":{"selfcare":0,"need":1,"satisfy":1}},{"t":"没留意过自己怎么和自己说话","s":{"need":0,"selfcare":1}}],"n":6},{"text":"当身体发出警报（头疼、胃疼、疲惫），你会？","opts":[{"t":"立刻照顾它：休息、吃药、看医生","s":{"selfcare":3,"rest":2,"need":2}},{"t":"扛一扛，忙完再说","s":{"selfcare":0,"boundary":1,"rest":0}},{"t":"吃点药压一压，继续干活","s":{"selfcare":1,"rest":0,"need":1}},{"t":"经常忽略，习惯了","s":{"selfcare":0,"need":0}}],"n":7},{"text":"你最近一次「什么正事都不干」是什么时候？","opts":[{"t":"这周就有，心安理得","s":{"rest":3,"selfcare":2,"satisfy":2}},{"t":"偶尔有，但有点焦虑","s":{"rest":1,"selfcare":1,"need":1}},{"t":"好久没有了","s":{"rest":0,"selfcare":1,"boundary":1}},{"t":"一闲下来就发慌","s":{"rest":0,"need":1,"satisfy":1}}],"n":8},{"text":"你对「自我关怀」这个词的第一反应是？","opts":[{"t":"应该的，人就该对自己好","s":{"selfcare":3,"need":2}},{"t":"想做，但不知道怎么做","s":{"selfcare":1,"need":1}},{"t":"有点矫情吧","s":{"selfcare":0,"need":0,"boundary":1}},{"t":"觉得是自私","s":{"selfcare":0,"boundary":0,"need":1}}],"n":9},{"text":"最近的生活，你打几分？（10 分满）","opts":[{"t":"8-10 分，挺满意的","s":{"satisfy":3,"selfcare":2}},{"t":"5-7 分，还行","s":{"satisfy":1}},{"t":"3-4 分，不太好","s":{"satisfy":0,"selfcare":1,"need":1}},{"t":"不想打分","s":{"satisfy":0,"need":1,"rest":1}}],"n":10},{"text":"你独处时的状态是？","opts":[{"t":"享受，能给自己充电","s":{"selfcare":3,"rest":2,"need":2}},{"t":"还行，但经常玩手机度过","s":{"selfcare":1,"rest":1}},{"t":"无聊、发慌、想找人说话","s":{"need":1,"rest":1,"satisfy":1}},{"t":"很少有独处时间","s":{"boundary":1,"rest":0,"selfcare":1}}],"n":11},{"text":"朋友说「你看起来很累」，你通常？","opts":[{"t":"承认：是啊，最近需要休息","s":{"need":3,"selfcare":2,"rest":1}},{"t":"说没事，习惯了","s":{"need":0,"selfcare":1,"boundary":1}},{"t":"被点醒：我确实该歇歇了","s":{"need":2,"selfcare":1}},{"t":"反问他：有那么明显吗","s":{"need":1,"selfcare":1,"rest":1}}],"n":12},{"text":"如果你对自己说一句话，你现在最想说？","opts":[{"t":"「辛苦了，你做得很好」","s":{"selfcare":3,"satisfy":2,"need":2}},{"t":"「你能不能再努力一点」","s":{"selfcare":0,"need":0,"boundary":1,"satisfy":1}},{"t":"「对不起，总忽略你」","s":{"need":2,"selfcare":1,"satisfy":1}},{"t":"不知道说什么","s":{"need":0,"selfcare":1}}],"n":13},{"text":"你上一次夸自己是什么时候？","opts":[{"t":"就在最近，我经常夸自己","s":{"selfcare":3,"satisfy":2,"need":2}},{"t":"想不起来了","s":{"selfcare":0,"need":1}},{"t":"完成了大事才会夸一下","s":{"selfcare":1,"need":1,"boundary":1}},{"t":"夸自己？有点不好意思","s":{"selfcare":1,"need":0,"satisfy":1}}],"n":14},{"text":"如果给自己放一天假，你会怎么过？","opts":[{"t":"睡到自然醒，做喜欢的事","s":{"rest":3,"selfcare":3,"satisfy":2}},{"t":"把积压的琐事清一清","s":{"boundary":1,"selfcare":1,"rest":1}},{"t":"陪家人朋友，热闹一天","s":{"need":2,"satisfy":2,"boundary":1}},{"t":"假是放了，心里还是惦记事","s":{"rest":0,"selfcare":1,"boundary":1}}],"n":15}],"rules":[{"result":"demand","all":[{"dim":"selfcare","max":42},{"dim":"satisfy","max":45}]},{"result":"norest","all":[{"dim":"rest","max":38}]},{"result":"needsupress","all":[{"dim":"need","max":38},{"dim":"boundary","max":48}]},{"result":"giver","all":[{"dim":"boundary","max":38},{"dim":"selfcare","max":50}]},{"result":"rebuild","all":[{"dim":"need","min":45},{"dim":"selfcare","max":55}]},{"result":"giver","all":[{"dim":"selfcare","max":45}]},{"result":"rebuild","all":[]}],"results":[{"key":"needsupress","name":"需求表达困难型","label":"你有需要，却说不出口","summary":"你不是没有需要，是把「我想要」这三个字咽了回去：怕添麻烦、怕被拒绝、怕显得不懂事。于是你习惯了「都行、随便、不用管我」。","explain":"你的核心课题是「需求表达」：\u003cb>你隐约知道自己要什么，但张不开口\u003c/b>。这往往和成长经历有关——表达需求曾经被忽视、被拒绝、或被认为「不懂事」。于是你学会了不提。但需求不会消失，它只会换一种方式冒出来：委屈、疲惫、莫名的烦躁。表达需求不是索取，是给关系一个「对你好」的机会。你开口的那一刻，就是和自己和解的开始。","strengths":["体贴、不给别人添麻烦","对他人需求敏感","内心有需求觉察的萌芽"],"troubles":["需求长期不被满足，积累委屈","关系里容易被忽略","把「不说」误当成「不需要」"],"advice":["从最小的需求开始练习：「我想吃这个」「我需要安静一会儿」","用「句式模板」降低难度：「我想要……可以吗？」","记录每次表达需求后的结果，通常比想象的好","告诉一个信任的人：「我练习提需求，你多包涵」"],"warm":["「我想要」三个字，你说出口的那一刻，世界都会认真回应。练习说吧，从今天的一件小事开始。","你不需要懂事到不提要求。真正爱你的人，是想知道你需要什么的。","表达需求不是麻烦别人，是把关系变得更近。你值得被好好对待——先从允许自己开口开始。","那个咽下去的「我想要」，今天试着说出口。你会发现：天没塌，反而亮了一点。"]},{"key":"giver","name":"习惯照顾别人型","label":"你把温柔都给了别人","summary":"你是那个记得所有人生日、接得住所有人情绪的人——除了你自己。你的关心是单向的：向外输出满格，向内输入告急。","explain":"你的作答呈现出典型的「照顾者模式」：\u003cb>对他人的需求敏感，对自己的需求迟钝\u003c/b>。这不是无私，更像是一种习得的生存策略——照顾别人让你安全、让你被爱。但长期单向输出会让你悄悄枯竭。你不需要变成自私的人，你只需要把「照顾」这件事对称化：你对别人做的那些事，一样一样，也做给自己。你不是不需要被照顾，你只是习惯了不麻烦别人。","strengths":["温暖、可靠、共情力强","在关系里是支柱型的人","有强烈的爱与付出的能力"],"troubles":["长期透支，电量告急","忽略自己的需求，后知后觉","被当成「不会累的人」"],"advice":["每天做一件「只对自己好」的小事，写进日程","练习接受别人的关心和帮助","列出「我需要____」清单，每周满足一项","把「我没事」换成「我有点累」"],"warm":["你照顾了全世界，现在请把镜头转向自己。你也值得被温柔以待——先从自己开始。","善良是你的天赋，但别让它成为透支自己的理由。留一点温柔给自己，你也很重要。","被你照顾过的人，其实都希望你也对自己好一点。今天，替他们照顾照顾你。","你不是铁做的。累了就说，需要就提。真正的强大，是敢对自己好。"]},{"key":"demand","name":"自我要求过高型","label":"你对自己太狠了","summary":"你不是不关心自己，你是把「关心」做成了「鞭策」：永远觉得还不够好、还不够努力。你的自我关怀，被高标准卡在了门外。","explain":"你的模式是「高要求伪装的自我关怀」：\u003cb>你以为鞭策是对自己好，其实是苛责\u003c/b>。真正的自我关怀包括三个部分：对自己善意（而非苛刻）、认识到不完美是人类共性、对情绪保持觉察而非压制。你的功课是把「批评」换成「鼓励」，把「必须」换成「尽力」。你可以继续追求卓越，但请带着善意追求——就像教练对运动员：严格，但始终支持。","strengths":["上进、自律、追求卓越","对自己有要求、有规划","不断进步，成长曲线漂亮"],"troubles":["永远觉得不够好","休息时有负罪感","忽略身体和情绪的信号"],"advice":["每天睡前写「今天做到了什么」，练习自我肯定","把自我批评的话录下来听一遍，你会发现多苛刻","练习「自我关怀三句话」：这很难受/每个人都会/对自己好一点","把对自己的要求调成「对好朋友的标准」"],"warm":["你已经很努力了，真的。现在，请把「你怎么还没做好」换成「你辛苦了」。这句话你等很久了。","严格是好的，但严厉会伤人——包括伤自己。对自己温柔一点，你值得。","你不需要完美才值得被爱。不完美的你，已经够好了。","今天开始，做自己最坚定的啦啦队，而不是最严苛的考官。你的人生会轻很多。"]},{"key":"norest","name":"忘记休息型","label":"你的「休息」根本不是休息","summary":"你以为你在休息，其实你在「换一种方式消耗」：刷手机、熬夜、报复性娱乐。真正的休息从来没有发生，电量持续漏光。","explain":"你的核心问题是「无效休息」：\u003cb>身体停下来了，大脑还在高速运转\u003c/b>。刷手机带来的不是放松，是信息过载；熬夜换来的不是自由，是第二天的透支。真正的休息是「恢复性」的：睡眠、散步、发呆、和喜欢的人待着、做让心流出现的事。你的功课是重新定义休息：不是「不工作」，而是「主动恢复」。","strengths":["有休息的意识，知道该停","能察觉到疲惫信号","对生活质量有期待"],"troubles":["休息质量差，越歇越累","熬夜成瘾，作息紊乱","分不清「消遣」和「恢复」"],"advice":["睡前 1 小时远离屏幕，换成纸质书或音乐","把「刷手机」换成「真休息」：闭眼、拉伸、散步","固定作息：先从固定起床时间开始","每周安排一次「高质量休息」：大自然、运动、创作"],"warm":["你不是不努力，你是不会休息。好消息：休息是可以学的。今晚，试着早点熄灯。","熬夜偷来的时间，都会从第二天的效率里还回去。对自己好一点，按时睡觉。","真正的休息不是浪费时间，是给未来的自己充电。你值得满电的人生。","放下手机，闭上眼睛。什么都不做的你，也很好，也很有价值。"]},{"key":"rebuild","name":"自我重建型","label":"你正在重新学着爱自己","summary":"你已经意识到「对自己不够好」，并且开始改变。这个过程有点笨拙、有点反复，但方向是对的——你在重建和自己的关系。","explain":"你的作答显示你处在「觉醒期」：\u003cb>过去习惯了忽略自己，现在开始学习关心自己\u003c/b>。这一步最难也最珍贵。重建自我关怀不是一夜之间的事，它像锻炼肌肉：从小重量开始，慢慢加。允许自己反复、允许自己笨拙。每一次「对自己好一点」的尝试，都在重塑你和自己的关系。你走在正确的路上。","strengths":["有自我改变的意识和行动","对自己开始诚实","愿意学习新的自我关系"],"troubles":["改变初期容易反复","不太熟练，有时手足无措","旧习惯拉扯"],"advice":["从最小的自我关怀开始：一杯水、一次深呼吸、一句好话","给自己写一张「自我关怀菜单」：列出让自己好起来的事","每周复盘一次：这周对自己好了几次？","找一个榜样或书，学习别人怎么对自己好"],"warm":["重新学着爱自己的你，像学步的孩子。别怕摔，别怕慢，每一步都算数。","过去的你习惯了付出，现在的你开始练习接受——接受自己的需要，接受自己的不完美。这是了不起的成长。","改变不需要完美，只需要开始。你已经开始了，这是最难的一步。","对自己好这件事，永远不晚。从今天开始，从这一件小事开始。我在为你鼓掌。"]}],"dimContent":{"selfcare":{"hi":{"e":["你没有忘记自己——该休息休息、该满足满足，自我关怀在线。"],"s":["你把自己照顾得不错，这是长期主义的底盘","你懂得「对自己好」是正经事，不是浪费"],"t":["状态好时可能忘记给自己「存粮」","容易把自我关怀变成消费主义式补偿"],"a":["把自我关怀系统化：作息、运动、情绪各留一格","状态好时多存点「心理余额」，坏日子用得上"],"w":["会照顾自己的人，才有余力爱这个世界。你做得很好，请继续。"]},"lo":{"e":["你对「对自己好」这件事相当敷衍——充电口常年没插电。"],"s":["你不娇气、能吃苦，抗压强","你把注意力给外面，付出了很多"],"t":["长期透支，电量告急","身体和情绪会用「坏掉」提醒你"],"a":["每天做一件「只对自己好」的小事，写进日程","把「我没事」换成「我有点累」"],"w":["你照顾了全世界，现在请把镜头转向自己。你也值得被温柔以待。"]}},"need":{"hi":{"e":["「我现在需要什么」——你听得见自己的声音，这很难得。"],"s":["你对自己的状态心里有数","你能及时响应自己的需要，不积压"],"t":["太清楚需要时，得不到会格外难受","可能把「满足自己」排在别人前面时有点心虚"],"a":["需要被满足时说声「谢谢」给自己的觉察","也留意：有些需要可以延迟满足"],"w":["听得见自己需求的人，人生不容易跑偏。你做得对。"]},"lo":{"e":["你常常「后知后觉」——身体垮了才想起要休息，心空了才想起要什么。"],"s":["你不娇气，不为小事麻烦自己","你的注意力在行动上，效率高"],"a":["每天定点问自己一句：我现在需要什么？","身体扫描 30 秒：哪里紧？哪里饿？"],"w":["那个被你忽略的人，其实是你自己。今天开始，多看他一眼。"]}},"rest":{"hi":{"e":["你的休息是「恢复性」的——睡得够、歇得透，充电效率高。"],"s":["你懂得真正的休息，续航能力强","你的作息是你的隐形竞争力"],"t":["休息优先时，偶尔会错过冲刺窗口","可能被「太会享受」的标签误解"],"a":["保持现在的休息习惯，它是你最大的资产","在重要战役前把休息当「战术储备」"],"w":["会休息的人才会工作，会停下来的人才走得远。你的节奏很健康。"]},"lo":{"e":["你以为你在休息，其实你在换一种方式消耗——真正的休息从没发生。"],"s":["你有休息的意识，只是还没找对方法","你能察觉到疲惫信号"],"t":["越歇越累，电量持续漏光","熬夜成瘾，作息紊乱"],"a":["睡前 1 小时远离屏幕，换成纸质书或音乐","把「刷手机」换成「真休息」：闭眼、拉伸、散步"],"w":["你不是不努力，你是不会休息。好消息：休息是可以学的。今晚早点熄灯。"]}},"boundary":{"hi":{"e":["你的「不」说得很清楚——不委屈、不讨好、不透支。"],"s":["你的边界感让你少受很多消耗","你敢拒绝，自我保护到位"],"t":["边界太硬时，偶尔会把好意也挡在外面","亲近的人可能觉得你「不好说话」"],"a":["对爱的人留一点弹性，边界是弹性的不是城墙","拒绝时加一句「下次可以」，留住关系"],"w":["有原则的人自带光芒。你的边界是你给自己的礼物。"]},"lo":{"e":["你的边界偏软——别人的请求总是比你的需要优先。"],"s":["你慷慨、好相处，人缘好","你愿意为在乎的人让步"],"t":["被消耗、被透支","委屈攒多了会突然崩"],"a":["今天对一件小事说「不」","把不属于你的事还给别人"],"w":["先把自己排进优先名单，不算自私，这叫归位。"]}},"satisfy":{"hi":{"e":["你对当下的生活是「满意」的——这份知足是很多人在找的答案。"],"s":["你有感知幸福的能力，日子过得有滋有味","你的情绪底色明亮，恢复力强"],"t":["太安逸时可能错过值得一搏的机会","满意感有时会掩盖小问题"],"a":["把幸福时刻「存档」：拍照、记录、回味","在满意的基础上加一点小挑战"],"w":["把日子过出滋味的人，是真正的生活家。愿你的甜一直都在。"]},"lo":{"e":["对现在的生活，你心里的分数不高——有点闷、有点不对劲。"],"s":["你对生活有要求，不将就","你的不满意是改变的信号弹"],"t":["低满意度会拖累情绪和动力","容易陷入「哪哪都不对」的循环"],"a":["做一件「做了就开心」的小事，给今天加点甜","写下 3 件「还不错」的小事，重新对焦"],"w":["生活欠你的甜，会一点一点还给你。先从今天的一件小确幸开始。"]}}},"things":{"selfcare":["现在就做一件「只为自己舒服」的小事","给自己买一个小礼物，或吃一顿好的","对自己说一句好话：辛苦了，你做得很好","今天把自己排进优先名单第一项","睡前给自己一个 15 分钟的小仪式：泡脚、护肤、听歌"],"need":["停下来问自己：我现在需要什么？然后满足它","写下「我想要____」，今天实现一个小的","身体扫描一遍：哪里紧？哪里累？照顾它一下","今天把一个「需要」说出口：我需要休息/陪伴/安静","饿了就吃、困了就睡——今天听身体的话"],"rest":["今晚比平时早 30 分钟放下手机","闭眼 5 分钟什么都不做，只呼吸","今天安排 20 分钟「真休息」：散步、发呆、听歌","午休 15 分钟，闭眼就是胜利","把今天的一个安排取消，换成休息"],"boundary":["今天对一件小事说「不」","把一件不属于你的事还给别人","留一段不被打扰的时间，手机静音","把「好吧」换成「我考虑一下」用一次","今天不做任何人的「情绪垃圾桶」，留点电给自己"],"satisfy":["做一件「做了就开心」的小事，认真做","写下今天 3 件还不错的小事","见一个让你放松的人，或去一个喜欢的地方","晒 10 分钟太阳，什么都不想","把今天的一个小美好拍下来存着"],"_default":["认真吃一顿热乎的饭，不看手机","出门走 15 分钟，晒晒太阳","睡前写一句给自己的温柔的话"]},"scoreNote":"每题选项对应「自我关怀 / 需求识别 / 休息质量 / 个人边界 / 生活满意度」五个维度的 0-3 分，累加归一化后换算 1-5 均分；结果按维度组合规则链判定。"};
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-T009"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-T009", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  document.getElementById("qFactor").textContent = q.factor || "";
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      setTimeout(()=>{
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「下一题」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "提交测评 ✓" : "下一题 →";
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const w = d.w || 1;
+    const span = (max[d.k]-min[d.k]) * w;
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) * w / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = 1 + score[d.k]/100*4; // 0-100 → 1-5 均分口径
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(a){ // a 为 1-5 均分
+  if(a < 1.5) return {label:"良好", sub:"状态不错", cls:"b-good", color:"#22c55e"};
+  if(a < 2.5) return {label:"轻度", sub:"有些信号", cls:"b-mild", color:"#3b82f6"};
+  if(a < 3.5) return {label:"中度", sub:"信号比较明显", cls:"b-mid", color:"#f59e0b"};
+  return {label:"明显", sub:"信号突出", cls:"b-sev", color:"#ef4444"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const sev = severity(totalAvg);
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  document.getElementById("resAvg").textContent = totalAvg.toFixed(2);
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "rgba(0,0,0,.18)";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.filter(x=>x.v>=58).slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  document.getElementById("resNarrative").textContent = narr;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td><td>' + rawOut[d.k] + '</td>' +
+      '<td style="color:' + s.color + '">' + avg5[d.k].toFixed(2) + '</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const hiLo = avg5[d.k] >= 2.5 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区（低分维度正向解读）
+  const lo = [...hi].reverse().filter(x=>x.v<=42).slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  (lo.length ? lo : hi.slice(-2)).forEach(x => {
+    const s = pick((dc[x.k]&&dc[x.k].lo&&dc[x.k].lo.s)||[], fp, x.v|0) || (x.n + " 目前信号较弱，是你的稳态区。");
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 均分 ' + x.a.toFixed(2) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 寄语（类型变体 + 高分维度安慰句，去重拼接）
+  let warm = pick(type.warm, fp, 1) || type.summary;
+  if (hi.length) {
+    const w2 = pick((dc[hi[0].k]&&dc[hi[0].k].hi&&dc[hi[0].k].hi.w)||[], fp, hi[0].v|0);
+    if (w2 && warm.indexOf(w2) < 0 && w2.indexOf(warm) < 0) {
+      if (warm && !/[。！？…」”")）]$/.test(warm)) warm += "。";
+      warm += w2;
+    }
+  }
+  document.getElementById("warmNote").textContent = warm;
+
+  // 一件小事（最高分维度池）
+  const pool = (SPEC.things && SPEC.things[hi[0].k]) || (SPEC.things && SPEC.things._default) || [];
+  document.getElementById("thingNote").textContent = pick(pool, fp, hi[0].v|0) || "今晚比平时早 30 分钟躺下，把睡眠当成正经事。";
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote +
+    " 本结果由你的作答经固定规则计算得出（相同答案永远得到相同结果），仅代表自编探索性测试中的相对指标，<b>不构成任何诊断或专业评估</b>。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

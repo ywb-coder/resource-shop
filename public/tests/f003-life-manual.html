@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="原创趣味自我观察小测试，没有标准答案，看看你的选择更靠近哪种主题倾向。">
+<meta name="x-optimization-version" content="V3-result-layout-refresh">
+<meta name="theme-color" content="#f6f1e5">
+<title>你的人生隐藏说明书</title>
+<style>
+:root{
+  --accent:#b08040; --accent-dark:#8a6230; --accent-soft:#f1e8d4;
+  --bg:#f6f1e5; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#a8763c,#c99a5c); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* 可访问性与移动端优化 */
+button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.opt{min-height:60px;line-height:1.55}.opt .lbl{min-width:0;overflow-wrap:anywhere}
+.secondary-result{font-size:16px;font-weight:700;color:var(--accent-dark);padding:12px 14px;background:var(--accent-soft);border-radius:12px;line-height:1.6}
+.q-factor[hidden]{display:none}
+@media(max-width:420px){.wrap{padding:12px 12px 32px}.hero{padding:30px 18px 36px;margin-top:12px}.q-card{padding:22px 16px}.exam-foot{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+body{background-image:repeating-linear-gradient(0deg,rgba(176,128,64,.025) 0 1px,transparent 1px 7px)}
+.hero{border-radius:8px 24px 8px 24px;box-shadow:0 12px 28px rgba(138,98,48,.14)}
+.info-card,.legend,.q-card,.score-card{border:1px solid rgba(176,128,64,.18);box-shadow:0 5px 18px rgba(92,67,34,.055)}
+.q-card{border-radius:8px 20px 8px 20px}
+.opt{border-radius:8px 14px 8px 14px}
+
+
+/* ===== 统一可读性规范 V2：文字优先，装饰退后 ===== */
+:root{
+  --text:#242938;
+  --sub:#5c6474;
+  --line:#dfe3ea;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{color:#242938;background:#f7f8fb;background-image:none!important}
+.hero,.report-hero{
+  background:#ffffff!important;color:#242938!important;
+  border:1px solid #e2e6ed;
+  box-shadow:0 8px 24px rgba(26,35,52,.07)!important;
+}
+.hero:before,.hero:after,.report-hero:before,.report-hero:after{display:none!important}
+.hero h1,.hero p,.report-hero h2,.report-hero .time,.report-hero .hero-time{color:#242938!important;opacity:1!important}
+.hero p{font-size:15px!important;line-height:1.9!important}
+.hero-badge{background:var(--accent-soft)!important;color:var(--accent-dark)!important;border:1px solid var(--accent)!important;letter-spacing:.02em}
+.info-card,.legend,.q-card,.score-card{background:#fff!important;color:#242938!important;border:1px solid #e2e6ed;box-shadow:0 5px 18px rgba(26,35,52,.055)!important}
+.legend-item,.legend p,.narrative,.fa-desc,.list li,.tip-item .t-body,.thing .d{color:#424b5b!important}
+.exam-top{background:#f7f8fb!important}
+.exam-title{color:#242938!important}
+.progress-text{color:#4b5565!important}
+.q-factor{background:var(--accent-soft)!important;color:var(--accent-dark)!important;font-weight:700}
+.q-text{font-size:21px!important;line-height:1.75!important;color:#202637!important;font-weight:750!important}
+.opt{background:#fff!important;border:1.5px solid #d8dee8!important;min-height:60px!important}
+.opt .tag{background:#eef1f6!important;color:#394254!important}
+.opt .lbl{font-size:16px!important;line-height:1.65!important;color:#30394a!important;font-weight:500}
+.opt.selected{background:var(--accent-soft)!important;border:2px solid var(--accent-dark)!important}
+.opt.selected .tag{background:var(--accent-dark)!important;color:#fff!important}
+.opt.selected .lbl{color:#202637!important;font-weight:700!important}
+.btn-main,.btn-next{background:var(--accent-dark)!important;color:#fff!important;min-height:50px!important;font-size:16px!important;font-weight:750!important}
+.btn-ghost{background:#fff!important;color:#30394a!important;border:1.5px solid #cbd2de!important;min-height:48px!important}
+button:focus-visible,.opt:focus-visible{outline:3px solid #202637!important;outline-offset:3px}
+.score-card h3{font-size:17px!important;color:#242938!important}
+.overall-sub{font-size:14px!important;color:#566071!important}
+.big-score{color:var(--accent-dark)!important}
+.level-badge{background:var(--accent-dark)!important;color:#fff!important}
+.level-sub{color:#394254!important;font-size:14px!important}
+.narrative{background:#f6f7fa!important;color:#30394a!important;font-size:15px!important;line-height:1.9!important}
+.factor-table{font-size:14px!important}
+.factor-table th{color:#4b5565!important}
+.factor-table td{color:#30394a!important}
+.radar-note{font-size:13px!important;color:#596273!important}
+.f-analysis .fa-name{font-size:15px!important;color:#242938!important}
+.f-analysis .fa-score{font-size:13px!important;color:#4b5565!important}
+.f-analysis .fa-desc{font-size:14.5px!important;line-height:1.9!important;color:#424b5b!important}
+.badge{font-size:12px!important}
+.strength-card{background:#fff!important;border:1.5px solid var(--accent)!important}
+.strength-item .s-name{font-size:15px!important;color:#242938!important}
+.strength-item .s-desc{font-size:14px!important;line-height:1.85!important;color:#424b5b!important}
+.list li,.tip-item .t-body{font-size:14.5px!important;line-height:1.9!important;color:#30394a!important}
+.tip-item .t-from{font-size:12.5px!important;color:#596273!important}
+.thing{background:#fff!important;border:1.5px solid var(--accent)!important}
+.thing .t{font-size:16px!important;color:#242938!important}
+.thing .d{font-size:14.5px!important;line-height:1.9!important;color:#424b5b!important}
+.warm-note{background:#fff!important;color:#242938!important;border:1.5px solid var(--accent)!important;box-shadow:0 5px 18px rgba(26,35,52,.05)!important}
+.warm-note:before,.warm-note:after{display:none!important}
+.warm-note .w-title{font-size:17px!important;color:#242938!important}
+.warm-note .w-body{font-size:15px!important;line-height:2!important;color:#30394a!important;opacity:1!important}
+.warm-note .w-sign{font-size:13px!important;color:#596273!important;opacity:1!important}
+.secondary-result{color:#242938!important;background:var(--accent-soft)!important;border:1px solid var(--accent)!important}
+.result-note,.tip{background:#fff!important;border:1px solid #d7dee8!important;color:#424b5b!important;font-size:14px!important;line-height:1.9!important}
+.toast{font-size:14px!important}
+@media(max-width:480px){
+  .wrap{padding-left:14px!important;padding-right:14px!important}
+  .q-card{padding:22px 16px!important}
+  .q-text{font-size:20px!important}
+  .opt{padding:13px 14px!important}
+  .opt .lbl{font-size:16px!important}
+  .score-card{padding:20px 16px!important}
+  .warm-note{padding:22px 18px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+.section-hint{font-size:13px;color:#566071;line-height:1.7;text-align:center;margin:-5px 0 12px}
+
+/* ===== 结果页视觉重构 V3：层级、留白、背景与对比度 ===== */
+:root{
+  --page-bg:#f3f5fa;
+  --surface:#ffffff;
+  --ink:#20283a;
+  --muted:#667085;
+  --stroke:#e5e9f0;
+  --soft-shadow:0 10px 30px rgba(35,48,72,.065);
+}
+html,body{min-height:100%;background:var(--page-bg)!important}
+body{
+  color:var(--ink)!important;
+  background-image:
+    radial-gradient(ellipse at 8% 4%,rgba(255,255,255,.95),transparent 34%),
+    radial-gradient(ellipse at 95% 22%,rgba(225,232,248,.48),transparent 32%)!important;
+}
+.wrap{
+  width:min(100% - 32px,820px)!important;
+  max-width:820px!important;
+  padding:28px 0 64px!important;
+}
+#screen-result{padding-bottom:24px}
+.report-hero{
+  margin:0 0 20px!important;
+  padding:30px 28px 28px!important;
+  min-height:132px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  border:0!important;border-radius:24px!important;
+  background:var(--grad)!important;
+  color:#fff!important;
+  box-shadow:0 12px 28px rgba(48,58,80,.12)!important;
+}
+.report-hero .time{font-size:12px!important;letter-spacing:.03em;color:rgba(255,255,255,.92)!important}
+.report-hero h2{
+  max-width:680px;margin:10px auto 0!important;
+  color:#fff!important;font-size:clamp(21px,3vw,27px)!important;
+  line-height:1.45!important;font-weight:800!important;letter-spacing:.01em;
+}
+.score-card{
+  margin:0 0 18px!important;
+  padding:26px 28px!important;
+  border:1px solid rgba(226,231,240,.95)!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  box-shadow:var(--soft-shadow)!important;
+}
+.score-card h3{
+  justify-content:flex-start!important;
+  margin:0 0 18px!important;
+  padding-bottom:13px;
+  border-bottom:1px solid #edf0f5;
+  color:#273247!important;font-size:16px!important;font-weight:800!important;
+}
+.score-card:first-of-type{
+  text-align:center;
+  padding:30px 34px!important;
+  border-top:4px solid var(--accent)!important;
+}
+.score-card:first-of-type h3{justify-content:center!important}
+.overall-sub{color:var(--muted)!important;font-size:13px!important;line-height:1.7!important}
+.level-badge{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  min-height:58px;max-width:100%;width:auto!important;
+  margin:12px auto 10px!important;padding:12px 30px!important;
+  border-radius:16px!important;
+  background:var(--accent-dark)!important;color:#fff!important;
+  box-shadow:0 7px 18px color-mix(in srgb,var(--accent-dark) 22%,transparent)!important;
+  font-size:25px!important;font-weight:850!important;line-height:1.3!important;
+  overflow-wrap:anywhere;
+}
+.level-sub{color:#485368!important;font-size:14px!important;line-height:1.75!important;margin:0 auto 14px}
+.narrative{
+  max-width:700px;margin:18px auto 0!important;padding:18px 20px!important;
+  border:1px solid #edf0f5!important;border-radius:16px!important;
+  background:#f7f8fb!important;color:#394458!important;
+  font-size:15px!important;line-height:1.95!important;text-align:left;
+}
+.score-card:first-of-type .overall-sub[style]{margin-top:22px!important}
+.secondary-result{
+  display:block;max-width:650px;margin:10px auto 0!important;
+  padding:14px 18px!important;border-radius:14px!important;
+  background:var(--accent-soft)!important;border:1px solid color-mix(in srgb,var(--accent) 32%,white)!important;
+  color:var(--accent-dark)!important;font-size:16px!important;font-weight:750!important;
+  line-height:1.7!important;text-align:center;
+}
+.criteria{
+  margin:0 0 14px!important;padding:12px 16px!important;
+  border-radius:12px!important;background:#f6f8fb!important;
+  color:#596579!important;font-size:13px!important;line-height:1.7!important;
+}
+.factor-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px!important}
+.factor-table th{padding:12px 10px!important;color:#667085!important;font-weight:700!important;background:#f8f9fc}
+.factor-table th:first-child{border-radius:10px 0 0 10px}
+.factor-table th:last-child{border-radius:0 10px 10px 0}
+.factor-table td{padding:14px 10px!important;color:#344054!important;border-bottom:1px solid #edf0f4}
+.factor-table tr:last-child td{border-bottom:0}
+.factor-table td:first-child{font-weight:700;color:#273247}
+.factor-table td:nth-child(2){font-variant-numeric:tabular-nums;font-weight:700}
+.radar-wrap{max-width:520px;margin:0 auto}
+.radar-note{margin-top:10px!important;color:#667085!important;font-size:12px!important;line-height:1.7!important;text-align:center}
+.f-analysis{gap:14px!important;padding:14px 0!important;border-bottom:1px solid #edf0f4}
+.f-analysis .fa-name{color:#273247!important;font-weight:750!important}
+.f-analysis .fa-desc{color:#596579!important;line-height:1.85!important}
+.strength-card,.thing,.warm-note{
+  margin-top:12px!important;border-radius:17px!important;
+  box-shadow:none!important;
+}
+.strength-card{background:#fbfcfe!important;border:1px solid #e7ebf2!important}
+.thing{
+  background:var(--accent-soft)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 30%,white)!important;
+  padding:20px!important;
+}
+.thing .t{font-size:16px!important;color:#273247!important;line-height:1.6!important}
+.thing .d{font-size:14px!important;color:#596579!important;line-height:1.85!important}
+.warm-note{
+  background:#fff9f1!important;color:#344054!important;
+  border:1px solid #f4e5d2!important;padding:24px 26px!important;
+}
+.warm-note .w-title{color:#9b4d1d!important;font-size:16px!important;margin-bottom:12px!important}
+.warm-note .w-body{color:#394458!important;font-size:15px!important;line-height:2!important}
+.warm-note .w-sign{color:#667085!important}
+.result-note,.tip{border-radius:14px!important;background:#f8f9fc!important;color:#596579!important}
+.result-actions{margin-top:22px!important;gap:12px!important}
+.result-actions button{min-height:48px!important;border-radius:13px!important}
+#screen-result .score-card:last-child{margin-bottom:0!important}
+@media(max-width:640px){
+  .wrap{width:calc(100% - 24px)!important;padding:14px 0 40px!important}
+  .report-hero{min-height:112px;padding:24px 18px!important;border-radius:19px!important;margin-bottom:14px!important}
+  .report-hero h2{font-size:21px!important}
+  .score-card,.score-card:first-of-type{padding:21px 17px!important;border-radius:18px!important;margin-bottom:14px!important}
+  .score-card h3{font-size:15px!important;margin-bottom:14px!important}
+  .level-badge{font-size:22px!important;min-height:52px;padding:10px 22px!important}
+  .narrative{padding:15px 15px!important;font-size:14px!important;line-height:1.9!important}
+  .factor-table th,.factor-table td{padding:11px 7px!important;font-size:12.5px!important}
+  .warm-note{padding:20px 18px!important}
+  .warm-note .w-body{font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero 文字) ===== */
+.hero,.report-hero{background:#fff!important;color:#26303f!important}
+.hero h1,.hero h2,.hero p,.hero .time,.hero-time,
+.report-hero h2,.report-hero p{color:#26303f!important;opacity:1!important}
+.hero-badge{background:var(--accent-soft,rgba(120,120,160,.12))!important;
+  color:var(--accent-dark,#4a4266)!important;border:0!important}
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero 文字) end ===== */
+
+
+
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero) ===== */
+.hero,.report-hero{
+  background:#fff!important;color:#26303f!important;
+  border:1px solid #e6e9f0!important;border-top:1px solid #e6e9f0!important;
+  box-shadow:0 10px 26px rgba(26,35,52,.07)!important;
+}
+.hero::before,.report-hero::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:120px;
+  background:linear-gradient(180deg,var(--accent-soft,rgba(120,120,160,.12)),rgba(255,255,255,0));
+  pointer-events:none;z-index:0;
+}
+.hero::after,.report-hero::after{display:none!important}
+.hero>*,.report-hero>*{position:relative;z-index:1}
+.hero h1,.hero h2,.hero p,.hero .time,.hero-time,
+.report-hero h2,.report-hero p{color:#26303f!important;opacity:1!important}
+.hero-badge{background:var(--accent-soft,rgba(120,120,160,.12))!important;
+  color:var(--accent-dark,#4a4266)!important;border:0!important}
+/* ===== 开始页视觉统一 v2 (f 组：白底 hero) end ===== */
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+
+/* ===== 开始页视觉统一 v2 (f 组：主题色渐变 hero) ===== */
+.hero,.report-hero{
+  background:var(--grad)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 16px 34px rgba(40,36,70,.16)!important;
+}
+.hero::before,.report-hero::before{display:none!important}
+.hero::after,.report-hero::after{display:none!important}
+.hero>*,.report-hero>*{position:relative;z-index:1}
+.hero h1,.hero h2,.hero p,.hero .icon,.hero .time,.hero-time,
+.report-hero h2,.report-hero p,.report-hero .time{color:#fff!important;opacity:.96!important}
+.hero-badge{background:rgba(255,255,255,.22)!important;color:#fff!important;
+  border:0!important;letter-spacing:1px}
+/* ===== 开始页视觉统一 v2 (f 组：主题色渐变 hero) end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">📘</div>
+    <div class="hero-badge">趣味探索 · 自我观察</div>
+    <h1>你的人生隐藏说明书</h1>
+    <p>15 道题，生成一份「你」的使用说明书，请正确使用。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">15</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">6</div><div class="lbl">个探索维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">每个人出厂时都附带一份说明书，只是大多数人从没打开过。<b>这份说明书会告诉你：最佳运行环境、常见故障处理、正确的充电方式，以及隐藏功能。</b>请认真阅读，妥善保管。</div>
+  </div>
+  <div class="tip">
+    没有标准答案，请按平时更自然的反应作答，不必选择“看起来更好”的答案。<br><br>⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <div class="tip">ℹ️ 本测试为原创趣味内容，仅用于自我观察与娱乐，不是心理测验、临床量表或诊断工具。答案仅保存在当前浏览器；清除浏览器数据可能导致记录丢失。</div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">你的人生隐藏说明书</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 15</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>你的人生隐藏说明书 · 分析报告</h2>
+  </div>
+  <div class="score-card"><h3>✨ 总体评估 · 本次探索结果</h3><div class="overall-sub">你的主导主题</div><div class="level-badge" id="resLevel">—</div><div class="level-sub" id="resLevelDesc"></div><div class="narrative" id="resNarrative"></div><div class="overall-sub" style="margin-top:16px">与你接近的另一种倾向</div><div id="secondaryResult" class="secondary-result">计算中…</div></div>
+  <div class="score-card">
+    <h3>📋 因子维度详情 · 主题维度一览</h3>
+    <div class="criteria"><span>指数越高，代表本次作答中该主题越突出</span></div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>主题维度</th><th>相对指数</th><th>本次表现</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 主题倾向雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示本次作答中该主题相对突出，不代表能力高低</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 特征分析 · 各主题倾向解读</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 优势 · 你可以发挥的部分</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 困扰 · 可能遇到的小卡点</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 建议 · 给自己的小建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌱 优势区 · 其他安静的主题</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">相对不突出的维度只是本次选择较少涉及，不代表你缺少相关特质</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"u003","file":"project/03-life-manual.html","title":"你的人生隐藏说明书","badge":"趣味探索 · 自我观察","icon":"📘","subtitle":"15 道题，生成一份「你」的使用说明书，请正确使用。","minutes":3,"intro":"每个人出厂时都附带一份说明书，只是大多数人从没打开过。<b>这份说明书会告诉你：最佳运行环境、常见故障处理、正确的充电方式，以及隐藏功能。<\/b>请认真阅读，妥善保管。","theme":{"accent":"#b08040","accentDark":"#8a6230","soft":"#f1e8d4","bg":"#f6f1e5","grad":"linear-gradient(135deg,#a8763c,#c99a5c)"},"overallLabel":"你的产品型号","scoreNote":"每题选项会为不同主题维度累积分值；系统依据本问卷各题选项的理论分值范围，将各维度换算为 0–100 的相对倾向指数。指数只用于比较本次作答中各主题的相对突出程度，不代表常模、临床量表或客观能力。主导结果取指数最高的维度；若并列，按本测试预设顺序判定。","match":"max","tieOrder":["stable","inspire","free","gentle","fast","happy"],"dims":[{"k":"stable","name":"慢热稳定度","w":1},{"k":"inspire","name":"灵感驱动度","w":1},{"k":"free","name":"自由探索度","w":1},{"k":"gentle","name":"温柔敏感度","w":1},{"k":"fast","name":"高效行动度","w":1},{"k":"happy","name":"随性快乐度","w":1}],"dimShort":{"stable":"稳定","inspire":"灵感","free":"自由","gentle":"温柔","fast":"高效","happy":"快乐"},"questions":[{"text":"你什么时候最容易进入状态？","opts":[{"t":"按部就班的清晨，一切就位时","s":{"stable":3,"fast":1}},{"t":"灵感来了的深夜","s":{"inspire":3}},{"t":"换了个新环境、新节奏时","s":{"free":3}},{"t":"有人陪着、气氛刚刚好时","s":{"gentle":2,"happy":1}}],"n":1},{"text":"什么情况最容易让你疲惫？","opts":[{"t":"计划被反复打乱","s":{"stable":3,"fast":1}},{"t":"做没有灵魂的重复劳动","s":{"inspire":3}},{"t":"被框死，没有一点自由度","s":{"free":3}},{"t":"气氛尴尬、关系紧张","s":{"gentle":3}}],"n":2},{"text":"你通常怎样恢复精力？","opts":[{"t":"睡一觉，第二天照常运转","s":{"stable":2,"fast":1}},{"t":"做点喜欢的事，找回心动感","s":{"inspire":3}},{"t":"出门走走，去个没去过的地方","s":{"free":3}},{"t":"和喜欢的人待一会儿","s":{"gentle":2,"happy":2}}],"n":3},{"text":"你希望别人怎样与你沟通？","opts":[{"t":"有事说事，逻辑清晰","s":{"fast":3,"stable":1}},{"t":"给我一点想象和留白的空间","s":{"inspire":2,"free":1}},{"t":"直接点，别绕弯子","s":{"fast":3}},{"t":"温柔一点，语气比内容重要","s":{"gentle":3}}],"n":4},{"text":"面对临时变化，你会怎样处理？","opts":[{"t":"快速重排计划，立刻适应","s":{"fast":3,"stable":1}},{"t":"有点难受，但会慢慢消化","s":{"gentle":2,"stable":1}},{"t":"挺好的，变化也是机会","s":{"free":3}},{"t":"看情况：有趣就配合，无趣就摆烂","s":{"happy":3}}],"n":5},{"text":"你最喜欢什么样的生活节奏？","opts":[{"t":"规律稳定，每天都差不多","s":{"stable":3}},{"t":"一阵一阵的：冲刺期和休息期交替","s":{"inspire":2,"fast":1}},{"t":"自由散漫，跟着心情走","s":{"free":3,"happy":1}},{"t":"轻松快乐，有说有笑","s":{"happy":3,"gentle":1}}],"n":6},{"text":"哪种事情最能让你开心？","opts":[{"t":"完成一件早就计划好的事","s":{"stable":2,"fast":2}},{"t":"做出了一点属于自己的东西","s":{"inspire":3}},{"t":"遇到意料之外的惊喜","s":{"free":2,"happy":2}},{"t":"和喜欢的人共度了一段好时光","s":{"gentle":3}}],"n":7},{"text":"如果给自己的说明书加一句提醒，你会写什么？","opts":[{"t":"「请按流程操作，勿强行改装」","s":{"stable":3}},{"t":"「请定期补充灵感，防止干涸」","s":{"inspire":3}},{"t":"「请勿长期存放于固定位置」","s":{"free":3}},{"t":"「请温柔对待，谢谢配合」","s":{"gentle":3,"happy":1}}],"n":8},{"text":"你做决定的方式更接近？","opts":[{"t":"列利弊，想清楚再动","s":{"stable":3,"fast":1}},{"t":"跟着感觉走","s":{"inspire":2,"happy":1}},{"t":"先试试再说","s":{"free":3,"fast":1}},{"t":"问问身边人的意见","s":{"gentle":3}}],"n":9},{"text":"你的桌面/房间通常是？","opts":[{"t":"整齐固定，东西都在原位","s":{"stable":3}},{"t":"乱中有序，灵感现场","s":{"inspire":3}},{"t":"说走就走型，没什么固定物品","s":{"free":3}},{"t":"温馨舒适，有很多小摆件","s":{"gentle":2,"happy":1}}],"n":10},{"text":"被临时抓去救场，你会？","opts":[{"t":"按流程稳住局面","s":{"stable":2,"fast":2}},{"t":"现场即兴发挥，效果出奇","s":{"inspire":3,"happy":1}},{"t":"去就去呗，多大点事","s":{"free":2,"happy":2}},{"t":"先照顾大家的情绪再干活","s":{"gentle":3}}],"n":11},{"text":"你更讨厌哪种「系统故障」？","opts":[{"t":"日程被打乱","s":{"stable":3}},{"t":"没有灵感、脑子空白","s":{"inspire":3}},{"t":"被束缚、没有选择","s":{"free":3}},{"t":"被凶、被误解","s":{"gentle":3}}],"n":12},{"text":"周末的完美打开方式是？","opts":[{"t":"固定的晨间流程，然后按计划过","s":{"stable":3}},{"t":"突然来了兴致，做点新东西","s":{"inspire":3}},{"t":"出门随便走，走到哪算哪","s":{"free":3}},{"t":"和喜欢的人吃吃喝喝说说笑笑","s":{"happy":3,"gentle":1}}],"n":13},{"text":"你希望别人如何评价你？","opts":[{"t":"「靠谱，交给 TA 就放心」","s":{"stable":3,"fast":1}},{"t":"「有才，总能带来惊喜」","s":{"inspire":3}},{"t":"「活得通透，很自由」","s":{"free":3}},{"t":"「和 TA 在一起很舒服」","s":{"gentle":3,"happy":1}}],"n":14},{"text":"如果可以升级一项「人设技能」，你会加什么？","opts":[{"t":"永不拖延","s":{"fast":3,"stable":1}},{"t":"灵感无限","s":{"inspire":3}},{"t":"说走就走","s":{"free":3}},{"t":"永远好心情","s":{"happy":3}}],"n":15}],"results":[{"key":"stable","name":"慢热稳定型","label":"本产品需要预热，一旦运行，极其可靠","summary":"本型号启动稍慢，但运行后稳定性极强，适合长期高强度使用。你做事讲究章法，心里有本清楚的账。不熟悉的人觉得你慢，熟的人知道：你只是在确认一切就位。","strengths":["你可靠、可预测，是很多人心里的定盘星","你的长期主义让你走得又稳又远"],"troubles":["热身时间长，容易错过「快机会」","计划被打乱时格外消耗"],"advice":["给新事物一个「快速试用装」：先做 5 分钟","预留 10% 的弹性给意外","允许自己偶尔不按剧本走"],"warm":["慢热不是缺点，是你对每一件事都认真。","你的稳定是很多人心里的锚，但记得你也可以偶尔抛锚休息。","按你的节奏来，说明书第一页写着：本产品无需追赶他人。"]},{"key":"inspire","name":"灵感驱动型","label":"本产品由灵感供电，请确保供应充足","summary":"本型号为灵感驱动设计，峰值状态产出惊人。你的好状态来的时候像开闸，去的时候像断电——这不是故障，是本产品的特性。","strengths":["你的创造力和想象力是顶级配置","峰值状态的产出惊艳众人"],"troubles":["状态波动大，低谷期容易自我怀疑","灵感枯竭时会陷入焦虑"],"advice":["建立「灵感补给库」：收藏让你心动的瞬间","低谷期做机械性任务，别硬凹创作","把创作变成小习惯，降低对「来电」的依赖"],"warm":["灵感是风，你只管张帆，风会来的。","你的波动不是不稳定，是潮汐。涨潮时全力创造，退潮时安心休息。","这世界需要你这样会发光的想法。"]},{"key":"free","name":"自由探索型","label":"本产品不适合密闭包装，请随身携带","summary":"本型号设计初衷就是移动使用。被框住时性能骤降，给它空间和新鲜空气时状态极佳。你不是不安分，你是需要不同的风景来确认自己在活着。","strengths":["你的适应力和行动半径远超常人","你的人生体验丰富而立体"],"troubles":["长期重复会让你迅速枯竭","深度积累需要刻意练习"],"advice":["选 1-2 个领域做「移动中的深耕」","把自由和承诺结合：约定里留出空间","用「更换场景」代替「推翻一切」"],"warm":["你的灵魂是移动的，这是出厂设置，不是故障。","走过的路都在替你长见识，每一步都算数。","世界那么大，你按自己的路线走就好。"]},{"key":"gentle","name":"温柔敏感型","label":"本产品外壳柔软，内核珍贵，轻拿轻放","summary":"本型号传感器灵敏度极高，能捕捉到最细微的温度变化。你的温柔和敏感是精密仪器级别的——请务必用同样温柔的方式对待它。","strengths":["你的共情力和洞察力是天赋","你让身边的人感到被看见"],"troubles":["高灵敏度意味着容易被刺伤","情绪劳动常常过量"],"advice":["给情绪装一个「减震器」：定期独处回血","把敏感转化为创作或助人的能力","练习把「不」说出口"],"warm":["敏感是天赋，你感受到的世界比别人多一倍的细节和温度。","你不需要变钝来适应世界，你需要的是找到温柔的人。","今天也请好好保护这颗柔软的心。"]},{"key":"fast","name":"高效行动型","label":"本产品响应速度极快，指令直达","summary":"本型号指令响应时间接近于零，想到就做是出厂设定。你受不了拖泥带水，你的清单永远在变短。快是你的天赋，偶尔记得慢下来闻闻花。","strengths":["你的执行力和决断力令人安心","你把想法变成现实的速度惊人"],"troubles":["容易对「慢」失去耐心","高速运转时忽略感受和细节"],"advice":["给重要决定加一个「24 小时冷静期」","每周留一段慢时间","允许身边的人按他们的速度来"],"warm":["你的执行力让人安心，但别把休息也变成待办。","快的人容易错过路边的花，偶尔减速也是前进。","你已经做得很棒了，值得一个「高效但从容」的人生。"]},{"key":"happy","name":"随性快乐型","label":"本产品的核心功能就是：让一切变得好玩","summary":"本型号自带快乐算法，能在任何场景里找到乐趣。你不纠结、不内耗，天大的事到你这儿都能先笑一下再说。你的存在让身边人的压力值自动下降。","strengths":["你的乐观和松弛是稀缺资源","你是人群里的气氛净化器"],"troubles":["重大事情上可能过于随性","用快乐掩盖没处理的情绪"],"advice":["大事上给自己加一点「认真模式」","难过时允许自己难过，不必强颜欢笑","把快乐也分一点给未来的自己（存点钱、学点东西）"],"warm":["快乐是你的超能力，但难过时也允许自己难过。","你照亮过很多人，别忘了你也可以被照亮。","继续做一个好玩的人吧，这世界缺你这样的。"]}],"loMap":{"stable":{"e":["你不太依赖固定流程，随机应变能力强。"],"s":["你灵活、不刻板"],"a":["重要事情上建立一点小秩序"]},"inspire":{"e":["你不太靠灵感驱动，稳定输出是你的常态。"],"s":["你持续、可预期"],"a":["偶尔给生活加点心动元素"]},"free":{"e":["你不太需要漂泊，安定让你更舒服。"],"s":["你深耕能力强，耐得住"],"a":["偶尔换个环境透透气"]},"gentle":{"e":["你不太敏感内耗，情绪韧性好。"],"s":["你抗压、皮实"],"a":["留意身边细腻的人，给他们一点温柔回应"]},"fast":{"e":["你不追求速度，更讲究从容。"],"s":["你稳、不浮躁"],"a":["该快的时候也可以提速"]},"happy":{"e":["你对快乐比较克制，情绪表达内敛。"],"s":["你深沉、稳重"],"a":["给自己找几个纯粹快乐的出口"]}}};
+// 三个情绪价值区块各含 30 条独立、确定性模板；相同答案始终匹配相同文案。
+const RESULT_COPY_TEMPLATES = {
+  strength:["你在「{dim}」上的选择相对克制，不必把每一种特质都放到最前面；知道自己的舒适区，本身就是一种自我理解。","这次的答案里，「{dim}」没有成为主旋律。你可以把精力留给真正让自己自在的部分。","你不需要在「{dim}」上表现得很突出。允许自己有偏好、有边界，也是一种值得珍惜的状态。","「{dim}」在本次结果中相对安静，说明它不是你此刻最想强调的主题；这并不意味着你缺少相关能力。","你的选择提醒你：不必每个方向都做到满格，知道哪些事情无需勉强自己，也是一种清醒。","比起追求面面俱到，你似乎更愿意把空间留给真正重要的事。这个取舍值得被看见。","「{dim}」并没有占据你的答案中心。把注意力放回更自然的选择，可能会让你轻松一些。","这份结果不是能力排名，而是偏好切片；「{dim}」相对靠后，只说明它这次没有那么突出。","你可以不必迎合所有期待。对「{dim}」保持自己的节奏，也完全说得通。","本次作答中，你没有特别强调「{dim}」。这给了你一个机会，重新确认什么才真正适合自己。","你有权选择自己的重点，而不是把所有方向都当作必修课。「{dim}」可以暂时不抢戏。","「{dim}」处于相对低位，不代表短板；它也可能只是你当前不优先投入的方向。","这次答案呈现出一种取舍：你把更多注意力交给了更有共鸣的主题，而不是每件事都平均用力。","不必为了显得完整而补齐每一种特质。你可以允许「{dim}」只是生活里的一个小角落。","你的选择有自己的重心。与其比较哪里更强，不如留意哪些事情让你更有能量。","「{dim}」在这次画像里比较安静，提醒你不必把别人的节奏当成自己的标准。","你可以把不擅长、不喜欢或暂时不在意的部分放轻一点，不需要因此否定自己。","这份结果只记录你当下的选择。「{dim}」不突出，也不妨碍你拥有完整而丰富的自己。","你对自己的偏好正在变得清晰：有些方向值得投入，有些方向可以先放一放。","「{dim}」不是本次最明显的主题。你可以把这份空间留给休息、探索，或真正想做的事。","你不需要把每个标签都穿在身上。选择更贴近自己的部分，比追求全面更重要。","这次的低位倾向可以理解为一种留白，而不是缺陷；留白也让你的选择更有弹性。","你有自己的优先级。允许「{dim}」暂时退后一点，不代表以后不能重新靠近它。","本次答案没有把「{dim}」推到前台。请把它当作一个观察结果，而不是对自己的评价。","你可以保留一点不被定义的空间。并不是每一种倾向，都需要成为你的代表色。","在「{dim}」上少一点用力，也许正是你给自己留出的余地；不必把每件事都变成任务。","这份画像更像一张即时快照。今天的「{dim}」比较安静，未来也可以有不同的选择。","你的价值不由某一个维度决定。把「{dim}」放在次要位置，也是一种合理的个人排序。","比起努力符合某个理想形象，你更可以关注真实的舒适度；「{dim}」不必被刻意放大。","你已经给出了自己的选择。请允许它保持原样，不必为了迎合任何标准再做修饰。"],
+  thing:["给「{main}」留出 10 分钟：做一件与它有关、但不需要做到完美的小事，完成就可以停。","把今天最想做的一件事写成一句话，再拆成一个 5 分钟就能开始的动作。","给自己安排一次短暂的无目的时间：不刷信息、不追进度，只观察此刻真正想做什么。","找一个安静角落，写下最近最占据注意力的三件事，再圈出今天只需要处理的一件。","把一个想法记录下来，不急着执行；给它一个标题，留待你真正有空时再继续。","今天主动拒绝一件并非必须、却会消耗你的安排，为自己保留一点余量。","给最近在意的人发一句真诚但不需要长篇解释的话，让连接保持轻松。","为自己准备一个小小的舒适角落：一杯水、一盏灯，或一段喜欢的音乐。","从待办事项里挑一件最小的，完成后就休息，不额外追加任务。","用三句话记录今天：一件顺利的事、一件不确定的事、一件想感谢自己的事。","把一个反复出现的念头写下来，旁边补上一句：我现在能做的最小一步是什么？","给自己一次低成本的新鲜体验：换条路、听一首新歌，或尝试一种不同的安排。","整理一个很小的区域，例如桌面一角或手机首页，让环境给思绪一点清爽感。","把今天的节奏调慢一点：在两件事情之间留出五分钟，不急着立刻切换。","选一件你一直想尝试的小事，先体验 10 分钟，不要求立刻喜欢或擅长。","找一个值得信任的人聊聊近况，只分享事实和感受，不急着寻求解决方案。","为接下来的一天提前准备一件小事，让明天的自己少一点临时慌乱。","把一件暂时不重要的事从今天清单里移走，允许计划根据真实精力调整。","给自己的兴趣留一个具体入口：收藏一篇资料、打开一本书，或写下第一个问题。","今天留意一次让你感到自在的瞬间，并记下当时的环境、节奏或陪伴方式。","给一个长期目标设一个很轻的里程碑，只要开始，不需要一次完成。","暂停比较，把注意力拉回自己的进度：写下本周已经完成的三件小事。","为自己设定一个温和边界，例如某个时间后不再回复非紧急消息。","挑一件可以让身体舒展的小活动，散步、拉伸或晒太阳都可以，按舒服程度来。","把最近一次开心的体验记下来，写清楚它为什么让你觉得值得。","给「{main}」找一个现实中的小出口：做一个微小行动，而不是只停留在想象里。","把一个复杂问题拆成「现在知道什么」「还不知道什么」「下一步问谁」三栏。","给今天的自己一个明确的结束信号：收起工作页面、整理桌面，或写下明天第一步。","从熟悉的事情里挑一件，用新的方式完成一次，让日常出现一点点变化。","睡前用一句话收尾今天：我已经做了足够的一部分，剩下的可以明天再继续。"],
+  warm:["你这次的选择更靠近「{main}」，也带着一点「{second}」的影子。它们不是固定标签，只是此刻你愿意靠近的生活方式。愿你既能认真选择，也能随时调整。","如果把这份结果当作一封小小的回信，它想告诉你：你不必急着成为某种标准答案。真实的偏好，已经值得被认真对待。","你有自己的节奏，也有自己的取舍。今天的答案只是一个切面，不需要替未来做决定。愿你在变化里仍然保留选择的自由。","「{main}」是这次最明亮的线索，「{second}」则像另一束微光。它们可以同时存在，不必互相排斥。","谢谢你认真完成这次探索。无论结果像不像你，都请把解释权留在自己手里；你比任何一个标签都丰富。","有时了解自己，不是为了立刻改变，而是终于知道哪些事情让自己舒服。希望这份小小的发现能陪你轻松一点。","愿你不必把每一天都过成挑战，也不必时时证明自己。偶尔停下来，听听真实的需要，也很重要。","你可以喜欢热闹，也可以需要安静；可以勇敢尝试，也可以暂时观望。矛盾的部分并不冲突，它们共同组成你。","这份结果没有给你下定义，只是把你刚刚做出的选择整理成一面小镜子。看见之后，仍然由你决定下一步。","请记得，偏好会随着经历和环境变化。今天的答案不必成为明天的约束，你始终可以重新选择。","你不需要把所有潜力一次用完。留一点空间给休息、好奇和偶然，生活也会因此更有弹性。","如果最近有些事情还没有答案，也没有关系。先照顾好眼前的自己，再慢慢决定想去的方向。","愿你对自己少一点苛刻，多一点具体的理解。不是空泛地鼓励自己，而是看见自己真实的节奏。","「{main}」只是这次的主旋律，不是全部的你。那些没有被题目问到的部分，同样重要。","你可以带着「{second}」继续生活，也可以在某一天发现自己更靠近另一种选择。变化不是反复无常，而是成长的一部分。","谢谢你把几分钟留给自己。希望这份结果不只是一个名字，也能成为一次轻松的自我观察。","当你觉得必须马上做出正确选择时，试着给自己一点缓冲。慢一点并不等于停滞，调整也不等于失败。","愿你保留喜欢的东西，也允许自己放下不再合适的东西。生活不需要永远沿着同一条路线前进。","有些答案会在行动之后变清楚。先做一件很小的事，再观察自己的感受，不必一次想明白全部。","你可以认真，也可以玩心很重；可以有计划，也可以临时改变主意。允许自己拥有不同面向，会更自在。","请把这次结果当成一张便签，而不是一张判决书。它提醒你看见某些偏好，却不限制你成为谁。","如果这份画像有一部分让你会心一笑，就把那一点带走；如果有些地方不符合你，也完全可以放下。","你值得拥有不被催促的时间。愿你能把一点耐心留给自己，让想做的事慢慢长出形状。","有时最好的进步不是更快，而是更知道为什么出发。愿你找到让自己愿意持续前进的理由。","今天不需要把所有问题解决。把眼前的一小步走稳，剩下的留给之后的自己。","你不是单一的性格标签，也不是某次选择的总和。你会变化、会犹豫，也会在不同阶段找到新的答案。","愿你在照顾别人和回应世界的时候，也记得问问自己：我现在真正需要什么？","「{main}」和「{second}」可以在你身上同时出现。无需选边站，你可以拥有自己的混合版本。","这次探索到这里就好。把轻松留下，把不适合自己的解释放下，继续用自己的方式生活。","愿你对未知保留好奇，对当下保持温柔。你不必急着抵达某个终点，正在经历的过程也有意义。"]
+};
+
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-u003"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-u003", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  const factorEl = document.getElementById("qFactor"); factorEl.textContent = q.factor || ""; factorEl.hidden = !q.factor;
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.setAttribute("aria-pressed", answers[q.n]===v ? "true" : "false");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      const at = current;
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      // 选完选项自动跳下一题（用户若手动点了「下一题」则不重复跳）
+      setTimeout(()=>{
+        if(current !== at) return;
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「生成我的结果」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "生成我的结果 →" : "下一题 →";
+  document.getElementById("nextBtn").disabled = !answers[q.n];
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const span = max[d.k]-min[d.k];
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = score[d.k]/20; // 兼容旧变量，界面统一展示 0–100 相对指数
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(score){
+  if(score >= 67) return {label:"较突出",sub:"本次选择较多",cls:"b-good",color:"#5b8f78"};
+  if(score >= 34) return {label:"中等呈现",sub:"本次有所体现",cls:"b-mild",color:"#8a78b5"};
+  return {label:"相对安静",sub:"本次选择较少",cls:"b-mid",color:"#a58a72"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  if(top.length > 1) narr += " 除了主导的「" + top[0].n + "」，「" + top[1].n + "」也在你的选择中有所体现。";
+  document.getElementById("resNarrative").textContent = narr;
+  const secondType = SPEC.results.find(x=>x.key===top[1].k);
+  const secondary = document.getElementById("secondaryResult");
+  if(secondary) secondary.textContent = secondType ? secondType.name + " · " + secondType.label : top[1].n;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(score[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td>' +
+      '<td style="color:' + s.color + '">' + Math.round(score[d.k]) + '/100</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(score[d.k]);
+    const hiLo = score[d.k] >= 58 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区：低分维度代表本次相对不突出的主题，不将其误称为客观能力短板。
+  const lo = [...hi].reverse().slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  lo.forEach((x, i) => {
+    const raw = pick(RESULT_COPY_TEMPLATES.strength, fp + i * 7, x.v|0);
+    const s = raw.replace(/\{dim\}/g, x.n).replace(/\{main\}/g, type.name);
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 相对指数 ' + Math.round(x.v) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 写给你的一段话：30 条模板按作答指纹和主导结果确定性匹配。
+  const secondName = (SPEC.results.find(x=>x.key===top[1].k)||{}).name || top[1].n;
+  const warm = pick(RESULT_COPY_TEMPLATES.warm, fp, score[top[0].k]|0)
+    .replace(/\{main\}/g, type.name)
+    .replace(/\{second\}/g, secondName);
+  document.getElementById("warmNote").textContent = warm;
+
+  // 给你的小事：30 条模板按作答指纹和本次最高维度确定性匹配。
+  const thing = pick(RESULT_COPY_TEMPLATES.thing, fp, score[top[0].k]|0)
+    .replace(/\{main\}/g, top[0].n)
+    .replace(/\{second\}/g, secondName);
+  document.getElementById("thingNote").textContent = thing;
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote + " 本结果仅用于轻松探索，不代表稳定人格、专业评估或任何诊断。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>你隐藏起来的另一面是什么？</title>
+<style>
+:root{
+  --accent:#c05299; --accent-dark:#93337a; --accent-soft:#fbeef6;
+  --bg:#faf4f8; --card:#fff; --text:#2b2d3a; --sub:#8a8fa3; --line:#ecedf2;
+  --grad:linear-gradient(135deg,#93337a,#c05299 50%,#e8a0bf); --radius:20px; --shadow:0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none}
+.screen{display:none}
+.screen.on{display:block}
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:16px 16px 44px}
+
+.hero{background:var(--grad);border-radius:var(--radius);padding:36px 24px 42px;color:#fff;text-align:center;margin-top:20px}
+.hero .icon{font-size:46px;line-height:1;margin-bottom:12px}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:999px;font-size:12px;margin-bottom:14px;letter-spacing:1px}
+.hero h1{font-size:clamp(21px,5.6vw,26px);font-weight:700;margin-bottom:10px}
+.hero p{font-size:14px;opacity:.92;line-height:1.8}
+.info-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:-24px;position:relative;z-index:1}
+.info-row{display:flex;justify-content:space-around;text-align:center;padding:6px 0}
+.info-row .num{font-size:22px;font-weight:700;color:var(--accent)}
+.info-row .lbl{font-size:12px;color:var(--sub);margin-top:2px}
+.legend{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:16px}
+.legend h3{font-size:15px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:#555}
+.legend-tag{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.tip{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.8}
+.btn-main{width:100%;height:50px;background:var(--accent);color:#fff;border-radius:25px;font-size:16px;font-weight:700;margin-top:22px;transition:opacity .2s}
+.btn-main:active{opacity:.85}
+
+.exam-top{position:sticky;top:0;background:var(--bg);padding:14px 0 10px;z-index:20}
+.exam-top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.exam-title{font-size:15px;font-weight:600}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-bar{flex:1;height:8px;background:#eceff3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--grad);border-radius:99px;transition:width .3s}
+.progress-text{font-size:12px;color:var(--sub);white-space:nowrap}
+
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 22px;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q-factor{display:inline-block;background:var(--accent-soft);color:var(--accent-dark);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px}
+.q-text{font-size:clamp(17px,4.6vw,19px);font-weight:600;line-height:1.65;margin-bottom:22px}
+.opt-list{display:flex;flex-direction:column;gap:11px}
+.opt{display:flex;align-items:center;gap:13px;background:#fafbfc;border:2px solid #eef0f3;border-radius:15px;padding:14px 16px;cursor:pointer;transition:all .15s;width:100%;text-align:left;min-height:56px}
+.opt:active{transform:scale(.98)}
+.opt .tag{width:34px;height:34px;border-radius:10px;background:#eef0f3;color:#888;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.opt .lbl{font-size:clamp(14px,3.8vw,15px);color:#444;line-height:1.6}
+.opt.selected{border-color:var(--accent);background:var(--accent-soft)}
+.opt.selected .tag{background:var(--accent);color:#fff}
+.opt.selected .lbl{color:var(--accent-dark);font-weight:600}
+
+.exam-foot{display:flex;gap:11px;margin-top:20px}
+.btn-ghost{flex:1;height:48px;background:#fff;border:1.5px solid var(--line);border-radius:24px;font-size:15px;color:#666;font-weight:600}
+.btn-ghost:disabled{opacity:.4}
+.btn-next{flex:2;height:48px;background:var(--accent);color:#fff;border-radius:24px;font-size:15px;font-weight:700}
+
+.report-hero{background:var(--grad);border-radius:var(--radius);padding:34px 22px 30px;color:#fff;text-align:center;margin-top:20px}
+.report-hero .time{font-size:12.5px;opacity:.9}
+.report-hero h2{font-size:clamp(20px,5.4vw,25px);margin:10px 0 4px;font-weight:800}
+.score-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px;margin-top:14px}
+.score-card h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;justify-content:center}
+.overall-sub{font-size:13px;color:var(--sub);text-align:center}
+.big-score{font-size:46px;font-weight:800;color:var(--accent);text-align:center;line-height:1.2;margin:6px 0 2px}
+.level-badge{display:block;width:fit-content;margin:12px auto 6px;color:#fff;font-size:24px;font-weight:800;padding:12px 36px;border-radius:16px}
+.level-sub{font-size:13px;font-weight:600;text-align:center}
+.narrative{background:#fafbfc;border-radius:14px;padding:14px 15px;margin-top:16px;font-size:13.5px;line-height:1.95;color:#555}
+.criteria{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;background:#fafbfc;border-radius:12px;padding:12px 10px;margin-bottom:14px}
+.criteria span{display:flex;align-items:center;gap:6px;font-size:12px;color:#666}
+.criteria i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.factor-table{width:100%;border-collapse:collapse;font-size:13px}
+.factor-table th{text-align:left;padding:9px 6px;color:#888;font-weight:600;border-bottom:1.5px solid var(--line);white-space:nowrap}
+.factor-table td{padding:11px 6px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.factor-table th:nth-child(2),.factor-table th:nth-child(3),.factor-table td:nth-child(2),.factor-table td:nth-child(3){text-align:center}
+.factor-table td:nth-child(3){font-weight:700;color:var(--accent)}
+.radar-wrap svg{width:100%;height:auto;display:block}
+.radar-note{font-size:11.5px;color:#aaa;text-align:center;margin-top:8px}
+.f-analysis{padding:15px 0;border-bottom:1px solid #f4f5f7}
+.f-analysis:last-child{border-bottom:none}
+.f-analysis .fa-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.f-analysis .fa-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.f-analysis .fa-name{font-size:14.5px;font-weight:700}
+.f-analysis .fa-score{margin-left:auto;font-size:12px;color:var(--sub);white-space:nowrap}
+.f-analysis .fa-score b{font-size:15px;color:var(--accent)}
+.f-analysis .fa-desc{font-size:13px;line-height:1.95;color:#666}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+.b-good{background:#dcfce7;color:#15803d}
+.b-mild{background:#fef9c3;color:#a16207}
+.b-mid{background:#ffedd5;color:#c2410c}
+.b-sev{background:#fee2e2;color:#b91c1c}
+.list li{list-style:none;display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;line-height:1.85}
+.list li:last-child{border-bottom:none}
+.list .ic{flex-shrink:0;width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--accent-soft)}
+.strength-card{background:linear-gradient(135deg,#fff7f9,#fff0f3);border:1.5px solid #ffd3dd}
+.strength-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed #ffd3dd}
+.strength-item:last-child{border-bottom:none}
+.strength-item .s-icon{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 8px rgba(253,70,106,.12)}
+.strength-item .s-name{font-size:14px;font-weight:700;color:#c2285a}
+.strength-item .s-desc{font-size:12.5px;color:#8a6070;line-height:1.8;margin-top:3px}
+.tip-item{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f4f5f7}
+.tip-item:last-child{border-bottom:none}
+.tip-item .t-icon{width:26px;height:26px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-weight:700}
+.tip-item .t-body{font-size:13px;line-height:1.85;color:#555}
+.tip-item .t-from{font-size:11px;color:#b0b6c4;margin-top:2px}
+.warm-note{background:var(--grad);border-radius:var(--radius);padding:26px 22px;color:#fff;margin-top:14px;position:relative;overflow:hidden}
+.warm-note .w-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.warm-note .w-body{font-size:13.5px;line-height:2.05;opacity:.97;position:relative;z-index:1}
+.warm-note .w-sign{margin-top:14px;font-size:12px;opacity:.85;text-align:right}
+.thing{display:flex;gap:13px;align-items:flex-start;background:var(--accent-soft);border-radius:18px;padding:18px;margin-top:14px}
+.thing .ic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.thing .t{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.thing .d{font-size:13.5px;color:#5c6178;line-height:1.9}
+.result-note{background:#fff7ed;border:1px solid #fde68a;color:#92400e;border-radius:14px;padding:14px 16px;margin-top:14px;font-size:12.5px;line-height:1.9}
+.result-actions{display:flex;gap:11px;margin-top:18px}
+.toast{position:fixed;top:22px;left:50%;transform:translateX(-50%) translateY(-90px);background:rgba(0,0,0,.78);color:#fff;padding:11px 22px;border-radius:999px;font-size:13.5px;z-index:200;transition:transform .3s;pointer-events:none;max-width:84vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@media(min-width:768px){.wrap{max-width:780px}}
+@media print{.result-actions,.exam-top{display:none!important}body{background:#fff}}
+
+/* ===== 修复：结果页居中 + 开始页圆角与重叠 ===== */
+.score-card h3{justify-content:center!important;text-align:center}
+.overall-sub,.level-sub{text-align:center}
+.level-badge{display:flex!important;width:fit-content!important;margin-left:auto!important;margin-right:auto!important;justify-content:center}
+.narrative{text-align:center}
+.secondary-result{text-align:center}
+.hero{margin-top:20px;overflow:hidden}
+.info-card{margin-top:14px}
+
+
+
+
+
+
+
+/* ===== 开始页视觉统一 v2 ===== */
+.hero,.report-hero{border-radius:24px!important;overflow:hidden!important;position:relative}
+.info-card,.legend,.tip,.q-card,.score-card{border-radius:24px!important}
+.info-card{margin-top:16px!important}
+.btn-main,.btn-next{border-radius:24px!important}
+/* ===== 开始页视觉统一 v2 end ===== */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section class="screen on" id="screen-start">
+  <div class="hero">
+    <div class="icon">🎭</div>
+    <div class="hero-badge">性格 · 自我探索</div>
+    <h1>你隐藏起来的另一面是什么？</h1>
+    <p>16 个社交与独处的瞬间，揭开你人前人后那道温柔的缝隙。</p>
+  </div>
+  <div class="info-card">
+    <div class="info-row">
+      <div><div class="num">18</div><div class="lbl">道情境题</div></div>
+      <div><div class="num">3</div><div class="lbl">分钟完成</div></div>
+      <div><div class="num">5</div><div class="lbl">个因子维度</div></div>
+    </div>
+  </div>
+  <div class="legend">
+    <h3>📖 这个测试在聊什么</h3>
+    <div style="font-size:13.5px;color:#5c6178;line-height:2">每个人都有一面是给世界看的，还有一面只在深夜、独处、或者最信任的人面前流露。<b>那个藏起来的你，不是虚假，而是被保护起来的真实。</b>这个测试帮你照见人前人后的缝隙——认识它，是为了更好地照顾那个完整的自己。</div>
+  </div>
+  <div class="tip">
+    ⚠️ 重要提示：本测试为原创自编探索性内容，<b>并非标准化心理测量量表</b>；结果由固定规则计算得出，仅供自我觉察与娱乐参考。测试结果不构成心理评估、临床诊断、治疗或用药建议，<b>不能用于心理疾病的自我诊断</b>，也不得作为就医、升学、就业、司法等决策依据。如你正持续经历明显的情绪困扰，或出现伤害自己的念头，请及时寻求专业医疗机构帮助，或拨打心理援助热线 12356。答案只保存在你自己的浏览器里，不会上传。
+  </div>
+  <button class="btn-main" onclick="freshStart()">开始测评 →</button>
+</section>
+
+<section class="screen" id="screen-exam">
+  <div class="exam-top">
+    <div class="exam-top-row">
+      <div class="exam-title">你隐藏起来的另一面是什么？</div>
+      <div class="progress-text"><span id="progressNum">1</span> / 18</div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-factor" id="qFactor"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="opt-list" id="optList"></div>
+  </div>
+  <div class="exam-foot">
+    <button class="btn-ghost" id="prevBtn" onclick="prevQ()">上一题</button>
+    <button class="btn-next" id="nextBtn" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section class="screen" id="screen-result">
+  <div class="report-hero">
+    <div class="time" id="resTime"></div>
+    <h2>你隐藏起来的另一面是什么？ · 分析报告</h2>
+  </div>
+  <div class="score-card">
+    <h3>📊 总体评估结果</h3>
+    <div class="overall-sub">总均分</div>
+    <div class="big-score" id="resAvg">0</div>
+    <div class="overall-sub">满分 5 分</div>
+    <div class="overall-sub" style="margin-top:14px">整体状态</div>
+    <div class="level-badge" id="resLevel">—</div>
+    <div class="level-sub" id="resLevelDesc"></div>
+    <div class="narrative" id="resNarrative"></div>
+  </div>
+  <div class="score-card">
+    <h3>📋 因子维度详情</h3>
+    <div class="criteria">
+      <span><i style="background:#22c55e"></i>良好（&lt; 1.5）</span>
+      <span><i style="background:#3b82f6"></i>轻度（1.5-2.49）</span>
+      <span><i style="background:#f59e0b"></i>中度（2.5-3.49）</span>
+      <span><i style="background:#ef4444"></i>明显（≥ 3.5）</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="factor-table">
+      <thead><tr><th>维度</th><th>原始分</th><th>均分</th><th>水平</th></tr></thead>
+      <tbody id="factorTbody"></tbody>
+    </table>
+    </div>
+  </div>
+  <div class="score-card">
+    <h3>🕸 因子雷达图</h3>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="radar-note">图形越向外扩张，表示该维度信号越强</div>
+  </div>
+  <div class="score-card">
+    <h3>🔍 详细因子特征分析</h3>
+    <div id="factorAnalysis"></div>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">💪 你的优势</h3>
+    <ul class="list" id="rStrengths"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🌧 可能的困扰</h3>
+    <ul class="list" id="rTroubles"></ul>
+  </div>
+  <div class="score-card">
+    <h3 style="justify-content:flex-start">🧭 给你的生活建议</h3>
+    <ul class="list" id="rAdvice"></ul>
+  </div>
+  <div class="score-card strength-card">
+    <h3>🌟 你的优势区</h3>
+    <p class="overall-sub" style="margin:-6px 0 10px">这些维度得分较低（信号弱），是你目前稳得住的部分</p>
+    <div id="strengthList"></div>
+  </div>
+  <div class="warm-note">
+    <div class="w-title">💌 写给你的一段话</div>
+    <div class="w-body" id="warmNote"></div>
+    <div class="w-sign">—— 愿你被自己温柔以待</div>
+  </div>
+  <div class="thing">
+    <div class="ic">🌱</div>
+    <div><div class="t">今天可以做的一件小事</div><div class="d" id="thingNote"></div></div>
+  </div>
+  <div class="result-note" id="scoreNote"></div>
+  <div class="result-actions">
+    <button class="btn-ghost" id="backEditBtn">检查修改</button>
+    <button class="btn-next" id="restartBtn">重新测试</button>
+  </div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SPEC = {"id":"T005","title":"你隐藏起来的另一面是什么？","badge":"性格 · 自我探索","icon":"🎭","subtitle":"16 个社交与独处的瞬间，揭开你人前人后那道温柔的缝隙。","minutes":3,"intro":"每个人都有一面是给世界看的，还有一面只在深夜、独处、或者最信任的人面前流露。\u003cb>那个藏起来的你，不是虚假，而是被保护起来的真实。\u003c/b>这个测试帮你照见人前人后的缝隙——认识它，是为了更好地照顾那个完整的自己。","audience":["对性格与自我好奇","想了解自己的另一面","喜欢人格探索","想更懂自己的人"],"theme":{"accent":"#c05299","accentDark":"#93337a","soft":"#fbeef6","grad":"linear-gradient(135deg,#93337a,#c05299 50%,#e8a0bf)","bg":"#faf4f8"},"dims":[{"k":"outer","name":"外在表现","w":1},{"k":"inner_need","name":"内在需求","w":1.15},{"k":"emotion","name":"情绪表达","w":1},{"k":"conflict","name":"冲突应对","w":1.05},{"k":"protect","name":"自我保护","w":1.1}],"questions":[{"text":"第一次见新朋友，你给人的印象更接近？","opts":[{"t":"好相处、随和，没什么攻击性","s":{"outer":1,"protect":2,"emotion":1}},{"t":"安静、有点神秘，不太说话","s":{"outer":0,"protect":3,"emotion":0}},{"t":"热情、主动，很快热络起来","s":{"outer":3,"emotion":2,"conflict":1}},{"t":"理性、有条理，聊什么都言之有物","s":{"outer":2,"emotion":0,"conflict":2}}],"n":1},{"text":"深夜独处时，你最常做什么？","opts":[{"t":"整理思绪：写点什么、想点什么","s":{"inner_need":2,"emotion":1,"protect":1}},{"t":"彻底放空：刷手机、看剧、不思考","s":{"inner_need":1,"protect":2,"emotion":1}},{"t":"找喜欢的人聊天或黏在一起","s":{"inner_need":3,"emotion":2,"protect":0}},{"t":"搞自己的小世界：爱好、创作、钻研","s":{"inner_need":2,"protect":2,"outer":0}}],"n":2},{"text":"受了委屈但场合不对（比如在公司），你会？","opts":[{"t":"当场不说，回去自己消化","s":{"emotion":0,"protect":3,"conflict":1}},{"t":"脸色藏不住，懂的人自然看得出","s":{"emotion":2,"protect":1,"conflict":1}},{"t":"找个没人的地方先缓一缓","s":{"emotion":1,"protect":2,"inner_need":1}},{"t":"看情况，该说的时候会说","s":{"conflict":2,"emotion":1,"protect":1}}],"n":3},{"text":"你内心深处最渴望的是？","opts":[{"t":"被真正理解，不用解释太多","s":{"inner_need":3,"emotion":1,"protect":1}},{"t":"自由自在，不被任何人牵绊","s":{"inner_need":2,"conflict":1,"protect":2,"outer":1}},{"t":"被需要、被依靠","s":{"inner_need":2,"conflict":2,"protect":1,"emotion":1}},{"t":"把事情做成、把生活握在手里","s":{"inner_need":1,"conflict":3,"protect":2}}],"n":4},{"text":"朋友当面指出你的问题，你的第一反应是？","opts":[{"t":"心里一沉，但会认真想想","s":{"emotion":1,"protect":2,"conflict":1,"inner_need":1}},{"t":"马上解释或反驳","s":{"conflict":3,"emotion":2,"protect":1}},{"t":"笑着说没事，回去难过很久","s":{"protect":3,"emotion":0,"inner_need":2}},{"t":"感谢他，真心的","s":{"conflict":1,"emotion":2,"outer":2,"inner_need":1}}],"n":5},{"text":"在人群中，你通常扮演什么角色？","opts":[{"t":"照顾大家情绪的那个","s":{"outer":1,"conflict":2,"protect":2,"inner_need":1}},{"t":"安静的观察者，偶尔插一句","s":{"outer":0,"protect":2,"emotion":0,"inner_need":1}},{"t":"带动气氛的开心果","s":{"outer":3,"emotion":2,"conflict":1}},{"t":"出主意、拿方案的那个","s":{"outer":2,"conflict":3,"emotion":0}}],"n":6},{"text":"当你非常生气时，更可能发生的是？","opts":[{"t":"沉默，冷处理，自己待着","s":{"emotion":0,"protect":3,"conflict":1}},{"t":"爆发，话说得很重","s":{"emotion":3,"conflict":2,"protect":0}},{"t":"讲道理，分析问题出在哪","s":{"conflict":3,"emotion":0,"outer":2}},{"t":"先离开现场，缓过来再谈","s":{"protect":2,"conflict":1,"emotion":1,"inner_need":1}}],"n":7},{"text":"你手机里最不希望别人看到的是？","opts":[{"t":"备忘录里的碎碎念和情绪","s":{"emotion":0,"inner_need":2,"protect":3}},{"t":"奇怪的小众爱好痕迹","s":{"protect":2,"inner_need":2,"outer":0}},{"t":"和某个人的聊天记录","s":{"inner_need":3,"protect":2,"emotion":1}},{"t":"没什么，我比较透明","s":{"protect":0,"outer":2,"emotion":2}}],"n":8},{"text":"压力最大的时候，你会？","opts":[{"t":"自己扛，不想麻烦任何人","s":{"protect":3,"conflict":1,"inner_need":1,"emotion":0}},{"t":"找最亲的人倒苦水","s":{"emotion":2,"inner_need":2,"protect":0}},{"t":"把注意力转移到做事上","s":{"conflict":2,"emotion":0,"protect":2}},{"t":"表面上一切如常，只是会失眠","s":{"protect":3,"emotion":0,"outer":2}}],"n":9},{"text":"别人对你的常见误会是？","opts":[{"t":"以为我很坚强，其实我没有","s":{"protect":3,"emotion":0,"inner_need":2}},{"t":"以为我很冷漠，其实我怕热脸贴冷屁股","s":{"protect":2,"outer":0,"inner_need":2}},{"t":"以为我大大咧咧，其实我心很细","s":{"outer":2,"emotion":1,"inner_need":2,"protect":1}},{"t":"以为我没主见，其实我只是不想争","s":{"outer":1,"conflict":1,"protect":2,"inner_need":1}}],"n":10},{"text":"你理想中的亲密关系是？","opts":[{"t":"不用说话也能懂彼此","s":{"inner_need":3,"emotion":1,"protect":1}},{"t":"各自精彩，又互相牵挂","s":{"inner_need":2,"conflict":1,"outer":1,"protect":1}},{"t":"热烈、坦诚、有话直说","s":{"emotion":3,"conflict":2,"protect":0}},{"t":"稳定、可靠、细水长流","s":{"inner_need":1,"conflict":1,"protect":2,"emotion":1}}],"n":11},{"text":"你的「不为人知的小习惯」是？","opts":[{"t":"反复复盘自己说过的话","s":{"protect":2,"emotion":1,"inner_need":1,"conflict":1}},{"t":"压力大时会有点强迫行为（整理、数数等）","s":{"protect":2,"emotion":0,"conflict":1,"inner_need":1}},{"t":"会对着镜子演内心戏","s":{"emotion":2,"inner_need":2,"outer":1,"protect":0}},{"t":"给未来的自己写信或列清单","s":{"inner_need":2,"conflict":1,"outer":1,"protect":1}}],"n":12},{"text":"被临时推上台发言，你的状态是？","opts":[{"t":"慌得不行，硬着头皮说完","s":{"protect":2,"outer":1,"emotion":1,"conflict":1}},{"t":"兴奋，喜欢这种小挑战","s":{"outer":3,"emotion":2,"conflict":1}},{"t":"表面稳，手心全是汗","s":{"protect":3,"outer":2,"emotion":0}},{"t":"会快速整理思路，有条理地说","s":{"conflict":3,"outer":2,"emotion":0}}],"n":13},{"text":"你最容易被什么样的人打动？","opts":[{"t":"温柔且能看穿我逞强的人","s":{"inner_need":3,"emotion":1,"protect":1}},{"t":"活得自由洒脱、不内耗的人","s":{"inner_need":2,"outer":1,"conflict":1,"protect":1}},{"t":"热烈真诚、敢于表达的人","s":{"emotion":3,"outer":1,"protect":0}},{"t":"靠谱稳重、说到做到的人","s":{"conflict":2,"protect":2,"inner_need":1}}],"n":14},{"text":"情绪崩溃的那一刻，你希望有人？","opts":[{"t":"什么都不说，只是陪着","s":{"emotion":1,"inner_need":3,"protect":1}},{"t":"给我一个拥抱","s":{"emotion":2,"inner_need":2,"protect":0}},{"t":"帮我把问题解决了","s":{"conflict":3,"emotion":0,"protect":1}},{"t":"谁都别来，让我自己待着","s":{"protect":3,"emotion":0,"conflict":1}}],"n":15},{"text":"如果有一个「只属于你的房间」，里面会是？","opts":[{"t":"柔软的角落、灯光、和不被打扰的安全","s":{"protect":3,"inner_need":2,"emotion":1}},{"t":"满墙的爱好收藏和未完成的创作","s":{"inner_need":2,"outer":0,"conflict":1,"protect":1}},{"t":"一张大桌子，摊满我正在做的事","s":{"conflict":2,"outer":1,"inner_need":1}},{"t":"落地窗和可以看到远方的视野","s":{"inner_need":2,"outer":1,"emotion":1,"conflict":1}}],"n":16},{"text":"很久没见的朋友说「你好像变了」，你的反应是？","opts":[{"t":"笑着问：哪里变了？","s":{"outer":2,"emotion":1,"conflict":1}},{"t":"心里一紧，担心对方看到我不好的一面","s":{"protect":3,"emotion":1,"inner_need":1}},{"t":"有点开心：也许我成长了","s":{"inner_need":1,"emotion":2,"outer":1}},{"t":"没什么感觉，人总是会变的","s":{"conflict":1,"protect":1,"outer":1}}],"n":17},{"text":"你最放松的时刻，通常发生在？","opts":[{"t":"一个人待着，不用扮演任何角色","s":{"protect":3,"outer":0,"inner_need":1}},{"t":"和最亲近的人胡说八道","s":{"emotion":2,"inner_need":2,"protect":0}},{"t":"专注做喜欢的事，忘了时间","s":{"inner_need":2,"conflict":1,"outer":1}},{"t":"在人群里热闹，跟着大家一起笑","s":{"outer":3,"emotion":2,"protect":0}}],"n":18}],"rules":[{"result":"observer","all":[{"dim":"protect","min":58},{"dim":"outer","max":42}]},{"result":"controller","all":[{"dim":"conflict","min":58},{"dim":"emotion","max":45}]},{"result":"protector","all":[{"dim":"protect","min":58},{"dim":"conflict","min":45}]},{"result":"feeler","all":[{"dim":"emotion","min":56}]},{"result":"explorer","all":[{"dim":"outer","min":56},{"dim":"protect","max":45}]},{"result":"ideal","all":[{"dim":"outer","min":46},{"dim":"protect","max":48},{"dim":"conflict","max":42}]},{"result":"rational","all":[{"dim":"emotion","max":42},{"dim":"conflict","min":48}]},{"result":"balancer","all":[{"dim":"protect","min":48},{"dim":"inner_need","min":48}]},{"result":"observer","all":[]}],"results":[{"key":"observer","name":"温柔的观察者","label":"你看得懂所有人，却很少让人懂你","summary":"你在人群中安静而敏锐：习惯先观察再开口，习惯照顾氛围，习惯把自己的需求放到最后。你藏起来的那一面，是那个也想被看见、被照顾的自己。","explain":"你的外在温和低调，内在却有着极高的感受力。\u003cb>你像一台高灵敏度的雷达：能捕捉别人的情绪，却常常把自己的信号静音。\u003c/b>这种模式的形成往往很早：你发现「安静和懂事」能换来安全和喜爱。但长期单向输出会让你悄悄耗竭。你隐藏的那一面——那个想被理解、想依赖、想任性一次的自己——不是软弱，是你最真实的需求。练习在安全的人面前「麻烦」他们一次，你会发现关系因此更近。","strengths":["洞察力强，共情细腻","氛围感强，让人放松","内心世界丰富而深邃"],"troubles":["需求长期被压抑，容易突然崩塌","被当成「不会生气的人」","深度关系难以建立，总隔着一层"],"advice":["每周练习一次「主动提需求」，从小事开始","找一个安全的人，告诉他你的一件真事","把「我没事」换成「我有点……」，给情绪开口","独处时给自己一个真正的仪式：照顾那个藏起来的你"],"warm":["你看过了那么多人，现在轮到有人看见你了。那个安静的你，也值得被温柔以待——先从自己开始。","懂事的孩子没有糖吃？不，懂事的你只是忘了伸手。今天开始，练习伸手。","你的沉默里藏着整个宇宙。如果可以，打开一条缝，让光进来，也让别人进来。","被理解是奢侈品，但你配得上。先对自己坦诚，世界会跟上的。"]},{"key":"controller","name":"安静的掌控者","label":"你的温柔里藏着不容挑战的底线","summary":"你不显山不露水，但心里有清晰的秩序和边界。你很少发火，可一旦被触碰底线，你的坚定会让所有人意外。你藏起来的那一面，是那个也需要放松控制、被接住的自己。","explain":"你的外在冷静理性，内在有一套稳固的掌控系统：\u003cb>把事情安排好、把局面握在手里，是你获得安全感的方式\u003c/b>。你隐藏的不是脆弱，而是「失控」的恐惧——你知道自己一旦放松，可能压不住那些被压住的情绪。你的成长课题是：允许生活有一点乱，允许别人按他们的方式做事。真正的强者不是控制一切，而是能在不确定里安住。","strengths":["可靠、稳重、值得托付","边界清晰，不容易被消耗","危机时刻的定海神针"],"troubles":["紧绷久了会突然断电","身边人觉得你「有距离感」","把求助当成失控，独自硬扛"],"advice":["每周留 2 小时「无计划时间」，练习不掌控","把一件小事交给别人做，忍住不返工","当焦虑升起，问自己：这件事真的需要我管吗？","找一个可以让你「失控」的安全空间或人"],"warm":["扛起一切的你很了不起，但你不是超人。放下一些，天不会塌——反而会有人来帮你托住。","你的秩序感是礼物，也可能是牢笼。给自己放个假，允许一点点混乱进来。","那个需要被接住的你，不用藏了。真正强大的人，敢在信任的人面前松开手。","你已经掌控得很好了。现在练习一件更难的事：信任，交出去，看世界怎么回应你。"]},{"key":"rational","name":"理性的理想主义者","label":"你用理智守护着一团火","summary":"你外表冷静、讲逻辑、重条理，但内心里有一团关于「应该怎样」的火：对错、公平、理想。你藏起来的那一面，是那个也会为不完美心痛的热血的自己。","explain":"你的模式是「理性为表，理想为里」。\u003cb>你用分析和秩序处理世界，但驱动你的其实是强烈的价值感和理想\u003c/b>。你不太表达情绪，不是没有情绪，而是你认为「讲道理」比「发脾气」有用。隐藏这一面的代价是：身边人可能觉得你冷。其实你只是把热都收在里面。适当地让别人看见你的「在乎」，你会发现关系的温度会立刻上升。","strengths":["思维清晰，决策稳健","有原则、有追求，长期主义","情绪稳定，不轻易被带跑"],"troubles":["被认为冷淡、难以亲近","内心的理想与现实落差带来隐痛","情绪不表达，身体替你表达"],"advice":["每周一次「情绪命名」练习：我现在感觉____","对在乎的人说出一句带温度的话，打破理性外壳","把理想拆成可执行的小目标，减少落差痛苦","允许自己偶尔「不理性」：冲动一次、任性一次"],"warm":["你用逻辑搭起的房子很坚固，但别忘了里面住着一个滚烫的人。让他透透气，世界会更爱你。","理性和热血从来不是反义词——你是它们最好的结合。只是，别让冷静变成隔离。","你的「在乎」比你表现出来的多得多。让它被看见一点，你会得到意想不到的回应。","理想主义者的路注定有点痛，但正因为有你这样的人，世界才没有变糟。谢谢你的坚持。"]},{"key":"ideal","name":"自由的探索者","label":"你的心一直在路上","summary":"你讨厌被框住，对新鲜事物永远好奇。稳定让你窒息，可能性让你发光。你藏起来的那一面，是那个也会疲惫、也想有个港湾停靠的自己。","explain":"你的核心需求是自由和新鲜感：\u003cb>被规则和重复困住时，你会感到真实的窒息\u003c/b>。你隐藏的一面恰恰相反——那个偶尔想停下来、想依赖、想「就这样吧」的自己，被你视为软弱。其实，真正的自由不是永远在路上，而是想走就走、想停就停。允许自己停靠，不等于放弃自由，而是给远行充电。","strengths":["好奇心旺盛，适应力强","敢于尝试，人生体验值高","不被常规困住，创造力强"],"troubles":["难以长期坚持，广而不深","亲密关系里容易「需要空间」","把停留误判为失败"],"advice":["选一件事做满 100 天，体验深潜的快乐","练习「有边界的承诺」：答应之前先想清楚","为你的探索建一个基地：固定的人、固定的地方","在想逃的时候先问：我在逃避什么？"],"warm":["你的灵魂是飞鸟，这很美。但飞鸟也需要一棵树。找到你的树，不必砍掉翅膀。","探索是你的天性，别为它道歉。只是记得：停下来也是旅程的一部分。","那个想靠岸的念头不是软弱，是你的心在说：我累了。听它的，歇一歇再出发。","愿你永远有出发的勇气，也有停下的自由。两者都有，才是真的自由。"]},{"key":"feeler","name":"敏感的感受者","label":"你的喜怒哀乐都是高清的","summary":"你的情绪来得深而真：爱得热烈，痛得真切，开心也藏不住。你藏起来的那一面，是那个怕情绪太满会吓到别人的、小心翼翼的自己。","explain":"你天生是「高分辨率」的人：\u003cb>情绪体验比别人深，感受力比别人强\u003c/b>。这既是天赋也是负担：你更容易被感动，也更容易被刺痛。你隐藏的一面是对自己情绪的「管理」——怕太满、怕失控、怕给别人添麻烦。但情绪没有原罪，它只是信使。学会与情绪共处而非压制，你的感受力会从负担变成超能力。","strengths":["感受力强，共情深刻","活得真实，不麻木","爱与被爱的能力都很强"],"troubles":["情绪容易大起大落","过度在意他人评价","把敏感当成缺点自我攻击"],"advice":["给情绪起名字、写下来，让它变得可管理","情绪上来时先做 6 次深呼吸，再做决定","练习「情绪隔离」：区分哪些情绪是我的，哪些是别人的","把敏感用在创造上：写、画、音乐、表达"],"warm":["高清的人生可能更累，但也更真、更美。你的敏感不是缺陷，是天赋——只是需要一副好用的驾驶手册。","情绪来的时候，别急着赶走它。它是来送信的。读完信，它自然会走。","你不需要为感受太多而道歉。这世界需要能深刻感受的人，不然就只剩麻木了。","愿你收下自己的敏感，像收下一件珍贵的礼物。它会带你看见别人看不见的光。"]},{"key":"explorer","name":"热烈的行动者","label":"你把热情活成了动词","summary":"你想到就做，爱恨分明，能量外放。你藏起来的那一面，是那个也会累、也需要被哄一哄的、柔软的自己。","explain":"你的关键词是「行动」和「热烈」：\u003cb>你不内耗，想到就做；你不冷漠，喜欢就靠近\u003c/b>。这种生命力非常有感染力，但你隐藏的一面是：怕停下来就会被追上，怕露出疲态就不再被喜欢。于是你用持续的输出掩盖需要。真正的强者不是永远满电，而是敢在信任的人面前说「我累了」。","strengths":["行动力强，说干就干","感染力强，能带动他人","真实坦率，不内耗"],"troubles":["容易过热、透支","疲惫时硬撑，拒绝示弱","情绪直接，偶尔伤人伤己"],"advice":["给热情装上「冷却系统」：忙 90 分钟强制休息","每周一个「什么都不做」的半天","练习说「我需要帮助」，哪怕一次","把冲劲用在长跑项目上，练习耐心"],"warm":["燃烧的你很耀眼，但火焰也需要柴。请给自己添柴的时间，别把自己烧干。","敢说累的你，比硬撑的你更强大。示弱不是退步，是另一种勇敢。","你的热烈是天赋，不是义务。你不需要永远当那个带动气氛的人。","愿你的热情长而暖，像炉火而不是烟花。慢慢来，你值得一个可持续的灿烂。"]},{"key":"protector","name":"坚强的保护者","label":"你是别人的屋檐，也需要屋檐","summary":"你习惯站在前面：保护家人、照顾朋友、扛下责任。你藏起来的那一面，是那个也想被保护、想卸下铠甲、想被好好照顾的自己。","explain":"你的核心叙事是「保护」：\u003cb>你把柔软留给你爱的人，把铠甲穿在自己身上\u003c/b>。你不太展示脆弱，因为你担心一旦示弱，谁来撑住这一切？但长期单向输出会耗尽你。你隐藏的需求——被照顾、被分担——不是负担，是每个人都有的出厂设置。让别人保护你一次，你会发现：被爱的感觉，值得你练习接受。","strengths":["责任感强，值得依靠","危机中特别靠谱","对所爱之人全心投入"],"troubles":["把自己排在最后，长期透支","不许自己倒下，压力锅式硬扛","接受帮助时浑身不自在"],"advice":["每天留 30 分钟「只属于自己」的时间","练习接受小帮助：让别人帮你拿个东西、分担一件小事","把「我能行」换成「我们一起」","定期「检修」自己：身体、情绪、关系，逐项盘点"],"warm":["你保护了那么多人，现在轮到你被保护了。放下铠甲不会让你倒塌，只会让你轻松。","坚强不是不能倒，是倒了还能被接住。找一个能接住你的人，你不必永远站着。","被照顾不是特权，是每个人应得的。练习接受，像练习付出一样认真。","谢谢你一直都在。现在，请你也为自己「一直都在」。你值得。"]},{"key":"balancer","name":"矛盾的平衡者","label":"你走在中间那条细线上","summary":"你既想合群又想独处，既想稳定又想自由，既理性又感性。你藏起来的不是某一面，而是这些拉扯本身——你一直在细线上找平衡，这很不容易。","explain":"你的内在是一个「多声部合唱」：\u003cb>不同的需求同时存在，互相拉扯\u003c/b>。你善于平衡，但也因此常常犹豫、内耗。你隐藏的是这些矛盾本身——你怕展示出来会显得「不确定」「不坚定」。但矛盾不是缺陷，是人类复杂性的证明。你不需要消灭任何一方，只需要学会给不同需求排班：这周满足稳定，下周满足自由。平衡是动态的，不是一劳永逸的。","strengths":["视角多元，理解力强","适应性好，能进能退","对自我有持续的观察和反思"],"troubles":["选择困难，决策成本高","内耗：两边都不彻底","自我认同摇摆，「我到底是谁」"],"advice":["给矛盾的需求「排班」：这周听这个声音，下周听那个","用「51% 原则」做决定：只要一边稍强就行动","把「矛盾」写成两封信：两边各写一封，然后回信","接受「我就是复杂的」，这不丢人，这很酷"],"warm":["拉扯的感觉很累，但你一直在细线上走得很稳。这份平衡能力，本身就是天赋。","你不需要成为某一种人，你可以是「矛盾的你」。复杂不是问题，假装简单才是。","两边的声音都是你。听清它们，然后温柔地拍板：今天先听这边的。","走中间的人最不容易被看见，但走得最远。你做得很好，继续按你的节奏来。"]}],"dimContent":{"outer":{"hi":{"e":["你在人群里是「发光」的那个——热络、主动、存在感强。"],"s":["你的外向表现是真实的生命力，自带感染力","你很快能和人热络，社交启动成本低"],"t":["热闹散去后可能格外疲惫","容易被「人设」绑住，不敢冷场"],"a":["给社交日程留「静音时段」，让电量回充","允许自己偶尔不说话，你不需要一直带气氛"],"w":["发光的你很可爱，但也记得：暗下来休息的时候，你依然值得被爱。"]},"lo":{"e":["你更习惯安静地待在自己的角落——不张扬，但有自己的世界。"],"s":["你的沉静是一种力量，观察力细腻","你不需要热闹就能自处，内在资源丰富"],"a":["在安全的小范围里练习表达一次，让别人看见你"]}},"inner_need":{"hi":{"e":["被理解、被懂、被接住——这是你心里排在很前面的需要。"],"s":["你对深度连接有真实渴望，这让关系有质量","你的心很细腻，能察觉到细微的温柔"],"t":["需求没被满足时容易悄悄委屈","可能为了被懂而过度付出"],"a":["对信任的人直接说「我需要你听我说」","练习自我理解：先做自己的知己"],"w":["你想被懂的那颗心，我知道。先好好懂自己，对的人会跟上来。"]},"lo":{"e":["你对「被懂」的执念不深，独处和自洽是你的常态。"],"s":["你的内心自给自足，不容易被关系牵动"],"a":["偶尔也向人敞一点缝，亲密会让世界更暖"]}},"emotion":{"hi":{"e":["你的情绪是「高清」的：爱得热烈，痛得真切，藏不住。"],"s":["你活得真实，不麻木、不敷衍","你的感受力是天赋，能捕捉到别人错过的光"],"t":["情绪大起大落时容易被卷走","可能怕「情绪太满」吓到别人"],"a":["情绪上来时先做 6 次深呼吸再表达","把情绪用在创造上：写、画、唱、表达"],"w":["高清的人生更累，但也更真、更美。你的情绪不是缺陷，是天赋。"]},"lo":{"e":["情绪表达对你来说偏克制，心里的浪很少拍到脸上。"],"s":["你情绪稳定，不轻易被带跑","你在关键时刻能保持冷静"],"a":["偶尔让情绪透透气：说一句「我今天有点烦」也算数"]}},"conflict":{"hi":{"e":["面对分歧你敢正面处理——这份「敢」是关系里的稀罕物。"],"s":["你有话直说，不积攒暗火","你能把冲突变成互相理解的入口"],"t":["直来直去偶尔会伤到敏感的人","可能把「解决问题」排在「照顾感受」前面"],"a":["硬话软说：先肯定再表达不同","冲突后主动修复，问一句「你还好吗」"],"w":["敢面对冲突的人，心里都有一份坦荡。你值得一段不绕弯子的关系。"]},"lo":{"e":["你更习惯回避正面冲突，把不同压在心里。"],"s":["你维持和谐的能力强，氛围感好","你有耐心，愿意给人台阶"],"a":["练习一次「温和而坚定」的表达，从低风险场景开始"]}},"protect":{"hi":{"e":["你心里有一道「安全门」——不太轻易让人进来，进来了也不轻易松手。"],"s":["你的自我保护让你少受很多伤","你的边界感清晰，不容易被消耗"],"t":["防御太高时，会错过真心靠近的人","可能把「不受伤」排在「被爱」前面"],"a":["对一个安全的人开一条小缝，说一件真事","留意「保护」和「躲藏」的分界线"],"w":["盔甲保护了你很久，很辛苦了。找到安全的地方，可以慢慢卸下来。"]},"lo":{"e":["你的心防不高，愿意先付出信任。"],"s":["你真诚坦率，容易建立深度连接","你的开放让身边人感到轻松"],"a":["保持开放的同时，给自己留一条底线"]}}},"things":{"inner_need":["今天对自己提一个小需求，并满足它","找一个安全的人，说一句你的真实感受","写下「我想要____」，不用考虑能不能要","给今天的心情写一句话，只给自己看","对最亲近的人说一句「我需要一个拥抱」"],"protect":["给自己 20 分钟不被打扰的安全时间","做一件让自己「松下来」的小事：洗澡、拉伸、发呆","对一件小事说「不」，把边界立起来","今天别解释，只说「我今天不想」，练习不委屈自己","找一个让你安心的角落待 15 分钟"],"emotion":["给现在的情绪打个分（1-10），写下来","听一首懂你的歌，让情绪流一会儿","把一件压着的事写在纸上，写完可以撕掉","笑或哭都可以，给情绪一个真实的出口","今天对一个人说一句真话，包括感受"],"conflict":["今天练一次「温和而坚定」的表达","把一个纠结的问题列出利弊，只看事实","对不合理的要求礼貌说「我需要想想」","把一个小误会当面说开，哪怕只说一半","分歧时先听完对方，再回应一个观点"],"outer":["主动和一个人打招呼，多聊两句","做一件表达自己的小事：发条真实的动态","今天给自己拍一张喜欢的照片","在聚会上主动分享一个小故事","给自己一个「出场」的理由：穿喜欢的衣服"],"_default":["出门走 15 分钟，换个环境透透气","今晚早 30 分钟躺下，睡个好觉","认真吃一顿热乎的饭，从胃暖到心"]},"scoreNote":"每题选项对应「外在表现 / 内在需求 / 情绪表达 / 冲突应对 / 自我保护」五个维度的 0-3 分，累加归一化后换算 1-5 均分；8 种画像由维度组合规则判定。"};
+let current = 0;
+let answers = {};
+try { const s = localStorage.getItem("emo-T005"); if (s) answers = JSON.parse(s) || {}; } catch(e) {}
+function saveAnswers(){ try { localStorage.setItem("emo-T005", JSON.stringify(answers)); } catch(e) {} }
+function showToast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove("on"),2200); }
+function goScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); document.getElementById(id).classList.add("on"); window.scrollTo({top:0}); }
+function freshStart(){ answers = {}; saveAnswers(); current = 0; renderQuestion(); goScreen("screen-exam"); }
+
+function renderQuestion(){
+  const q = SPEC.questions[current];
+  document.getElementById("qFactor").textContent = q.factor || "";
+  document.getElementById("qText").textContent = (current+1) + ". " + q.text;
+  document.getElementById("progressNum").textContent = current+1;
+  document.getElementById("progressFill").style.width = ((current+1)/SPEC.questions.length*100) + "%";
+  const list = document.getElementById("optList");
+  list.innerHTML = "";
+  const LET = "ABCDE";
+  for(let v=1; v<=q.opts.length; v++){
+    const o = q.opts[v-1];
+    if(!o) continue;
+    const d = document.createElement("button");
+    d.className = "opt" + (answers[q.n]===v ? " selected" : "");
+    d.type = "button";
+    d.innerHTML = '<div class="tag">' + LET[v-1] + '</div><div class="lbl">' + o.t + '</div>';
+    d.onclick = ()=>{
+      answers[q.n] = v; saveAnswers(); renderQuestion();
+      setTimeout(()=>{
+        if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+        else { showToast("已到最后一题，点击「下一题」提交"); }
+      }, 240);
+    };
+    list.appendChild(d);
+  }
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = current===SPEC.questions.length-1 ? "提交测评 ✓" : "下一题 →";
+}
+
+
+function prevQ(){ if(current>0){ current--; renderQuestion(); window.scrollTo({top:0}); } }
+function nextQ(){
+  const q = SPEC.questions[current];
+  if(!answers[q.n]){ showToast("请先选择一个答案"); return; }
+  if(current < SPEC.questions.length-1){ current++; renderQuestion(); window.scrollTo({top:0}); }
+  else submitTest();
+}
+function submitTest(){
+  const missing = SPEC.questions.find(q=>!answers[q.n]);
+  if(missing){ current = SPEC.questions.findIndex(q=>q.n===missing.n); renderQuestion(); showToast("还有题目未作答"); goScreen("screen-exam"); return; }
+  compute();
+}
+
+/* 计分：选项→维度分（支持反向计分/权重）→ 归一化 0-100 → 均分(0-5) → 规则链匹配结果（确定性） */
+function compute(){
+  const dims = SPEC.dims;
+  const raw = {}, min = {}, max = {};
+  dims.forEach(d => { raw[d.k]=0; min[d.k]=0; max[d.k]=0; });
+  SPEC.questions.forEach(q => {
+    dims.forEach(d => {
+      let lo = Infinity, hi = -Infinity;
+      q.opts.forEach((o, oi) => {
+        let v = (o.s && o.s[d.k] != null) ? o.s[d.k] : 0;
+        if (o.rev && o.rev.indexOf(d.k) >= 0) { const cap = q.cap || 3; v = cap - v; }
+        if (answers[q.n] === oi+1) raw[d.k] += v;
+        if (v < lo) lo = v; if (v > hi) hi = v;
+      });
+      min[d.k] += lo; max[d.k] += hi;
+    });
+  });
+  const score = {}, avg5 = {}, rawOut = {};
+  dims.forEach(d => {
+    const w = d.w || 1;
+    const span = (max[d.k]-min[d.k]) * w;
+    score[d.k] = span > 0 ? Math.round((raw[d.k]-min[d.k]) * w / span * 1000)/10 : 50;
+    rawOut[d.k] = raw[d.k] - min[d.k];
+    avg5[d.k] = 1 + score[d.k]/100*4; // 0-100 → 1-5 均分口径
+  });
+  const totalAvg = dims.reduce((s,d)=>s+avg5[d.k],0)/dims.length;
+  let hit;
+  if (SPEC.match === "max") {
+    const max = Math.max(...dims.map(d=>score[d.k]));
+    const tied = dims.filter(d => score[d.k] === max);
+    let best = tied[0];
+    for (const k of (SPEC.tieOrder||[])) { const t = tied.find(d => d.k === k); if (t) { best = t; break; } }
+    hit = { result: best.k };
+  } else {
+    hit = SPEC.rules[SPEC.rules.length-1];
+    for (const r of SPEC.rules) {
+      if ((r.all||[]).every(c => {
+        const v = score[c.dim];
+        if (c.min != null && v < c.min) return false;
+        if (c.max != null && v > c.max) return false;
+        return true;
+      })) { hit = r; break; }
+    }
+  }
+  const type = SPEC.results.find(x => x.key === hit.result);
+  renderResult(type, score, avg5, rawOut, dims, totalAvg);
+}
+
+function severity(a){ // a 为 1-5 均分
+  if(a < 1.5) return {label:"良好", sub:"状态不错", cls:"b-good", color:"#22c55e"};
+  if(a < 2.5) return {label:"轻度", sub:"有些信号", cls:"b-mild", color:"#3b82f6"};
+  if(a < 3.5) return {label:"中度", sub:"信号比较明显", cls:"b-mid", color:"#f59e0b"};
+  return {label:"明显", sub:"信号突出", cls:"b-sev", color:"#ef4444"};
+}
+
+function fingerprint(arr){ let h=0; for(let i=0;i<arr.length;i++) h=(h*31+arr[i])%2147483647; return h; }
+function pick(pool, fp, salt){ const arr = Array.isArray(pool)?pool:(pool?[pool]:[]); return arr.length?arr[(fp+salt*7919)%arr.length]:""; }
+function dedupPush(list, txt){
+  if(!txt) return;
+  const t = String(txt).trim(); if(!t) return;
+  const head = t.slice(0,12);
+  if(list.some(x => x === t || x.slice(0,12) === head)) return;
+  list.push(t);
+}
+
+function renderResult(type, score, avg5, rawOut, dims, totalAvg){
+  const sev = severity(totalAvg);
+  const now = new Date(), pad = x => String(x).padStart(2,"0");
+  document.getElementById("resTime").textContent =
+    "测评完成时间：" + now.getFullYear() + "年" + (now.getMonth()+1) + "月" + now.getDate() + "日 " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  document.getElementById("resAvg").textContent = totalAvg.toFixed(2);
+  const lv = document.getElementById("resLevel");
+  lv.textContent = type.name;
+  lv.style.background = "rgba(0,0,0,.18)";
+  document.getElementById("resLevelDesc").textContent = type.label;
+  // 叙述 = 结果摘要 + 高分维度点名
+  const hi = dims.map(d=>({k:d.k,n:d.name,v:score[d.k],a:avg5[d.k]})).sort((x,y)=>y.v-x.v);
+  const top = hi.filter(x=>x.v>=58).slice(0,2);
+  let narr = type.summary;
+  if(top.length) narr += "从你的作答看，「" + top.map(x=>x.n).join("」「") + "」的信号最突出。";
+  document.getElementById("resNarrative").textContent = narr;
+
+  // 因子维度详情表
+  const tbody = document.getElementById("factorTbody");
+  tbody.innerHTML = "";
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td style="font-weight:600">' + d.name + '</td><td>' + rawOut[d.k] + '</td>' +
+      '<td style="color:' + s.color + '">' + avg5[d.k].toFixed(2) + '</td>' +
+      '<td><span class="badge ' + s.cls + '">' + s.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  // 雷达图（纯 SVG）
+  const W = 350, H = 320, cx = 175, cy = 158, R = 105, n = dims.length;
+  const ang = i => -Math.PI/2 + i*2*Math.PI/n;
+  const pt = (i, r) => [cx + r*Math.cos(ang(i)), cy + r*Math.sin(ang(i))];
+  let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  for(let k=1;k<=4;k++){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, R*k/4); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e8eaef" stroke-width="1"/>';
+  }
+  for(let i=0;i<n;i++){ const p = pt(i,R); svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="#e8eaef" stroke-width="1"/>'; }
+  const dpts = [];
+  for(let i=0;i<n;i++){ const p = pt(i, R*Math.min(score[dims[i].k]/100,1)); dpts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+  svg += '<polygon points="'+dpts.join(' ')+'" fill="'+ 'rgba(0,0,0,.12)' +'" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" style="stroke:'+getComputedStyle(document.documentElement).getPropertyValue("--accent")+'"/>';
+  for(let i=0;i<n;i++){
+    const p = pt(i, R+22);
+    let anchor = 'middle';
+    if(p[0] > cx+6) anchor = 'start'; else if(p[0] < cx-6) anchor = 'end';
+    svg += '<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="11.5" fill="#666">'+(SPEC.dimShort && SPEC.dimShort[dims[i].k] ? SPEC.dimShort[dims[i].k] : dims[i].name)+'</text>';
+  }
+  svg += '</svg>';
+  document.getElementById("radarWrap").innerHTML = svg;
+
+  // 详细因子特征分析（每维：等级+得分+含义+等级建议）
+  const box = document.getElementById("factorAnalysis");
+  box.innerHTML = "";
+  const dc = SPEC.dimContent || {};
+  const fp = fingerprint(Object.keys(answers).sort().map(k=>answers[k]));
+  dims.forEach(d => {
+    const s = severity(avg5[d.k]);
+    const hiLo = avg5[d.k] >= 2.5 ? "hi" : "lo";
+    const desc = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].e) || [], fp, d.name.length) || (SPEC.dimFallback && SPEC.dimFallback[d.k]) || "";
+    const tip = pick((dc[d.k] && dc[d.k][hiLo] && dc[d.k][hiLo].a) || [], fp, 3) || "";
+    const div = document.createElement("div");
+    div.className = "f-analysis";
+    div.innerHTML =
+      '<div class="fa-head"><span class="fa-dot" style="background:' + s.color + '"></span>' +
+      '<span class="fa-name">' + d.name + '</span><span class="badge ' + s.cls + '">' + s.label + '</span>' +
+      '<span class="fa-score">均分 <b>' + avg5[d.k].toFixed(2) + '</b> · 原始分 ' + rawOut[d.k] + '</span></div>' +
+      '<div class="fa-desc">' + desc + (tip ? '<br><b style="color:' + s.color + '">建议：</b>' + tip : '') + '</div>';
+    box.appendChild(div);
+  });
+
+  // 优势 / 困扰 / 建议（类型基础 + 维度池，去重）
+  const strengths = [], troubles = [], advice = [];
+  (type.strengths||[]).slice(0,2).forEach(x => dedupPush(strengths, x));
+  (type.troubles||[]).slice(0,2).forEach(x => dedupPush(troubles, x));
+  (type.advice||[]).slice(0,3).forEach(x => dedupPush(advice, x));
+  hi.slice(0,2).forEach(x => {
+    dedupPush(strengths, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.s)||[], fp, x.v|0));
+    dedupPush(troubles, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.t)||[], fp, x.v|0));
+    dedupPush(advice, pick((dc[x.k]&&dc[x.k].hi&&dc[x.k].hi.a)||[], fp, x.v|0));
+  });
+  const fill = (id, arr, ic) => {
+    const ul = document.getElementById(id); ul.innerHTML = "";
+    arr.forEach(x => { const li = document.createElement("li"); li.innerHTML = '<span class="ic">' + ic + '</span><span>' + x + '</span>'; ul.appendChild(li); });
+  };
+  fill("rStrengths", strengths, "✦");
+  fill("rTroubles", troubles, "◇");
+  fill("rAdvice", advice, "→");
+
+  // 优势区（低分维度正向解读）
+  const lo = [...hi].reverse().filter(x=>x.v<=42).slice(0,2);
+  const sl = document.getElementById("strengthList");
+  sl.innerHTML = "";
+  (lo.length ? lo : hi.slice(-2)).forEach(x => {
+    const s = pick((dc[x.k]&&dc[x.k].lo&&dc[x.k].lo.s)||[], fp, x.v|0) || (x.n + " 目前信号较弱，是你的稳态区。");
+    const div = document.createElement("div");
+    div.className = "strength-item";
+    div.innerHTML = '<div class="s-icon">🌱</div><div><div class="s-name">' + x.n + ' · 均分 ' + x.a.toFixed(2) + '</div><div class="s-desc">' + s + '</div></div>';
+    sl.appendChild(div);
+  });
+
+  // 寄语（类型变体 + 高分维度安慰句，去重拼接）
+  let warm = pick(type.warm, fp, 1) || type.summary;
+  if (hi.length) {
+    const w2 = pick((dc[hi[0].k]&&dc[hi[0].k].hi&&dc[hi[0].k].hi.w)||[], fp, hi[0].v|0);
+    if (w2 && warm.indexOf(w2) < 0 && w2.indexOf(warm) < 0) {
+      if (warm && !/[。！？…」”")）]$/.test(warm)) warm += "。";
+      warm += w2;
+    }
+  }
+  document.getElementById("warmNote").textContent = warm;
+
+  // 一件小事（最高分维度池）
+  const pool = (SPEC.things && SPEC.things[hi[0].k]) || (SPEC.things && SPEC.things._default) || [];
+  document.getElementById("thingNote").textContent = pick(pool, fp, hi[0].v|0) || "今晚比平时早 30 分钟躺下，把睡眠当成正经事。";
+
+  // 记分说明
+  document.getElementById("scoreNote").innerHTML =
+    "📌 <b>记分说明</b>：" + SPEC.scoreNote +
+    " 本结果由你的作答经固定规则计算得出（相同答案永远得到相同结果），仅代表自编探索性测试中的相对指标，<b>不构成任何诊断或专业评估</b>。";
+
+  goScreen("screen-result");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{}));
+}
+
+document.getElementById("restartBtn").onclick = ()=>{
+  if(confirm("确定要清空所有答案并重新测试吗？")){
+    answers = {}; saveAnswers(); current = 0;
+    renderQuestion(); goScreen("screen-exam");
+  }
+};
+document.getElementById("backEditBtn").onclick = ()=>{ renderQuestion(); goScreen("screen-exam"); };
+</script>
+</body>
+</html>

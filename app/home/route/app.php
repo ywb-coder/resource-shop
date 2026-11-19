@@ -3,6 +3,10 @@ use think\facade\Route;
 
 Route::get('/', 'Index/index');
 
+// 在线心理测试
+Route::get('/test', 'Test/index');
+Route::get('/test/play', 'Test/play');
+
 // 资料
 Route::get('/list', 'Material/list');
 Route::get('/detail/<id>', 'Material/detail')->pattern(['id' => '\d+']);

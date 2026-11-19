@@ -13,7 +13,7 @@
       class="res-badge is-course"
       ><i class="fa-solid fa-chalkboard-user"></i><span class="rb-t">课程</span><span class="rb-s">课程</span></span
     >{/if}<img
-      src="{$item.cover ?: '/static/img/sample-fallback.svg'}"
+      src="{$item.cover ? $item.cover.'?v=2' : '/static/img/sample-fallback.svg'}"
       alt="{$item.title}"
       loading="lazy"
   /></a>

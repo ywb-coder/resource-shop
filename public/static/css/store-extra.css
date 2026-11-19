@@ -6,7 +6,7 @@
 .resource-image{ position: relative; }
 .res-badge{ position: absolute; left: 10px; top: 10px; z-index: 3; display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .3px; color: #fff; background: rgba(17,24,39,.82); backdrop-filter: blur(6px); box-shadow: 0 4px 12px rgba(15,23,42,.18); }
 .res-badge i{ font-size: 11px; }
-.res-badge.is-skill{ background: linear-gradient(135deg,#4f46e5,#7c3aed); }
+.res-badge.is-skill{ background: linear-gradient(135deg,#2f56d6,#7c3aed); }
 .res-badge.is-doc{ background: linear-gradient(135deg,#b45309,#d97706); }
 .res-badge.is-software{ background: linear-gradient(135deg,#0e7490,#0891b2); }
 .res-badge.is-test{ background: linear-gradient(135deg,#be185d,#db2777); }
@@ -18,8 +18,8 @@
 /* 列表页类型筛选 */
 .type-filter{ display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 16px; }
 .type-filter a{ display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border,#e5e7eb); font-size: 13px; color: inherit; text-decoration: none; background: #fff; transition: .18s; }
-.type-filter a:hover{ border-color: #c7d2fe; color: #4f46e5; }
-.type-filter a.active{ background: #111827; border-color: #111827; color: #fff; }
+.type-filter a:hover{ border-color: #bfd0fb; color: #2f56d6; }
+.type-filter a.active{ background: var(--primary,#2f56d6); border-color: var(--primary,#2f56d6); color: #fff; box-shadow: 0 6px 16px rgba(47,86,214,.22); }
 .type-filter a small{ opacity: .6; font-size: 11px; }
 
 /* ===== 安装教程 ===== */
@@ -29,16 +29,16 @@
 .install-guide .ig-head p{ margin: 0; color: #6b7280; font-size: 13px; line-height: 1.7; }
 .ig-tabs{ display: flex; gap: 8px; padding: 16px 22px 0; flex-wrap: wrap; }
 .ig-tabs button{ appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #4b5563; height: 34px; padding: 0 14px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: .18s; }
-.ig-tabs button:hover{ border-color: #c7d2fe; color: #4f46e5; }
-.ig-tabs button.active{ background: #4f46e5; border-color: #4f46e5; color: #fff; box-shadow: 0 6px 16px rgba(79,70,229,.22); }
+.ig-tabs button:hover{ border-color: #bfd0fb; color: #2f56d6; }
+.ig-tabs button.active{ background: #2f56d6; border-color: #2f56d6; color: #fff; box-shadow: 0 6px 16px rgba(47,86,214,.24); }
 .ig-panel{ display: none; padding: 18px 22px 22px; }
 .ig-panel.active{ display: block; }
 .ig-steps{ counter-reset: ig; margin: 0; padding: 0; list-style: none; }
 .ig-steps li{ position: relative; padding: 0 0 16px 38px; font-size: 14px; line-height: 1.75; color: #374151; }
 .ig-steps li:last-child{ padding-bottom: 0; }
-.ig-steps li::before{ counter-increment: ig; content: counter(ig); position: absolute; left: 0; top: 1px; width: 24px; height: 24px; border-radius: 50%; background: #eef2ff; color: #4f46e5; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.ig-steps li::before{ counter-increment: ig; content: counter(ig); position: absolute; left: 0; top: 1px; width: 24px; height: 24px; border-radius: 50%; background: #eef2ff; color: #2f56d6; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 .ig-steps li:not(:last-child)::after{ content: ""; position: absolute; left: 11px; top: 28px; bottom: 4px; width: 2px; background: #eef2ff; }
-.ig-steps b{ color: #111827; }
+.ig-steps b{ color: var(--text,#1a2233); }
 .ig-quote{ position: relative; margin: 12px 0; padding: 14px 16px 14px 16px; border-radius: 12px; background: #f5f3ff; border: 1px dashed #c4b5fd; color: #4c1d95; font-size: 14px; line-height: 1.7; }
 .ig-quote .ig-copy{ position: absolute; right: 10px; top: 10px; border: none; background: #fff; color: #6d28d9; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(109,40,217,.12); }
 .ig-note{ margin-top: 12px; font-size: 12.5px; color: #6b7280; line-height: 1.7; }
@@ -66,5 +66,5 @@
 .catalog-content .res-badge .rb-s{ display: inline; }
 
 /* 列表横向卡片：封面完整缩放，不裁成竖条 */
-.catalog-content .resource-image{ background: #f6f4f1; }
+.catalog-content .resource-image{ background: #eef2fa; }
 .catalog-content .resource-image img{ object-fit: contain; }

@@ -17,7 +17,7 @@
     <div class="hero-metrics">
       <span><b>{$resourceCount}</b> 份精选资料</span
       ><span><b>{:count($categories)}</b> 个灵感分类</span
-      ><a href="/free">先领取免费示例 ↗</a>
+      ><a href="/free">免费资料 ↗</a>
     </div>
   </div>
   <div class="hero-feature">
@@ -26,7 +26,7 @@
       <span>本期精选</span><i class="fa-solid fa-arrow-down"></i>
     </div>
     <a href="/detail/{$featured.id}" class="feature-book"
-      ><img src="{$featured.cover}" alt="{$featured.title}"
+      ><img src="{$featured.cover ? $featured.cover.'?v=2' : '/static/img/sample-fallback.svg'}" alt="{$featured.title}"
     /></a>
     <div class="feature-caption">
       <div>

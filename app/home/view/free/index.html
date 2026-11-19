@@ -30,7 +30,7 @@
       {foreach $list as $f}
       <article class="fz-card" id="f{$f.id}" data-type="{$f.claim_type}">
         <div class="fz-thumb">
-          <img src="{$f.cover ?: '/static/img/material-fallback-v2.jpg'}" alt="{$f.title}" loading="lazy">
+          <img src="{$f.cover ? $f.cover.'?v=2' : '/static/img/material-fallback-v2.jpg'}" alt="{$f.title}" loading="lazy">
         </div>
         <div class="fz-body">
           <h3>{$f.title}</h3>

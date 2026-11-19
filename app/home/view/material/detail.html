@@ -10,7 +10,7 @@
     <div class="product-art">
       <span class="eyebrow">A LITTLE SOMETHING USEFUL</span
       ><img
-        src="{$material.cover ?: '/static/img/sample-fallback.svg'}"
+        src="{$material.cover ? $material.cover.'?v=2' : '/static/img/sample-fallback.svg'}"
         alt="{$material.title}"
       />
     </div>
@@ -53,10 +53,13 @@
         ><span
           ><small>文件格式</small
           ><b>{$material.file_format ?: '电子资料'}</b></span
-        ><span
+        >{if count($material.catalog ?? [])}<span
           ><small>内容章节</small
-          ><b>{:count($material.catalog??[])} 章</b></span
-        >
+          ><b>{:count($material.catalog)} 章</b></span
+        >{else}<span
+          ><small>交付形式</small
+          ><b>压缩包</b></span
+        >{/if}
       </div>
       <div class="product-price">
         {if $material.price==0}<strong>免费获取</strong>{else}<strong

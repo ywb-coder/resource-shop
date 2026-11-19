@@ -7,7 +7,7 @@ use app\common\model\OrderItem;
 use app\common\model\PaymentConfig;
 use app\common\service\AlipayService;
 use app\common\service\LogService;
-use app\common\service\WecomNotifyService;
+use app\common\service\NotifyService;
 use app\common\service\WechatPayService;
 
 class PayService
@@ -47,7 +47,7 @@ class PayService
         // 卡密商品：付款后从仓库发卡（没货就挂着，补货后补发）
         (new \app\common\service\CardKeyService())->assignForOrder($order);
 
-        WecomNotifyService::orderPaid(Order::find($order->id) ?: $order);
+        NotifyService::orderPaid(Order::find($order->id) ?: $order);
 
         return true;
     }

@@ -2,6 +2,7 @@
 namespace app\home\service;
 
 use app\common\model\Question;
+use app\common\service\NotifyService;
 
 class QuestionService
 {
@@ -30,6 +31,8 @@ class QuestionService
             'contact' => mb_substr(trim($contact), 0, 100),
             'status'  => 0,
         ]);
+        // 有人提问就推到飞书，运营不用天天刷后台
+        NotifyService::questionCreated($q->toArray(), $userId);
         return $q->toArray();
     }
 

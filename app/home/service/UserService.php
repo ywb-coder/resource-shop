@@ -5,6 +5,7 @@ use app\common\model\Material;
 use app\common\model\Order;
 use app\common\model\OrderItem;
 use app\common\model\User;
+use app\common\service\NotifyService;
 
 class UserService
 {
@@ -43,7 +44,10 @@ class UserService
             }
             throw $e;
         }
-        return $user->toArray();
+        $data = $user->toArray();
+        // 注册成功给运营群报一声，失败不影响注册
+        NotifyService::userRegistered($data);
+        return $data;
     }
 
 

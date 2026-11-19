@@ -2,9 +2,11 @@
 namespace app\admin\controller;
 
 use app\common\model\PaymentConfig;
+use app\common\service\FeishuNotifyService;
 use app\common\service\ImageOptimizeService;
 use app\common\service\LogService;
 use app\common\service\SystemConfigService;
+use app\common\service\WecomNotifyService;
 
 class Config extends Base
 {
@@ -30,6 +32,8 @@ class Config extends Base
             'site_description', 'site_icp', 'site_footer',
             'default_wechat', 'default_wechat_qr', 'watermark_text', 'watermark_opacity',
             'wecom_webhook', 'wecom_notify_pending', 'wecom_notify_paid',
+            'feishu_webhook', 'feishu_secret', 'feishu_notify_order', 'feishu_notify_paid',
+            'feishu_notify_free', 'feishu_notify_user', 'feishu_notify_comment',
             'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from_name',
         ];
 
@@ -43,6 +47,31 @@ class Config extends Base
         SystemConfigService::batchSet($save);
         LogService::record('网站配置', '保存', '保存网站配置');
         return $this->success();
+    }
+
+    /** POST /admin/config/notify-test  给某个渠道发一条测试消息 */
+    public function testNotify(): \think\Response
+    {
+        $channel = (string) input('post.channel', 'feishu');
+
+        if ($channel === 'wecom') {
+            $url = WecomNotifyService::webhook();
+            if ($url === '') {
+                return $this->error('还没填企业微信机器人地址');
+            }
+            if (!WecomNotifyService::isValidWebhook($url)) {
+                return $this->error('地址不合法，必须是 https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key= 开头');
+            }
+            $ok = WecomNotifyService::send("### 🔔 通知测试\n> 收到这条消息说明企业微信通知已接通\n> 时间：" . date('Y-m-d H:i:s'));
+            return $ok
+                ? $this->success(null, '已发送，请到企业微信群确认')
+                : $this->error('发送失败，请检查机器人地址是否正确');
+        }
+
+        $result = FeishuNotifyService::test();
+        return $result['ok']
+            ? $this->success(null, $result['msg'])
+            : $this->error($result['msg']);
     }
 
     public function payment(): \think\Response

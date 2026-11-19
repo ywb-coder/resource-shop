@@ -56,15 +56,94 @@
       /></label>
     </div>
   </fieldset>
+  <style>
+    #settings-app .cfg-hint { margin: 0 0 14px; font-size: 13px; color: #8a94a6; line-height: 1.7; }
+    #settings-app .notify-card { border: 1px solid #e5e9f2; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; background: #fbfcff; }
+    #settings-app .notify-card:last-child { margin-bottom: 0; }
+    #settings-app .notify-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    #settings-app .notify-name { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; color: #1f2b45; }
+    #settings-app .notify-dot { width: 8px; height: 8px; border-radius: 50%; background: #c9d1e0; display: inline-block; flex: none; }
+    #settings-app .notify-dot.on { background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, .15); }
+    #settings-app .notify-test { border: 1px solid #cfd8ea; background: #fff; color: #2f56d6; border-radius: 8px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+    #settings-app .notify-test:disabled { opacity: .6; cursor: not-allowed; }
+    #settings-app .notify-switches { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; }
+    #settings-app .notify-switches label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #48536b; cursor: pointer; }
+    #settings-app .notify-switches input { width: 15px; height: 15px; accent-color: #2f56d6; }
+  </style>
   <fieldset>
-    <legend>订单通知</legend>
-    <label
-      >企业微信机器人地址<input
-        class="form-input"
-        v-model="cfg.wecom_webhook"
-        autocomplete="off"
-        placeholder="填写你自己的通知地址"
-    /></label>
+    <legend>消息通知</legend>
+    <p class="cfg-hint">下单、付款、注册、用户提问都会推送到下面配置的群里。飞书和企业微信可以同时开，互不影响；地址留空就不发。</p>
+
+    <div class="notify-card">
+      <div class="notify-head">
+        <span class="notify-name"
+          ><i class="notify-dot" :class="cfg.feishu_webhook?'on':''"></i>飞书机器人</span
+        >
+        <button
+          class="notify-test"
+          :disabled="!!testing"
+          @click="testNotify('feishu')"
+        >
+          [[testing==='feishu'?'发送中…':'发送测试']]
+        </button>
+      </div>
+      <label
+        >Webhook 地址<input
+          class="form-input"
+          v-model="cfg.feishu_webhook"
+          autocomplete="off"
+          placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx"
+      /></label>
+      <label
+        >签名校验 Secret（选填）<input
+          class="form-input"
+          v-model="cfg.feishu_secret"
+          autocomplete="off"
+          placeholder="机器人开启「签名校验」时才需要填"
+      /></label>
+      <div class="notify-switches">
+        <label v-for="s in feishuSwitches" :key="s[0]"
+          ><input
+            type="checkbox"
+            v-model="cfg[s[0]]"
+            true-value="1"
+            false-value="0"
+          />[[ s[1] ]]</label
+        >
+      </div>
+    </div>
+
+    <div class="notify-card">
+      <div class="notify-head">
+        <span class="notify-name"
+          ><i class="notify-dot" :class="cfg.wecom_webhook?'on':''"></i>企业微信机器人</span
+        >
+        <button
+          class="notify-test"
+          :disabled="!!testing"
+          @click="testNotify('wecom')"
+        >
+          [[testing==='wecom'?'发送中…':'发送测试']]
+        </button>
+      </div>
+      <label
+        >Webhook 地址<input
+          class="form-input"
+          v-model="cfg.wecom_webhook"
+          autocomplete="off"
+          placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"
+      /></label>
+      <div class="notify-switches">
+        <label v-for="s in wecomSwitches" :key="s[0]"
+          ><input
+            type="checkbox"
+            v-model="cfg[s[0]]"
+            true-value="1"
+            false-value="0"
+          />[[ s[1] ]]</label
+        >
+      </div>
+    </div>
   </fieldset>
   <button class="btn-primary" @click="save" :disabled="saving">
     [[saving?'保存中…':'保存配置']]
@@ -72,6 +151,49 @@
 </div>
 {/block}{block name="js"}
 <script>
-  Vue.createApp({delimiters:['[[',']]'],data:()=>({cfg:{:json_encode($config, JSON_UNESCAPED_UNICODE)},saving:false,baseFields:[['site_name','网站名称','资料站'],['site_footer','页脚文字'],['site_keywords','搜索关键词'],['site_icp','备案信息'],['site_description','网站简介'],['site_logo','Logo 地址'],['site_favicon','网站图标地址']],mailFields:[['smtp_host','SMTP 服务器'],['smtp_port','SMTP 端口'],['smtp_user','邮件账号'],['smtp_pass','邮件授权码'],['smtp_from_name','发件人名称']]}),methods:{async save(){this.saving=true;const r=await BizHelper.request('/admin/config/site',this.cfg);this.saving=false;BizHelper.toast(r.code===0?'配置已保存':r.msg,r.code===0?'success':'error');}}}).mount('#settings-app');
+  const NOTIFY_DEFAULT = {
+    feishu_notify_order: '1',
+    feishu_notify_paid: '1',
+    feishu_notify_free: '1',
+    feishu_notify_user: '1',
+    feishu_notify_comment: '1',
+    wecom_notify_pending: '1',
+    wecom_notify_paid: '1'
+  };
+  Vue.createApp({
+    delimiters: ['[[', ']]'],
+    data: () => ({
+      cfg: Object.assign({}, NOTIFY_DEFAULT, {:json_encode($config, JSON_UNESCAPED_UNICODE)}),
+      saving: false,
+      testing: '',
+      baseFields: [['site_name', '网站名称', '资料站'], ['site_footer', '页脚文字'], ['site_keywords', '搜索关键词'], ['site_icp', '备案信息'], ['site_description', '网站简介'], ['site_logo', 'Logo 地址'], ['site_favicon', '网站图标地址']],
+      mailFields: [['smtp_host', 'SMTP 服务器'], ['smtp_port', 'SMTP 端口'], ['smtp_user', '邮件账号'], ['smtp_pass', '邮件授权码'], ['smtp_from_name', '发件人名称']],
+      feishuSwitches: [
+        ['feishu_notify_order', '新订单（待付款）'],
+        ['feishu_notify_paid', '订单已付款'],
+        ['feishu_notify_free', '免费资料领取'],
+        ['feishu_notify_user', '新用户注册'],
+        ['feishu_notify_comment', '用户提问']
+      ],
+      wecomSwitches: [
+        ['wecom_notify_pending', '新订单（待付款）'],
+        ['wecom_notify_paid', '订单已付款']
+      ]
+    }),
+    methods: {
+      async save() {
+        this.saving = true;
+        const r = await BizHelper.request('/admin/config/site', this.cfg);
+        this.saving = false;
+        BizHelper.toast(r.code === 0 ? '配置已保存' : r.msg, r.code === 0 ? 'success' : 'error');
+      },
+      async testNotify(channel) {
+        this.testing = channel;
+        const r = await BizHelper.request('/admin/config/notify-test', { channel });
+        this.testing = '';
+        BizHelper.toast(r.msg || (r.code === 0 ? '已发送' : '发送失败'), r.code === 0 ? 'success' : 'error');
+      }
+    }
+  }).mount('#settings-app');
 </script>
 {/block}

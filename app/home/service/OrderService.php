@@ -6,7 +6,7 @@ use app\common\model\Order;
 use app\common\model\CartItem;
 use app\common\model\OrderItem;
 use app\common\service\VisitService;
-use app\common\service\WecomNotifyService;
+use app\common\service\NotifyService;
 use think\facade\Db;
 
 class OrderService
@@ -147,7 +147,7 @@ class OrderService
         });
 
         // 通知放在事务提交之后：外部 HTTP 请求不该占着数据库事务
-        WecomNotifyService::orderCreated(Order::find($result['id']));
+        NotifyService::orderCreated(Order::find($result['id']));
         return $result;
     }
 
@@ -163,7 +163,11 @@ class OrderService
         if ($affected) {
             // 0 元的卡密商品也要发卡
             $order = Order::where('order_no', $orderNo)->find();
-            if ($order) (new \app\common\service\CardKeyService())->assignForOrder($order);
+            if ($order) {
+                (new \app\common\service\CardKeyService())->assignForOrder($order);
+                // 免费领取也算一次下单，飞书上留个痕
+                NotifyService::orderFree($order);
+            }
 
             // 领到手了就从购物车移走
             $ids = OrderItem::where('order_no', $orderNo)->column('material_id');

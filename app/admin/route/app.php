@@ -76,6 +76,8 @@ Route::group('/config', function () {
     Route::get('/payment', 'Config/payment');
     Route::post('/payment', 'Config/savePayment');
     Route::post('/upload-image', 'Config/uploadImage');
+    // 通知渠道连通性测试（飞书 / 企业微信）
+    Route::post('/notify-test', 'Config/testNotify');
 
     // 用户提问
     Route::get('/question', 'Question/index');

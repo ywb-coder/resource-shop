@@ -19,6 +19,7 @@ class Index extends Base
         32 => 'fa-graduation-cap',
         33 => 'fa-house-chimney',
         34 => 'fa-scale-balanced',
+        35 => 'fa-clapperboard',
     ];
 
     public function index(): \think\Response
@@ -58,7 +59,9 @@ class Index extends Base
                 'id'    => (int) $c['id'],
                 'name'  => $c['name'],
                 'count' => $n,
-                'icon'  => self::CAT_ICONS[(int) $c['id']] ?? 'fa-shapes',
+                // 优先用后台分类里配置的图标，没配才回落到映射表；新增分类不必再改代码
+                'icon'  => trim(str_replace('fa-solid', '', (string) ($c['icon'] ?? '')))
+                           ?: (self::CAT_ICONS[(int) $c['id']] ?? 'fa-shapes'),
             ];
         }
         usort($skillCats, fn ($a, $b) => $b['count'] <=> $a['count']);

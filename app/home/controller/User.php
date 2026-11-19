@@ -204,14 +204,15 @@ class User extends Base
             return $this->error('资料不存在');
         }
 
-        // 记录下载日志
-        \app\common\model\DownloadLog::create([
-            'user_id'     => $this->userId,
-            'order_id'    => (int) $item->order_id,
-            'material_id' => $material->id,
-            'type'        => 1,
-            'ip'          => request()->ip(),
-        ]);
+        // 记录下载（同一用户 60 秒内重复拉同一份只记一次，详见 DownloadService）
+        \app\common\service\DownloadService::record(
+            (int) $material->id,
+            $this->userId,
+            (float) $material->price > 0
+                ? \app\common\service\DownloadService::TYPE_PAID
+                : \app\common\service\DownloadService::TYPE_FREE,
+            (int) $item->order_id
+        );
 
         return $this->deliverMaterial($material, $this->userId);
     }

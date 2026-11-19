@@ -96,7 +96,14 @@ class MaterialService extends BaseCrudService
     public function list(array $params = [], int $page = 1, int $pageSize = 20): array
     {
         $result = parent::list($params, $page, $pageSize);
+
+        // 下载量：一次查完当前页，避免逐行查库
+        $downloads = \app\common\service\DownloadService::totals(
+            array_map(fn ($r) => (int) $r['id'], $result['list'])
+        );
+
         foreach ($result['list'] as &$row) {
+            $row['download_count'] = $downloads[(int) $row['id']] ?? 0;
             if ((int) ($row['goods_type'] ?? 1) === \app\common\service\CardKeyService::GOODS_CARD) {
                 $row['stock'] = \app\common\service\CardKeyService::stock((int) $row['id']);
             }

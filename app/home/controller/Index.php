@@ -27,20 +27,26 @@ class Index extends Base
         $service = new MaterialService();
         // 首页展示按推荐权重的头部内容，而不是单纯最新的 12 条
         $products = $service->getTop(12);
-        // 首页精选：优先人工指定的热门，其次取排在最前的一条
-        $featured = \app\common\model\Material::where('status', 1)
-            ->where('is_hidden', 0)
-            ->where('is_hot', 1)
-            ->where('category_id', '<>', 33)
-            ->order('sort', 'desc')
-            ->find();
-        if (!$featured) {
-            $featured = $products[0] ?? null;
+
+        // 首页「本周精选」轮播：后台手工指定的 + 每周一按下载量自动挑的，最多 5 个
+        $featuredService = new \app\common\service\FeaturedService();
+        $featuredList    = $featuredService->forHome();
+        if (!$featuredList) {
+            // 还没配过 / 自动任务还没跑过，先按站内推荐顺序兜几个，别让轮播空着
+            $featuredList = $featuredService->bootstrap(\app\common\service\FeaturedService::SLOTS);
         }
-        if ($featured) {
-            $featured = is_array($featured) ? $featured : $featured->toArray();
-            $featured['category_name'] = \app\common\model\Category::where('id', $featured['category_id'] ?? 0)->value('name') ?: '技能';
+        $featured = $featuredList[0] ?? null;
+
+        // 模板引擎对三元/函数写法兼容性差，样式类、封面地址这类都在这里算好再交给模板
+        foreach ($featuredList as $i => &$f) {
+            $f['active_class'] = $i === 0 ? 'is-active' : '';
+            $f['loading_attr'] = $i === 0 ? 'eager' : 'lazy';
+            $f['dot_index']    = $i;
+            $f['cover_url']    = $f['cover'] ? $f['cover'] . '?v=3' : '/static/img/sample-fallback.svg';
+            $f['cat']          = $f['category_name'] ?: '技能';
         }
+        unset($f);
+        $featuredFirst = $featuredList[0] ?? null;
 
         $counts = $service->categoryCounts();
         $typeCounts = $service->resTypeCounts();
@@ -99,15 +105,17 @@ class Index extends Base
             ];
         }
 
-        // 精选那条如果就在展示列表里，去掉重复
-        if ($featured) {
-            $fid = is_array($featured) ? (int) $featured['id'] : (int) $featured->id;
-            $products = array_values(array_filter($products, fn ($p) => (int) $p['id'] !== $fid));
+        // 精选那几个如果也在下面「最新上架」列表里，去掉重复
+        if ($featuredList) {
+            $fids = array_map(fn ($f) => (int) $f['id'], $featuredList);
+            $products = array_values(array_filter($products, fn ($p) => !in_array((int) $p['id'], $fids, true)));
         }
 
         return $this->view('index/index', [
             'products' => $products,
             'featured' => $featured,
+            'featuredList' => $featuredList,
+            'featuredFirst' => $featuredFirst,
             'sections' => $sections,
             'skillCats' => $skillCats,
             'skillTotal' => (int) ($typeCounts['skill'] ?? 0),

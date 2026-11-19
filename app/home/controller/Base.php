@@ -2,6 +2,7 @@
 namespace app\home\controller;
 
 use app\common\service\DeliveryService;
+use app\common\service\DownloadService;
 use app\common\service\SystemConfigService;
 use app\home\service\CartService;
 use app\home\service\MaterialService;
@@ -71,6 +72,12 @@ class Base
             } catch (\RuntimeException $e) {
                 return $this->error($e->getMessage());
             }
+            // 真正吐文件流才算一次下载（前面拿交付信息的 JSON 请求也会记，靠 DownloadService 去重）
+            DownloadService::record(
+                (int) $material->id,
+                $userId,
+                (float) $material->price > 0 ? DownloadService::TYPE_PAID : DownloadService::TYPE_FREE
+            );
             return new \app\common\response\StreamFile($realFile, (string) ($material->file_name ?: ''));
         }
 

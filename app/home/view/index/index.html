@@ -25,20 +25,153 @@
     </div>
   </div>
   <div class="hero-feature">
-    {if $featured}
-    <div class="feature-stage">
+    {if $featuredList}
+    <div class="feature-stage" id="featureCarousel">
       <span class="feature-flag">本周精选</span>
-      <a href="/detail/{$featured.id}" class="feature-poster"
-        ><img src="{$featured.cover ? $featured.cover.'?v=3' : '/static/img/sample-fallback.svg'}" alt="{$featured.title}"
-      /></a>
+      <div class="feature-slides">
+        <div class="feature-track" id="featTrack">
+          {foreach $featuredList as $f}
+          <a
+            href="/detail/{$f.id}"
+            class="feature-slide"
+            data-cat="{$f.cat}"
+            data-title="{$f.title}"
+            data-href="/detail/{$f.id}"
+            aria-label="{$f.title}"
+            ><img src="{$f.cover_url}" alt="{$f.title}" loading="{$f.loading_attr}"
+          /></a>
+          {/foreach}
+        </div>
+        <button type="button" class="feature-nav feature-nav-prev" aria-label="上一个精选"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="feature-nav feature-nav-next" aria-label="下一个精选"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
       <div class="feature-meta">
-        <small>{$featured.category_name|default='技能'}</small>
-        <a href="/detail/{$featured.id}">{$featured.title}</a>
+        <small id="featCat">{$featuredFirst.cat}</small>
+        <a id="featTitle" href="/detail/{$featuredFirst.id}">{$featuredFirst.title}</a>
+      </div>
+      <div class="feature-dots">
+        {foreach $featuredList as $f}
+        <button type="button" class="{$f.active_class}" data-i="{$f.dot_index}" aria-label="第 {$f.position} 个精选"></button>
+        {/foreach}
       </div>
     </div>
     {/if}
   </div>
 </section>
+
+<script>
+  // 本周精选轮播：横向滑动 + 左右箭头 + 圆点，鼠标悬停/切到后台时暂停
+  (function () {
+    var stage = document.getElementById("featureCarousel");
+    if (!stage) return;
+    var track = document.getElementById("featTrack");
+    var slides = stage.querySelectorAll(".feature-slide");
+    if (!track || slides.length < 2) return;
+    var dots = stage.querySelectorAll(".feature-dots button");
+    var catEl = document.getElementById("featCat");
+    var titleEl = document.getElementById("featTitle");
+    var prevBtn = stage.querySelector(".feature-nav-prev");
+    var nextBtn = stage.querySelector(".feature-nav-next");
+    var DURATION = 5000;
+    var idx = 0;
+    var timer = null;
+    var reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function show(i) {
+      idx = (i + slides.length) % slides.length;
+      track.style.transform = "translateX(-" + idx * 100 + "%)";
+      for (var n = 0; n < dots.length; n++) {
+        dots[n].classList.toggle("is-active", n === idx);
+      }
+      var cur = slides[idx];
+      if (catEl) catEl.textContent = cur.getAttribute("data-cat") || "技能";
+      if (titleEl) {
+        titleEl.textContent = cur.getAttribute("data-title") || "";
+        titleEl.setAttribute("href", cur.getAttribute("data-href") || "#");
+      }
+    }
+
+    function start() {
+      if (reduce) return;
+      stop();
+      timer = setInterval(function () {
+        show(idx + 1);
+      }, DURATION);
+    }
+    function stop() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    for (var d = 0; d < dots.length; d++) {
+      dots[d].addEventListener("click", function (e) {
+        e.preventDefault();
+        show(parseInt(this.getAttribute("data-i"), 10) || 0);
+        start();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        show(idx - 1);
+        start();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        show(idx + 1);
+        start();
+      });
+    }
+
+    stage.addEventListener("mouseenter", stop);
+    stage.addEventListener("mouseleave", start);
+    stage.addEventListener("focusin", stop);
+    stage.addEventListener("focusout", start);
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    // 键盘左右方向键也能翻页
+    stage.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { show(idx - 1); start(); }
+      else if (e.key === "ArrowRight") { show(idx + 1); start(); }
+    });
+
+    // 手机上支持左右滑
+    var startX = null;
+    stage.addEventListener(
+      "touchstart",
+      function (e) {
+        startX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+    stage.addEventListener(
+      "touchend",
+      function (e) {
+        if (startX === null) return;
+        var dx = e.changedTouches[0].clientX - startX;
+        startX = null;
+        if (Math.abs(dx) < 36) return;
+        show(dx < 0 ? idx + 1 : idx - 1);
+        start();
+      },
+      { passive: true }
+    );
+
+    show(0);
+    start();
+  })();
+</script>
 
 <section class="store-container section-block">
   <div class="section-head">

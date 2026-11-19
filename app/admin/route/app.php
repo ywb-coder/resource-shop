@@ -34,6 +34,18 @@ Route::group('/material', function () {
     Route::post('/delete', 'Material/delete');
 });
 
+// 首页精选（轮播 5 个位）
+Route::group('/featured', function () {
+    Route::get('/', 'Featured/index');
+    Route::get('/data', 'Featured/data');
+    Route::get('/search', 'Featured/search');
+    Route::post('/set', 'Featured/set');
+    Route::post('/clear', 'Featured/clear');
+    Route::post('/pin', 'Featured/pin');
+    Route::post('/auto', 'Featured/auto');
+    Route::post('/refresh', 'Featured/refresh');
+});
+
 // 免费资料（上传复用资料管理的 /material/upload/* 接口）
 Route::group('/freebie', function () {
     Route::get('/', 'Freebie/index');

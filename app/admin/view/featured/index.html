@@ -1,0 +1,294 @@
+{extend name="layout/base" /}
+{block name="content"}
+<div id="app" v-cloak>
+
+  <div class="admin-card fx-head">
+    <div class="fx-head-main">
+      <div class="fx-title">首页「本周精选」轮播</div>
+      <div class="fx-sub">
+        最多 5 个位置，展示在首页右上角的深蓝卡片里。每周一 03:00 自动按<b>近 7 天下载量</b>重排；
+        标了「固定」的位置不会被自动更新覆盖。
+        <span v-if="lastRun">上次更新：[[ lastRunText ]]</span>
+        <span v-else>还没有自动更新过，保存开关后到周一会自动跑。</span>
+      </div>
+    </div>
+    <div class="fx-head-actions">
+      <label class="fx-switch" :class="{ on: auto }">
+        <input type="checkbox" :checked="auto" @change="toggleAuto($event)" />
+        <span class="fx-switch-track"><i></i></span>
+        <span class="fx-switch-text">每周自动更新</span>
+      </label>
+      <button class="btn-primary" @click="refreshNow" :disabled="refreshing">
+        <i class="fa-solid" :class="refreshing ? 'fa-spinner fa-spin' : 'fa-rotate'"></i>
+        [[ refreshing ? '更新中…' : '立即按下载量更新' ]]
+      </button>
+    </div>
+  </div>
+
+  <div class="fx-grid">
+    <div class="admin-card fx-slot" v-for="s in slots" :key="s.position">
+      <div class="fx-slot-head">
+        <span class="fx-no">[[ s.position ]]</span>
+        <span class="badge" :class="s.source === 'manual' ? 'badge-primary' : 'badge-default'">
+          [[ s.source === 'manual' ? '手动' : '自动' ]]
+        </span>
+        <span v-if="s.pinned" class="badge badge-warning">已固定</span>
+        <span class="fx-spacer"></span>
+        <button class="biz-btn biz-btn-edit" @click="openPicker(s)">
+          <i class="fa-solid fa-arrows-rotate"></i> 更换
+        </button>
+      </div>
+
+      <div class="fx-slot-body" v-if="s.material">
+        <img class="fx-cover" :src="s.material.cover || '/static/img/sample-fallback.svg'" :alt="s.material.title">
+        <div class="fx-meta">
+          <div class="fx-name">[[ s.material.title ]]</div>
+          <div class="fx-tags">
+            <span class="fx-tag">[[ s.material.category_name ]]</span>
+            <span class="fx-tag" v-if="s.ref_count">入选时近 7 天下载 [[ s.ref_count ]]</span>
+          </div>
+          <a class="fx-link" :href="'/detail/' + s.material.id" target="_blank">查看详情 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+      </div>
+      <div class="fx-slot-empty" v-else>
+        <i class="fa-regular fa-square-plus"></i>
+        <p>空位，点「更换」选一个技能</p>
+      </div>
+
+      <div class="fx-slot-foot">
+        <button class="biz-btn" @click="togglePin(s)" :disabled="!s.material">
+          <i class="fa-solid" :class="s.pinned ? 'fa-lock-open' : 'fa-lock'"></i>
+          [[ s.pinned ? '取消固定' : '固定此位' ]]
+        </button>
+        <button class="biz-btn biz-btn-del" @click="clearSlot(s)" :disabled="!s.material">
+          <i class="fa-solid fa-trash-can"></i> 清空
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-card fx-rank">
+    <div class="biz-toolbar">
+      <span class="fx-title" style="font-size:14px;">近 7 天下载排行</span>
+      <span class="fx-sub" style="margin-left:10px;">自动更新就是按这张表从上往下取，固定位已占的不重复计入</span>
+    </div>
+    <table class="biz-table" v-if="ranking.length">
+      <thead>
+        <tr>
+          <th style="width:56px;">排名</th>
+          <th style="width:64px;">封面</th>
+          <th>标题</th>
+          <th style="width:110px;">分类</th>
+          <th style="width:100px;">近 7 天</th>
+          <th style="width:90px;">累计</th>
+          <th style="width:110px;">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="r in ranking" :key="r.id">
+          <td><span class="fx-rank-no" :class="{ top: r.rank <= 3 }">[[ r.rank ]]</span></td>
+          <td><img :src="r.cover || '/static/img/sample-fallback.svg'" style="width:44px;height:32px;border-radius:6px;object-fit:cover;"></td>
+          <td style="font-weight:600;">[[ r.title ]]</td>
+          <td><span class="badge badge-default">[[ r.category ]]</span></td>
+          <td><b style="color:#1677ff;">[[ r.week ]]</b></td>
+          <td style="color:var(--text-muted);">[[ r.total ]]</td>
+          <td>
+            <button class="biz-btn biz-btn-edit" @click="addFromRank(r)">加入精选</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-else class="biz-empty">
+      <i class="fa-solid fa-chart-simple"></i>
+      <p>最近 7 天还没有下载记录。有人下载后这里就会有数据。</p>
+    </div>
+  </div>
+
+  <!-- 选资料 -->
+  <div class="modal-mask" v-if="picker.show" style="display:flex;">
+    <div class="modal-box" style="width:680px;">
+      <div class="modal-header">
+        <h4><i class="fa-solid fa-magnifying-glass" style="color:var(--primary);margin-right:6px;"></i>选择第 [[ picker.position ]] 位的技能</h4>
+        <button class="modal-close" @click="picker.show = false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input class="form-input" v-model="picker.kw" @keyup.enter="search" placeholder="输入技能标题或资料 ID，回车搜索">
+        <div class="fx-pick-list">
+          <div class="fx-pick" v-for="m in picker.list" :key="m.id" @click="choose(m)">
+            <img :src="m.cover || '/static/img/sample-fallback.svg'" alt="">
+            <div class="fx-pick-meta">
+              <div class="fx-pick-title">[[ m.title ]]</div>
+              <div class="fx-pick-sub">#[[ m.id ]] · [[ m.category ]]</div>
+            </div>
+            <i class="fa-solid fa-plus"></i>
+          </div>
+          <div v-if="!picker.loading && !picker.list.length" class="biz-empty" style="padding:26px 0;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <p>没搜到，换个关键词试试</p>
+          </div>
+          <div v-if="picker.loading" class="biz-loading" style="padding:26px 0;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{/block}
+
+{block name="js"}
+<style>
+  .fx-head{ display:flex; align-items:flex-start; gap:16px; padding:18px 20px; margin-bottom:16px; flex-wrap:wrap; }
+  .fx-head-main{ min-width:260px; flex:1; }
+  .fx-title{ font-size:15px; font-weight:700; color:var(--text-main); }
+  .fx-sub{ font-size:12.5px; color:var(--text-muted); line-height:1.75; margin-top:6px; }
+  .fx-sub b{ color:var(--text-main); }
+  .fx-head-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .fx-switch{ display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+  .fx-switch input{ position:absolute; opacity:0; width:0; height:0; }
+  .fx-switch-track{ width:38px; height:22px; border-radius:999px; background:#d6dbe6; position:relative; transition:background .2s; flex:none; }
+  .fx-switch-track i{ position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.18); transition:transform .2s; }
+  .fx-switch.on .fx-switch-track{ background:#1677ff; }
+  .fx-switch.on .fx-switch-track i{ transform:translateX(16px); }
+  .fx-switch-text{ font-size:13px; color:var(--text-main); }
+
+  .fx-grid{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; }
+  @media (max-width:1400px){ .fx-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+  @media (max-width:900px){ .fx-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:640px){ .fx-grid{ grid-template-columns:1fr; } }
+
+  .fx-slot{ padding:14px; display:flex; flex-direction:column; gap:12px; }
+  .fx-slot-head{ display:flex; align-items:center; gap:6px; }
+  .fx-no{ width:22px; height:22px; border-radius:7px; background:#eef3ff; color:#1677ff; font-weight:700; font-size:12px; display:grid; place-items:center; }
+  .fx-spacer{ flex:1; }
+  .fx-slot-body{ display:flex; gap:10px; }
+  .fx-cover{ width:78px; height:56px; border-radius:8px; object-fit:cover; flex:none; background:#f2f4f8; }
+  .fx-meta{ min-width:0; }
+  .fx-name{ font-size:13px; font-weight:600; color:var(--text-main); line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .fx-tags{ display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }
+  .fx-tag{ font-size:11px; color:#6b7688; background:#f4f6fa; border-radius:5px; padding:2px 6px; }
+  .fx-link{ display:inline-block; margin-top:6px; font-size:12px; color:#1677ff; }
+  .fx-slot-empty{ border:1px dashed #d6dbe6; border-radius:10px; padding:18px 10px; text-align:center; color:var(--text-muted); }
+  .fx-slot-empty i{ font-size:20px; opacity:.5; }
+  .fx-slot-empty p{ font-size:12px; margin-top:6px; }
+  .fx-slot-foot{ display:flex; gap:8px; margin-top:auto; }
+  .fx-slot-foot .biz-btn{ flex:1; justify-content:center; }
+
+  .fx-rank{ margin-top:16px; }
+  .fx-rank-no{ display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; background:#f2f4f8; color:#6b7688; font-size:12px; font-weight:700; }
+  .fx-rank-no.top{ background:#fff3e6; color:#d97706; }
+
+  .fx-pick-list{ margin-top:12px; max-height:420px; overflow-y:auto; }
+  .fx-pick{ display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid #eef1f6; border-radius:10px; margin-bottom:8px; cursor:pointer; transition:.15s; }
+  .fx-pick:hover{ border-color:#1677ff; background:#f7faff; }
+  .fx-pick img{ width:64px; height:44px; border-radius:7px; object-fit:cover; background:#f2f4f8; flex:none; }
+  .fx-pick-meta{ min-width:0; flex:1; }
+  .fx-pick-title{ font-size:13px; font-weight:600; color:var(--text-main); }
+  .fx-pick-sub{ font-size:11.5px; color:var(--text-muted); margin-top:3px; }
+  .fx-pick > i{ color:#1677ff; }
+</style>
+
+<script>
+_createAdminApp({
+  delimiters: ['[[', ']]'],
+  data() {
+    return {
+      slots: [],
+      ranking: [],
+      auto: true,
+      lastRun: 0,
+      refreshing: false,
+      picker: { show: false, position: 1, kw: '', list: [], loading: false }
+    };
+  },
+  computed: {
+    lastRunText() {
+      return this.lastRun ? BizHelper.formatTime(this.lastRun) : '';
+    }
+  },
+  mounted() { this.load(); },
+  methods: {
+    async load() {
+      const r = await BizHelper.get('/admin/featured/data');
+      if (r.code !== 0) return BizHelper.toast(r.msg || '加载失败', 'error');
+      this.slots = r.data.slots;
+      this.ranking = r.data.ranking;
+      this.auto = !!r.data.auto;
+      this.lastRun = r.data.last_run;
+    },
+    async search() {
+      this.picker.loading = true;
+      const r = await BizHelper.get('/admin/featured/search?q=' + encodeURIComponent(this.picker.kw.trim()));
+      this.picker.loading = false;
+      if (r.code === 0) this.picker.list = r.data;
+      else BizHelper.toast(r.msg || '搜索失败', 'error');
+    },
+    openPicker(slot) {
+      this.picker = { show: true, position: slot.position, kw: '', list: [], loading: true };
+      this.search();
+    },
+    async choose(m) {
+      const r = await BizHelper.request('/admin/featured/set', {
+        position: this.picker.position,
+        material_id: m.id
+      });
+      if (r.code === 0) {
+        this.slots = r.data;
+        this.picker.show = false;
+        BizHelper.toast('已放入第 ' + this.picker.position + ' 位');
+        this.load();
+      } else {
+        BizHelper.toast(r.msg || '设置失败', 'error');
+      }
+    },
+    async togglePin(slot) {
+      const r = await BizHelper.request('/admin/featured/pin', { position: slot.position });
+      if (r.code === 0) {
+        slot.pinned = r.data.pinned;
+        BizHelper.toast(r.data.pinned ? '已固定，自动更新不会覆盖' : '已取消固定');
+      } else {
+        BizHelper.toast(r.msg || '操作失败', 'error');
+      }
+    },
+    async clearSlot(slot) {
+      const ok = await BizHelper.confirm('清空第 ' + slot.position + ' 位？下周自动更新会重新填上。');
+      if (!ok) return;
+      const r = await BizHelper.request('/admin/featured/clear', { position: slot.position });
+      if (r.code === 0) { this.slots = r.data; BizHelper.toast('已清空'); this.load(); }
+      else BizHelper.toast(r.msg || '清空失败', 'error');
+    },
+    async toggleAuto(e) {
+      const on = e.target.checked;
+      const r = await BizHelper.request('/admin/featured/auto', { enabled: on ? 1 : 0 });
+      if (r.code === 0) {
+        this.auto = on;
+        BizHelper.toast(on ? '已开启每周自动更新' : '已关闭自动更新');
+      } else {
+        e.target.checked = !on;
+        BizHelper.toast(r.msg || '保存失败', 'error');
+      }
+    },
+    async refreshNow() {
+      this.refreshing = true;
+      const r = await BizHelper.request('/admin/featured/refresh', {});
+      this.refreshing = false;
+      if (r.code === 0) {
+        this.slots = r.data.slots;
+        BizHelper.toast('已按近 7 天下载量更新');
+        this.load();
+      } else {
+        BizHelper.toast(r.msg || '更新失败', 'error');
+      }
+    },
+    async addFromRank(row) {
+      const empty = this.slots.find(s => !s.material);
+      if (!empty) return BizHelper.toast('5 个位置都满了，先清空一个再放', 'error');
+      const r = await BizHelper.request('/admin/featured/set', {
+        position: empty.position,
+        material_id: row.id
+      });
+      if (r.code === 0) { this.slots = r.data; BizHelper.toast('已放入第 ' + empty.position + ' 位'); this.load(); }
+      else BizHelper.toast(r.msg || '设置失败', 'error');
+    }
+  }
+}).mount('#app');
+</script>
+{/block}

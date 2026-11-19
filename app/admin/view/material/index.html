@@ -33,6 +33,7 @@ function categoryTreeOpts(cats) {
               <th>分类</th>
               <th>价格</th>
               <th>销量</th>
+              <th title="点下载按钮实际下载的次数">下载</th>
               <th>状态</th>
               <th style="width:220px;white-space:nowrap">操作</th>
             </tr>
@@ -74,6 +75,10 @@ function categoryTreeOpts(cats) {
                 <span v-if="item.original_price>0" class="price-origin">¥[[ item.original_price ]]</span>
               </td>
               <td>[[ item.sales ]]</td>
+              <td>
+                <span v-if="item.download_count > 0" title="累计下载次数">[[ item.download_count ]]</span>
+                <span v-else style="color:var(--text-muted)">0</span>
+              </td>
               <td>
                 <span class="badge" :class="item.status==1?'badge-success':item.status==2?'badge-warning':'badge-danger'">
                   [[ item.status==1?'上架':item.status==2?'草稿':'下架' ]]

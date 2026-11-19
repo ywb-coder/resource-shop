@@ -1,84 +1,123 @@
 {extend name="layout/base" /} {block name="content"}
-<section class="store-hero store-container">
-  <div class="hero-editorial">
-    <span class="eyebrow">THE RESOURCE EDIT · 01</span>
-    <h1>把需要的灵感，<br />放进你的资料夹<span>。</span></h1>
-    <p>
-      从一张计划表，到一次活动的完整思路。找一点新方法，也为日常留一点从容。
+<section class="hero store-container">
+  <div class="hero-copy">
+    <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> 开源 · 可商用 · 免费下载</span>
+    <h1>给 AI 装上专业技能，<br />把重复的活交出去<span>。</span></h1>
+    <p class="hero-lead">
+      收录 <b>{$resourceCount}</b> 个开源 AI 技能，覆盖电商运营、营销销售、自媒体、文案写作与办公效率。
+      下载压缩包，把文件发给你的 AI，一句话就能装好。
     </p>
-    <form class="store-search" action="/list">
+    <form class="store-search hero-search" action="/list">
       <i class="fa-solid fa-magnifying-glass"></i
       ><input
         name="q"
-        aria-label="搜索资料"
-        placeholder="试试搜索：计划、阅读、旅行"
-      /><button>去发现 ↗</button>
+        aria-label="搜索技能"
+        placeholder="搜索：亚马逊选品、小红书文案、简历筛选"
+      /><button>搜索技能</button>
     </form>
-    <div class="hero-metrics">
-      <span><b>{$resourceCount}</b> 份精选资料</span
-      ><span><b>{:count($categories)}</b> 个灵感分类</span
-      ><a href="/free">免费资料 ↗</a>
+    <div class="hero-tags">
+      <span>热门：</span>
+      <a href="/list?q=亚马逊">亚马逊</a>
+      <a href="/list?q=小红书">小红书</a>
+      <a href="/list?q=SEO">SEO</a>
+      <a href="/list?q=简历">简历</a>
+      <a href="/list?q=PPT">PPT</a>
     </div>
   </div>
   <div class="hero-feature">
     {if $featured}
-    <div class="feature-note">
-      <span>本期精选</span><i class="fa-solid fa-arrow-down"></i>
-    </div>
-    <a href="/detail/{$featured.id}" class="feature-book"
-      ><img src="{$featured.cover ? $featured.cover.'?v=2' : '/static/img/sample-fallback.svg'}" alt="{$featured.title}"
-    /></a>
-    <div class="feature-caption">
-      <div>
-        <small>TAKE A CLOSER LOOK</small>
-        <h2>{$featured.title}</h2>
+    <div class="feature-stage">
+      <span class="feature-flag">本周精选</span>
+      <a href="/detail/{$featured.id}" class="feature-poster"
+        ><img src="{$featured.cover ? $featured.cover.'?v=3' : '/static/img/sample-fallback.svg'}" alt="{$featured.title}"
+      /></a>
+      <div class="feature-meta">
+        <small>{$featured.category_name|default='技能'}</small>
+        <a href="/detail/{$featured.id}">{$featured.title}</a>
       </div>
-      <a href="/detail/{$featured.id}" aria-label="查看精选资料">↗</a>
     </div>
     {/if}
   </div>
 </section>
-<section class="store-categories store-container">
-  <span class="eyebrow">按兴趣挑选</span>
-  <div>
-    {foreach $categories as $cat}{if empty($cat.parent_id)}<a
-      href="/list?category_id={$cat.id}"
-      >{$cat.name}<span>↗</span></a
-    >{/if}{/foreach}
+
+<section class="store-container section-block">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">三大板块</span>
+      <h2>这里有什么</h2>
+    </div>
+  </div>
+  <div class="section-grid">
+    {foreach $sections as $s}
+    <a class="section-card tone-{$s.tone}" href="{$s.url}">
+      <span class="sc-icon"><i class="fa-solid {$s.icon}"></i></span>
+      <span class="sc-en">{$s.en}</span>
+      <h3>{$s.name}</h3>
+      <p>{$s.desc}</p>
+      <span class="sc-foot"><b>{$s.count}</b> {$s.unit|default='个资源'} <i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+    {/foreach}
   </div>
 </section>
-<section class="store-container store-collection">
-  <div class="collection-heading">
+
+<section class="store-container section-block" id="cats">
+  <div class="section-head">
     <div>
-      <span class="eyebrow">THE COLLECTION</span>
-      <h2>一些值得收藏的小工具</h2>
+      <span class="eyebrow">按场景找</span>
+      <h2>你想解决的，是哪件事</h2>
     </div>
-    <a href="/list">查看全部资料 →</a>
+    <a href="/list?res_type=skill">全部技能 →</a>
+  </div>
+  <div class="cat-grid">
+    {foreach $skillCats as $c}
+    <a class="cat-tile" href="/list?category_id={$c.id}">
+      <i class="fa-solid {$c.icon}"></i>
+      <span>{$c.name}</span>
+      <small>{$c.count}</small>
+    </a>
+    {/foreach}
+  </div>
+</section>
+
+<section class="store-container section-block">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">最新上架</span>
+      <h2>刚收进来的技能</h2>
+    </div>
+    <a href="/list">查看全部 →</a>
   </div>
   <div class="resource-grid">
-    {foreach $products as $item}{include file="material/card" item=$item
-    /}{/foreach}
+    {foreach $products as $item}{include file="material/card" item=$item /}{/foreach}
   </div>
   {if empty($products)}
-  <div class="store-empty">资料正在准备中，稍后再来看看。</div>
+  <div class="store-empty">技能正在整理入库，稍后再来看看。</div>
   {/if}
 </section>
-<section class="store-container store-how">
-  <span class="eyebrow">从发现到拥有</span>
-  <div>
-    <b>01</b>
-    <h3>找一份需要的内容</h3>
-    <p>按分类浏览，也可以用关键词搜索。</p>
+
+<section class="store-container section-block how-block">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">三步用上</span>
+      <h2>不用懂技术，也不用改代码</h2>
+    </div>
   </div>
-  <div>
-    <b>02</b>
-    <h3>先看看，再决定</h3>
-    <p>介绍、目录和预览图，帮你了解内容。</p>
-  </div>
-  <div>
-    <b>03</b>
-    <h3>在资料夹里随时找回</h3>
-    <p>获取后从「我的资料」重新下载。</p>
+  <div class="how-grid">
+    <div class="how-item">
+      <b>01</b>
+      <h3>下载压缩包</h3>
+      <p>免费领取后，得到一个 zip 文件，里面是技能说明和素材。</p>
+    </div>
+    <div class="how-item">
+      <b>02</b>
+      <h3>发给你的 AI</h3>
+      <p>把 zip 拖进 Claude、ChatGPT、豆包、通义、Kimi 的对话框，说「帮我装这个技能」。</p>
+    </div>
+    <div class="how-item">
+      <b>03</b>
+      <h3>直接对话使用</h3>
+      <p>之后正常提需求，AI 会自己判断该不该用这个技能。</p>
+    </div>
   </div>
 </section>
 {/block}

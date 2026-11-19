@@ -23,7 +23,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v={:filemtime(public_path() . 'favicon-32.png')}" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v={:filemtime(public_path() . 'favicon-192.png')}" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v={:filemtime(public_path() . 'apple-touch-icon.png')}" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#2f56d6" />
     <link rel="stylesheet" href="/static/lib/fontawesome/css/all.min.css" />
     <link
       rel="stylesheet"
@@ -42,7 +42,7 @@
   </head>
   <body class="share-store">
     <div class="store-announcement">
-      一份灵感，一次整理，让生活与工作更有条理。
+      全部资源免费下载 · 开源可商用 · 支持 Claude / ChatGPT / 豆包 / Kimi
     </div>
     <header class="store-header">
       <a class="store-brand" href="/"
@@ -57,8 +57,9 @@
         ></a
       >
       <nav aria-label="主导航">
-        <a href="/">发现</a><a href="/list">全部资料</a
-        ><a href="/test">在线测试</a><a href="/free">免费领取</a>
+        <a href="/">发现</a><a href="/list?res_type=skill">Skill 技能</a
+        ><a href="/list?res_type=doc">资料软件</a><a href="/test">心理测试</a
+        ><a href="/list">全部资源</a>
       </nav>
       <div class="store-actions">
         <button
@@ -79,14 +80,14 @@
     <footer class="store-footer">
       <div>
         <a class="footer-wordmark" href="/"
-          >{$siteConfig.site_name|default='资料小铺'}<span
-            >把好用的内容，留在手边。</span
+          >{$siteConfig.site_name|default='知集科技'}<span
+            >开源 AI 技能与数字资源库</span
           ></a
         >
         <p>{$siteConfig.site_description|default=''}</p>
       </div>
       <div>
-        <a href="/list">浏览资料</a><a href="/user/center">我的资料</a
+        <a href="/list">浏览资源</a><a href="/user/center">我的资料</a
         ><a href="/user/orders">订单记录</a
         ><a href="/user/questions">问题反馈</a>
       </div>

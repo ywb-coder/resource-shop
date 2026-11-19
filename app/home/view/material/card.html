@@ -1,30 +1,24 @@
 <article class="resource-card">
-  <a class="resource-image" href="/detail/{$item.id}"
-    >{if ($item.res_type ?? '') == 'skill'}<span class="res-badge is-skill"
-      ><i class="fa-solid fa-wand-magic-sparkles"></i><span class="rb-t">Skill 技能</span><span class="rb-s">Skill</span></span
-    >{elseif ($item.res_type ?? '') == 'test'}<span class="res-badge is-test"
-      ><i class="fa-solid fa-clipboard-question"></i><span class="rb-t">心理测试</span><span class="rb-s">测试</span></span
-    >{elseif ($item.res_type ?? '') == 'software'}<span
-      class="res-badge is-software"
-      ><i class="fa-solid fa-compact-disc"></i><span class="rb-t">软件工具</span><span class="rb-s">软件</span></span
-    >{elseif ($item.res_type ?? '') == 'doc'}<span class="res-badge is-doc"
-      ><i class="fa-solid fa-file-lines"></i><span class="rb-t">资料</span><span class="rb-s">资料</span></span
-    >{elseif ($item.res_type ?? '') == 'course'}<span
-      class="res-badge is-course"
-      ><i class="fa-solid fa-chalkboard-user"></i><span class="rb-t">课程</span><span class="rb-s">课程</span></span
-    >{/if}<img
-      src="{$item.cover ? $item.cover.'?v=2' : '/static/img/sample-fallback.svg'}"
+  <a class="rc-cover" href="/detail/{$item.id}">
+    <img
+      src="{$item.cover ? $item.cover.'?v=3' : '/static/img/sample-fallback.svg'}"
       alt="{$item.title}"
       loading="lazy"
-  /></a>
-  <div class="resource-info">
-    <small>{$item.category_name|default=''}</small>
+    />
+    {if ($item.res_type ?? '') == 'skill'}<span class="res-badge is-skill"><i class="fa-solid fa-wand-magic-sparkles"></i>Skill</span
+    >{elseif ($item.res_type ?? '') == 'test'}<span class="res-badge is-test"><i class="fa-solid fa-clipboard-question"></i>测试</span
+    >{elseif ($item.res_type ?? '') == 'software'}<span class="res-badge is-software"><i class="fa-solid fa-compact-disc"></i>软件</span
+    >{elseif ($item.res_type ?? '') == 'doc'}<span class="res-badge is-doc"><i class="fa-solid fa-file-lines"></i>资料</span
+    >{elseif ($item.res_type ?? '') == 'course'}<span class="res-badge is-course"><i class="fa-solid fa-chalkboard-user"></i>课程</span
+    >{/if}
+  </a>
+  <div class="rc-body">
+    <small class="rc-cat">{$item.category_name|default='资源'}</small>
     <h3><a href="/detail/{$item.id}">{$item.title}</a></h3>
-    <p>{$item.summary}</p>
-    <div class="resource-bottom">
-      <strong
-        >{if $item.price==0}免费{else}<small>¥</small>{$item.price}{/if}</strong
-      ><a href="/detail/{$item.id}">了解详情 ↗</a>
+    <p>{$item.summary|default=''}</p>
+    <div class="rc-foot">
+      <strong>{if $item.price==0}免费{else}<small>¥</small>{$item.price}{/if}</strong>
+      <a href="/detail/{$item.id}">查看详情 <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </div>
 </article>

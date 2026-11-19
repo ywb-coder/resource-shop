@@ -72,6 +72,6 @@
 </div>
 {/block}{block name="js"}
 <script>
-  Vue.createApp({delimiters:['[[',']]'],data:()=>({cfg:{:json_encode($config, JSON_UNESCAPED_UNICODE)},saving:false,baseFields:[['site_name','网站名称','资料小铺'],['site_footer','页脚文字'],['site_keywords','搜索关键词'],['site_icp','备案信息'],['site_description','网站简介'],['site_logo','Logo 地址'],['site_favicon','网站图标地址']],mailFields:[['smtp_host','SMTP 服务器'],['smtp_port','SMTP 端口'],['smtp_user','邮件账号'],['smtp_pass','邮件授权码'],['smtp_from_name','发件人名称']]}),methods:{async save(){this.saving=true;const r=await BizHelper.request('/admin/config/site',this.cfg);this.saving=false;BizHelper.toast(r.code===0?'配置已保存':r.msg,r.code===0?'success':'error');}}}).mount('#settings-app');
+  Vue.createApp({delimiters:['[[',']]'],data:()=>({cfg:{:json_encode($config, JSON_UNESCAPED_UNICODE)},saving:false,baseFields:[['site_name','网站名称','资料站'],['site_footer','页脚文字'],['site_keywords','搜索关键词'],['site_icp','备案信息'],['site_description','网站简介'],['site_logo','Logo 地址'],['site_favicon','网站图标地址']],mailFields:[['smtp_host','SMTP 服务器'],['smtp_port','SMTP 端口'],['smtp_user','邮件账号'],['smtp_pass','邮件授权码'],['smtp_from_name','发件人名称']]}),methods:{async save(){this.saving=true;const r=await BizHelper.request('/admin/config/site',this.cfg);this.saving=false;BizHelper.toast(r.code===0?'配置已保存':r.msg,r.code===0?'success':'error');}}}).mount('#settings-app');
 </script>
 {/block}

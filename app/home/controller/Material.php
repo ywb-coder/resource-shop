@@ -32,22 +32,26 @@ class Material extends Base
             }
         }
 
-        $title = '全部资料';
-        if ($currentCat) $title = $currentCat['name'] . ' - 资料列表';
-        if (!empty($params['q'])) $title = '"' . $params['q'] . '" 搜索结果';
-        $typeNames = ['skill' => 'Skill 技能', 'doc' => '资料文档', 'software' => '软件工具', 'test' => '心理测试题'];
+        $title = '全部资源';
+        if ($currentCat) $title = $currentCat['name'];
+        if (!empty($params['q'])) $title = '"' . $params['q'] . '" 的搜索结果';
+        $typeNames = ['skill' => 'Skill 技能', 'doc' => '资料文档', 'software' => '软件工具', 'test' => '心理测试题', 'course' => '课程'];
         if (!empty($params['res_type']) && isset($typeNames[$params['res_type']])) {
-            $title = $typeNames[$params['res_type']] . ' - 全部列表';
+            $title = $typeNames[$params['res_type']];
         }
+
+        $counts = $service->categoryCounts();
 
         return $this->view('material/list', [
             'result'     => $result,
             'params'     => $params,
             'currentCat' => $currentCat,
-            'catCounts'  => $service->categoryCounts(),
+            'catCounts'  => $counts,
             'typeCounts' => $service->resTypeCounts(),
-            'catNav'     => $service->categoryNav((int) $params['category_id']),
-            'seo_title'  => $title . ' - ' . SystemConfigService::get('site_name', '资料小铺'),
+            'catNav'     => $service->categoryNav((int) $params['category_id'], $counts),
+            'skillCats'  => $service->childrenWithCount(1, $counts),
+            'testCats'   => $service->childrenWithCount(3, $counts),
+            'seo_title'  => $title . ' - ' . SystemConfigService::get('site_name', '知集科技'),
             'searchKw'   => $params['q'] ?? '',
         ]);
     }

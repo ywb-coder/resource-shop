@@ -1,16 +1,16 @@
     {extend name="layout/base" /}{block name="content"}
 <div class="store-container">
-  <nav class="store-breadcrumb">
-    <a href="/list">资料目录</a><span>/</span
+  <nav class="crumbs" aria-label="面包屑">
+    <a href="/">首页</a><span>/</span><a href="/list">全部资源</a><span>/</span
     ><a href="/list?category_id={$material.category_id}"
-      >{$material.category.name|default='数字资料'}</a
-    ><span>/</span><span>资料详情</span>
+      >{$material.category.name|default='资源'}</a
+    ><span>/</span><b>详情</b>
   </nav>
   <section class="product-overview">
     <div class="product-art">
-      <span class="eyebrow">A LITTLE SOMETHING USEFUL</span
-      ><img
-        src="{$material.cover ? $material.cover.'?v=2' : '/static/img/sample-fallback.svg'}"
+      <span class="pa-flag"><i class="fa-solid fa-shield-halved"></i> 开源可商用</span>
+      <img
+        src="{$material.cover ? $material.cover.'?v=3' : '/static/img/sample-fallback.svg'}"
         alt="{$material.title}"
       />
     </div>
@@ -62,7 +62,7 @@
         >{/if}
       </div>
       <div class="product-price">
-        {if $material.price==0}<strong>免费获取</strong>{else}<strong
+        {if $material.price==0}<strong>免费</strong><em>下载后即可获得全部文件</em>{else}<strong
           ><small>¥</small>{$material.price}</strong
         >{if
         $material.original_price>$material.price}<s>¥{$material.original_price}</s>{/if}{/if}
@@ -74,7 +74,7 @@
         >
           <i class="fa-solid fa-download"></i> 下载资料</button
         >{else}<button class="button" onclick="buyMaterial({$material.id})">
-          {$material.price==0?'领取这份资料':'获取这份资料'} →</button
+          {$material.price==0?'免费下载 →':'获取这份资料 →'}</button
         >{if $material.price>0}<button
           class="button secondary"
           onclick="addToCartMaterial({$material.id})"
@@ -92,25 +92,30 @@
   </section>
   <div class="product-body">
     <aside class="product-outline">
-      <span class="eyebrow">IN THIS RESOURCE</span>
-      <h2>内容目录</h2>
-      {foreach $material.catalog as $chapter}<a href="#description"
-        ><small>{$chapter.label|default=''}</small>{$chapter.title}</a
-      >{/foreach}
+      <span class="eyebrow">QUICK NAV</span>
+      <h2>快速定位</h2>
+      <a href="#description"><small>01</small>功能说明</a>
       {if ($material.res_type ?? '') == 'skill'}<a href="#install"
-        ><small>必读</small>安装教程</a
+        ><small>02</small>安装教程</a
       >{/if}
+      {if !empty($material.previews)}<a href="#peek"><small>03</small>效果预览</a>{/if}
+      <div class="po-files">
+        <b>包内文件</b>
+        <span>SKILL.md</span>
+        <span>中文使用说明.md</span>
+        <span>LICENSE · SOURCE.txt</span>
+      </div>
     </aside>
     <article>
       <section class="product-section" id="description">
         <span class="eyebrow">WHAT'S INSIDE</span>
-        <h2>关于这份资料</h2>
+        <h2>这个技能能做什么</h2>
         <div class="product-description">{$material.description|raw}</div>
       </section>
       {if !empty($material.previews)}
-      <section class="product-section">
+      <section class="product-section" id="peek">
         <span class="eyebrow">TAKE A PEEK</span>
-        <h2>翻开看一看</h2>
+        <h2>效果预览</h2>
         <div class="product-previews">
           {foreach $material.previews as $preview}<a
             href="{$preview.image_path}"
@@ -223,7 +228,7 @@
   {if !empty($related)}
   <section class="store-collection">
     <div class="collection-heading">
-      <h2>你可能还会喜欢</h2>
+      <h2>同类技能</h2>
       <a href="/list">浏览更多 →</a>
     </div>
     <div class="resource-grid">

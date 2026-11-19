@@ -1,0 +1,66 @@
+/* 后台表单：提示文案、可点选建议、标签输入（此前文件被误清空，这里补回并统一配色） */
+.form-hint { margin-top: 6px; font-size: 12px; line-height: 1.75; color: #8a92a6; }
+.form-hint b { color: #4b5568; }
+
+/* 可点一下直接填入的建议 chip */
+.hint-chip {
+  display: inline-block;
+  margin: 4px 6px 0 0;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #eef2fd;
+  color: #2f56d6;
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: .15s;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.hint-chip:hover { background: #2f56d6; color: #fff; }
+
+/* 标签输入区 */
+.tag-input-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 1px solid #e3e7f0;
+  border-radius: 8px;
+  background: #fff;
+}
+.tag-input-wrap:focus-within { border-color: #2f56d6; box-shadow: 0 0 0 3px rgba(47, 86, 214, .12); }
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 4px 3px 9px;
+  border-radius: 6px;
+  background: #eef2fd;
+  color: #2f56d6;
+  font-size: 12px;
+}
+.tag-chip-del {
+  border: none;
+  background: none;
+  color: #7a8dc7;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 3px;
+}
+.tag-chip-del:hover { color: #d33; }
+.tag-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 140px;
+  height: 26px;
+  font-size: 13px;
+  background: transparent;
+}

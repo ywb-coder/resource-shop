@@ -119,6 +119,12 @@ class MaterialService
         return $this->cards($this->visible()->with(['category'])->where('is_recommend', 1)->order('id', 'desc')->limit($limit)->select()->toArray());
     }
 
+    /** 推荐位：按排序权重取头部内容，首页「刚上架」用这个才不会是清一色的同分类 */
+    public function getTop(int $limit = 12): array
+    {
+        return $this->cards($this->visible()->with(['category'])->order('sort', 'desc')->order('id', 'desc')->limit($limit)->select()->toArray());
+    }
+
     public function getNew(int $limit = 10): array
     {
         return $this->cards($this->visible()->with(['category'])->order('id', 'desc')->limit($limit)->select()->toArray());
@@ -190,17 +196,38 @@ class MaterialService
 
     /**
      * 资料库的两行分类导航：第一行顶级分类，选中的顶级分类有子分类时第二行列子分类。
+     * 没有内容的分类不出现——点进去空白页比少个入口更伤体验。
      * @return array{tops:array, children:array, activeTop:int}
      */
-    public function categoryNav(int $currentId): array
+    public function categoryNav(int $currentId, ?array $counts = null): array
     {
         $all       = $this->getCategories();
+        $counts    = $counts ?? $this->categoryCounts();
+        $has       = fn ($id) => (int) ($counts[$id] ?? 0) > 0;
         $activeTop = $currentId ? CategoryTree::topId($currentId) : 0;
         return [
-            'tops'      => array_values(array_filter($all, fn ($c) => (int) $c['parent_id'] === 0)),
-            'children'  => $activeTop ? array_values(array_filter($all, fn ($c) => (int) $c['parent_id'] === $activeTop)) : [],
+            'tops'      => array_values(array_filter($all, fn ($c) => (int) $c['parent_id'] === 0 && $has($c['id']))),
+            'children'  => $activeTop ? array_values(array_filter($all, fn ($c) => (int) $c['parent_id'] === $activeTop && $has($c['id']))) : [],
             'activeTop' => $activeTop,
         ];
+    }
+
+    /** 某个顶级分类下有内容的子分类，附数量。列表页侧边栏分组用 */
+    public function childrenWithCount(int $topId, ?array $counts = null): array
+    {
+        $counts = $counts ?? $this->categoryCounts();
+        $rows   = [];
+        foreach ($this->getCategories() as $c) {
+            if ((int) $c['parent_id'] !== $topId) {
+                continue;
+            }
+            $n = (int) ($counts[$c['id']] ?? 0);
+            if ($n > 0) {
+                $rows[] = ['id' => (int) $c['id'], 'name' => $c['name'], 'count' => $n];
+            }
+        }
+        usort($rows, fn ($a, $b) => $b['count'] <=> $a['count']);
+        return $rows;
     }
 
     public function getCategories(): array

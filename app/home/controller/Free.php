@@ -11,10 +11,15 @@ class Free extends Base
     /** GET /free */
     public function index(): \think\Response
     {
+        // 站内所有资源本来就免费，领取专区没有内容时直接把人送回资源列表，不留空页面
+        $list = FreebieClaimService::publicList();
+        if (!$list) {
+            return redirect('/list');
+        }
         return $this->view('free/index', [
-            'list'       => FreebieClaimService::publicList(),
+            'list'       => $list,
             'claimedIds' => FreebieClaimService::claimedIds($this->userId),
-            'seo_title'  => '免费资料 - ' . \app\common\service\SystemConfigService::get('site_name', '资料小铺'),
+            'seo_title'  => '免费资料 - ' . \app\common\service\SystemConfigService::get('site_name', '知集科技'),
         ]);
     }
 

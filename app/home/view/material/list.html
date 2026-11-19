@@ -1,114 +1,73 @@
 {extend name="layout/base" /}{block name="content"}
 <div class="store-container catalog-heading">
-  <span class="eyebrow">RESOURCE INDEX</span>
+  <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span>{if $currentCat}<a href="/list">全部资源</a><span>/</span><b>{$currentCat.name}</b>{else}<b>全部资源</b>{/if}</nav>
   <h1>
-    {if !empty($params.q)}搜索“{$params.q}”{elseif
-    $currentCat}{$currentCat.name}{else}全部资料{/if}<sup>{$result.total}</sup>
+    {if !empty($params.q)}“{$params.q}” 的结果{elseif $currentCat}{$currentCat.name}{else}全部资源{/if}<sup>{$result.total}</sup>
   </h1>
-  <p>把内容整理成目录，让需要的时候更容易找到。</p>
+  <p>下载即用，全部开源可商用。装进 AI 后，它会自己判断什么时候该用。</p>
 </div>
 <div class="store-container catalog-layout">
   <aside class="catalog-sidebar">
-    <h2>资料分类</h2>
-    <a
-      class="{$catNav.activeTop==0?'active':''}"
-      href="/list{if !empty($params.q)}?q={$params.q|urlencode}{/if}"
-      >全部内容 <span>{$catCounts[0]??0}</span></a
-    >{foreach $catNav.tops as $cat}<a
-      class="{$catNav.activeTop==$cat.id?'active':''}"
-      href="/list?category_id={$cat.id}{if !empty($params.q)}&q={$params.q|urlencode}{/if}"
-      >{$cat.name}<span>{$catCounts[$cat.id]??0}</span></a
-    >{/foreach}{foreach $catNav.children as $cat}<a
-      class="catalog-child {$params.category_id==$cat.id?'active':''}"
-      href="/list?category_id={$cat.id}"
-      >{$cat.name}</a
-    >{/foreach}
+    <h2>资源类型</h2>
+    <div class="side-list">
+    <a class="{$params.res_type==''?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'','page'=>1]))}">全部资源 <span>{$typeCounts.all??0}</span></a>
+    <a class="{$params.res_type=='skill'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'skill','page'=>1]))}"><i class="fa-solid fa-wand-magic-sparkles"></i>Skill 技能 <span>{$typeCounts.skill??0}</span></a>
+    {if ($typeCounts.doc??0) > 0}<a class="{$params.res_type=='doc'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'doc','page'=>1]))}"><i class="fa-solid fa-file-alt"></i>资料文档 <span>{$typeCounts.doc??0}</span></a>{/if}
+    {if ($typeCounts.software??0) > 0}<a class="{$params.res_type=='software'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'software','page'=>1]))}"><i class="fa-solid fa-compact-disc"></i>软件工具 <span>{$typeCounts.software??0}</span></a>{/if}
+    {if ($typeCounts.test??0) > 0}<a class="{$params.res_type=='test'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'test','page'=>1]))}"><i class="fa-solid fa-clipboard-list"></i>心理测试 <span>{$typeCounts.test??0}</span></a>{/if}
+    </div>
+
+    {if $skillCats}
+    <h2 class="side-gap">技能分类</h2>
+    <div class="side-list">
+    {foreach $skillCats as $c}<a class="catalog-child {$params.category_id==$c.id?'active':''}" href="/list?category_id={$c.id}">{$c.name} <span>{$c.count}</span></a>{/foreach}
+    </div>
+    {/if}
+    {if $testCats}
+    <h2 class="side-gap">测试分类</h2>
+    <div class="side-list">
+    {foreach $testCats as $c}<a class="catalog-child {$params.category_id==$c.id?'active':''}" href="/list?category_id={$c.id}">{$c.name} <span>{$c.count}</span></a>{/foreach}
+    </div>
+    {/if}
+
     <div class="catalog-tip">
-      <i class="fa-regular fa-bookmark"></i>
-      <h3>还没想好选什么？</h3>
-      <p>从免费资料开始，看看内容是否适合你。</p>
-      <a href="/free">看看免费内容 →</a>
+      <i class="fa-regular fa-lightbulb"></i>
+      <h3>不知道装哪个？</h3>
+      <p>先说说你每天最花时间的事，按场景挑一个试试。</p>
+      <a href="/list?res_type=skill">看全部技能 →</a>
     </div>
   </aside>
   <section class="catalog-content">
-    <nav class="type-filter" aria-label="资源类型">
-      <a
-        class="{if empty($params.res_type)}active{/if}"
-        href="?{:http_build_query(array_merge($params,['res_type'=>'','page'=>1]))}"
-        >全部 <small>{$typeCounts.all??0}</small></a
-      ><a
-        class="{$params.res_type=='skill'?'active':''}"
-        href="?{:http_build_query(array_merge($params,['res_type'=>'skill','page'=>1]))}"
-        ><i class="fa-solid fa-wand-magic-sparkles"></i> Skill 技能
-        <small>{$typeCounts.skill??0}</small></a
-      ><a
-        class="{$params.res_type=='doc'?'active':''}"
-        href="?{:http_build_query(array_merge($params,['res_type'=>'doc','page'=>1]))}"
-        ><i class="fa-solid fa-file-lines"></i> 资料文档
-        <small>{$typeCounts.doc??0}</small></a
-      ><a
-        class="{$params.res_type=='software'?'active':''}"
-        href="?{:http_build_query(array_merge($params,['res_type'=>'software','page'=>1]))}"
-        ><i class="fa-solid fa-compact-disc"></i> 软件工具
-        <small>{$typeCounts.software??0}</small></a
-      ><a
-        class="{$params.res_type=='test'?'active':''}"
-        href="?{:http_build_query(array_merge($params,['res_type'=>'test','page'=>1]))}"
-        ><i class="fa-solid fa-clipboard-question"></i> 心理测试
-        <small>{$typeCounts.test??0}</small></a
-      >
-    </nav>
     <div class="catalog-toolbar">
       <form class="store-search" action="/list">
-        <input
-          type="hidden"
-          name="category_id"
-          value="{$params.category_id}"
-        /><input type="hidden" name="res_type" value="{$params.res_type}" /><input
+        <input type="hidden" name="category_id" value="{$params.category_id}" /><input type="hidden" name="res_type" value="{$params.res_type}" /><input
           name="q"
           value="{$params.q}"
-          placeholder="搜索标题或关键词"
-          aria-label="搜索资料"
+          placeholder="搜索技能名称或用途"
+          aria-label="搜索技能"
         /><button aria-label="搜索">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </form>
-      <nav aria-label="排序方式">
-        <a
-          href="?{:http_build_query(array_merge($params,['sort'=>'newest']))}"
-          class="{$params.sort=='newest'||empty($params.sort)?'active':''}"
-          >最新</a
-        ><a
-          href="?{:http_build_query(array_merge($params,['sort'=>'hot']))}"
-          class="{$params.sort=='hot'?'active':''}"
-          >热门</a
-        ><a
-          href="?{:http_build_query(array_merge($params,['sort'=>'price']))}"
-          class="{$params.sort=='price'?'active':''}"
-          >价格</a
-        >
+      <nav class="sort-nav" aria-label="排序方式">
+        <a href="?{:http_build_query(array_merge($params,['sort'=>'newest']))}" class="{$params.sort=='newest'||empty($params.sort)?'active':''}">推荐</a
+        ><a href="?{:http_build_query(array_merge($params,['sort'=>'hot']))}" class="{$params.sort=='hot'?'active':''}">最热</a
+        ><a href="?{:http_build_query(array_merge($params,['sort'=>'price']))}" class="{$params.sort=='price'?'active':''}">价格</a>
       </nav>
     </div>
     <div class="resource-grid catalog-grid">
-      {foreach $result.list as $item}{include file="material/card" item=$item
-      /}{/foreach}
+      {foreach $result.list as $item}{include file="material/card" item=$item /}{/foreach}
     </div>
     {if empty($result.list)}
     <div class="store-empty">
-      <h2>还没有找到相关内容</h2>
-      <p>换一个关键词，或者看看全部资料。</p>
-      <a href="/list" class="button">查看全部资料</a>
+      <h2>没有找到匹配的技能</h2>
+      <p>换个关键词，或者直接看全部资源。</p>
+      <a href="/list" class="button">查看全部资源</a>
     </div>
     {/if}
     <div class="catalog-pagination">
-      {if $result.page>1}<a
-        href="?{:http_build_query(array_merge($params,['page'=>$result.page-1]))}"
-        >← 上一页</a
-      >{/if}<span>第 {$result.page} 页</span>{if
-      $result.page*$result.pageSize<$result.total}<a
-        href="?{:http_build_query(array_merge($params,['page'=>$result.page+1]))}"
-        >下一页 →</a
-      >{/if}
+      {if $result.page>1}<a href="?{:http_build_query(array_merge($params,['page'=>$result.page-1]))}">← 上一页</a>{/if}<span>第 {$result.page} 页 / 共 {$result.total} 个</span>{if
+      $result.page*$result.pageSize<$result.total}<a href="?{:http_build_query(array_merge($params,['page'=>$result.page+1]))}">下一页 →</a>{/if}
     </div>
   </section>
 </div>

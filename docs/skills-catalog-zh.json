@@ -1,0 +1,1327 @@
+[
+ {
+  "category": "开发技能",
+  "title": "AI 技术债检测",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "AKS 成本优化",
+  "tags": "运维部署,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "AKS 模型部署",
+  "tags": "运维部署,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "Angular 版本迁移",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "API 接口测试",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "API 接口设计",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "Bash 防御式编程",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "CI 配置生成",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "CI/CD 自动化",
+  "tags": "运维部署,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "CLI 端到端测试编写",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "ESLint 诊断修复",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "Git 安全护栏",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "Git 工作流助手",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "PR 自动分类",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "React 仪表盘生成",
+  "tags": "开发编程,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "开发技能",
+  "title": "REST API 设计原则",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "REST API 设计原则",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "Supabase 开发助手",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "中文代码审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码双轴审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码变更审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码安全审计",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码审查专家",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码审查反馈处理",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码库架构设计",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "代码精简优化",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "依赖安全审计",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "卓越代码审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "单元测试生成",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "发起代码审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "国际化本地化助手",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "多维度代码审查",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "子代理驱动开发",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "应急处理手册",
+  "tags": "运维部署,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "开发分支收尾",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "性能问题分析",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "故障复盘报告",
+  "tags": "运维部署,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "数据库迁移助手",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "日志分析助手",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "更新日志生成",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "更新日志自动化",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "极简提交信息",
+  "tags": "开发编程,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "开发技能",
+  "title": "架构决策记录",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "根因分析复盘",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "根因调试与恢复",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "测试驱动开发 TDD",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "浏览器实测调试",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "环境变量管理",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "疑难缺陷诊断",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "系统化调试",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "系统化调试技巧",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "软件逆向防护",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "重构顾问",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "错误处理模式",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "项目结构地图",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "开发技能",
+  "title": "领域模型构建",
+  "tags": "开发编程,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "AI 图片生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "AI 歌曲创作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "AI 绘画风格库",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "AI 音乐生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "Gemini 图文生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "HTML 演示文稿",
+  "tags": "设计美化,AI技能,中文,普通人"
+ },
+ {
+  "category": "设计创意",
+  "title": "PPT 全能处理",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "PPT 幻灯片规格",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "PPT 演示生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "PPT 编辑修改",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "UI 提示词增强",
+  "tags": "设计创意,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "设计创意",
+  "title": "专业信息图制作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "专业流程图绘制",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "主题样式生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "单页幻灯片制作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "品牌规范应用",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "品牌规范管理",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "响应式布局实现",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "团队动图制作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "图片内容分析",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "图片压缩处理",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "多模态创作工具",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "多页 PPT 统筹",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "小红书卡片套图",
+  "tags": "设计美化,AI技能,中文,普通人"
+ },
+ {
+  "category": "设计创意",
+  "title": "小红书图片套图",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "小说封面设计",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "文章封面图生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "文章配图生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "无障碍合规实现",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "无障碍访问审计",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "更新日志视频生成",
+  "tags": "设计创意,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "设计创意",
+  "title": "杂志级网页 PPT",
+  "tags": "设计美化,AI技能,中文,普通人"
+ },
+ {
+  "category": "设计创意",
+  "title": "树叶转场标题动画",
+  "tags": "设计创意,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "设计创意",
+  "title": "横幅海报设计",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "海报画布设计",
+  "tags": "设计美化,AI技能,中文,普通人"
+ },
+ {
+  "category": "设计创意",
+  "title": "演示文稿生成",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "知识漫画创作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "表情包制作",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "视觉设计基础",
+  "tags": "设计创意,AI技能,中文,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "视频字幕叠加规范",
+  "tags": "设计创意,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "设计创意",
+  "title": "设计系统文档生成",
+  "tags": "设计创意,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "设计创意",
+  "title": "设计风格指南",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "配色与字体搭配",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "设计创意",
+  "title": "音乐歌单管理",
+  "tags": "设计美化,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "AI 视频制作",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "AI 资讯速览",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Excel 表格全能处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Excel 表格处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Markdown 格式整理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Markdown 转公众号排版",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Notion 会议助手",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Notion 研究整理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "PDF 全能处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "PDF 文档处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "PPT 分页大纲",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "SOP 知识库管理",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Word 文档全能处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "Word 文档处理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "上下文工程优化",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "专业文稿润色",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "业务流程梳理",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "中文 README 生成",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "中文文档生成",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "事实核查助手",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "交付前自查核验",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "人机友好技术文档",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "会议纪要整理",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "会议纪要生成",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "会话交接助手",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "会话问题诊断",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "供应商管理",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "信息可信度核查",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "内部沟通公告",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "写作环境配置",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "决策问卷生成",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "分步执行计划",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "合同结构化审查",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "培训教案设计",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "复杂技能范例",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "多源内容处理器",
+  "tags": "办公文员,AI技能,中文,普通人"
+ },
+ {
+  "category": "办公效率",
+  "title": "存储空间分析",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "实施计划执行",
+  "tags": "项目管理,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "对话压缩交接",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "并行代理调度",
+  "tags": "项目管理,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "应用资源提取",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "微信群聊摘要",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "想法打磨成方案",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "技能发现助手",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "技能导航助手",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "技能批量发布",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "技能收录评估",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "报错翻译专家",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "推文转 Markdown",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "提示词工程模式",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "提示词设计器",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "数据故事化汇报",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "文件格式转换",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "文档转 Markdown",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "方案头脑风暴",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "智能翻译助手",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "极简团队沟通",
+  "tags": "效率工具,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "办公效率",
+  "title": "标准技能范例",
+  "tags": "效率工具,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "洞穴人极简表达",
+  "tags": "效率工具,AI技能,中文,Apache-2.0"
+ },
+ {
+  "category": "办公效率",
+  "title": "浏览器自动操作",
+  "tags": "效率工具,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "深度调研助手",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "深度调研报告",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "目标拆解助手",
+  "tags": "项目管理,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "立项报告撰写",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "笔记库管理",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "简历诊断",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "系统弃用与迁移",
+  "tags": "项目管理,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "约束驱动开发",
+  "tags": "项目管理,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "网页转 Markdown",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "自主研究报告",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "视频字幕下载",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "资料整理助手",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "转写稿校对",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "邮件模板生成",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "长任务参谋协调",
+  "tags": "项目管理,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "长内容智慧提炼",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "长文档一页摘要",
+  "tags": "中文效率,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "需求访谈澄清",
+  "tags": "职场办公,AI技能,中文,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "音频转文字",
+  "tags": "办公文员,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "办公效率",
+  "title": "领英资料管理",
+  "tags": "职场办公,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "中文写作润色",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "中文去 AI 味润色",
+  "tags": "文案写作,AI技能,中文,普通人"
+ },
+ {
+  "category": "文案写作",
+  "title": "主页体检与简介",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "作品多角度审查",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "公众号长文写作",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "卡兹克写作法",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "去 AI 味润色",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "去除 AI 写作痕迹",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "小红书文案",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "小红书标题生成",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "小说发布准备",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "成交路径设计",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "文案编辑润色",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "旧稿导入整理",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "短篇小说创作",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "短篇扫榜调研",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "短篇拆文分析",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "网文写作工具箱",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "网文去 AI 味",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "评论区回复生成",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "账号杂志化选题",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "选题日历规划",
+  "tags": "内容创作,AI技能,中文,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "长篇小说创作",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "长篇扫榜调研",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "文案写作",
+  "title": "长篇拆文分析",
+  "tags": "文案写作,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "一键发布公众号",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "一键发布微博",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "一键发布推特",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "公众号写作全流程",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "公众号推送发布",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "内容数据统计",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "写作风格学习",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "写作风格设定",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "文章审稿校对",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "文章改写优化",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "文章配图助手",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "正文写作助手",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "社媒效果分析",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "自媒体运营",
+  "title": "选题策划助手",
+  "tags": "自媒体运营,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "财务金融",
+  "title": "初创财务顾问",
+  "tags": "财务金融,AI技能,中文,MIT"
+ },
+ {
+  "category": "财务金融",
+  "title": "投资备忘录撰写",
+  "tags": "财务金融,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "财务金融",
+  "title": "投资组合风控",
+  "tags": "财务金融,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "财务金融",
+  "title": "财务分析助手",
+  "tags": "财务金融,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "财务金融",
+  "title": "采购成本优化",
+  "tags": "财务金融,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "人力资源策略",
+  "tags": "人力资源,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "劳动合同模板",
+  "tags": "人力资源,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "合同与提案起草",
+  "tags": "法律合规,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "团队容量规划",
+  "tags": "人力资源,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "法务合规顾问",
+  "tags": "法律合规,AI技能,中文,MIT"
+ },
+ {
+  "category": "人事行政",
+  "title": "组织变更管理",
+  "tags": "人力资源,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "A/B 测试分析",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "AI 搜索优化",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "Airflow 工作流构建",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "B2B 开发信",
+  "tags": "销售客服,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "KPI 仪表盘设计",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "Postgres 最佳实践",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "SEO 诊断审计",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "付费广告投放",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "付费广告投放",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "内容策略规划",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "定价与包装策略",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "定价策略专家",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "客户成功管理",
+  "tags": "销售客服,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "客服运营管理",
+  "tags": "销售客服,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "广告文案创作",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "应用商店优化",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "招标文件应答",
+  "tags": "销售客服,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "数据分析配置",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "数据故事化呈现",
+  "tags": "数据分析,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "用户研究专家",
+  "tags": "市场营销,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "用户研究分析",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "社交媒体内容",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "社交媒体发布",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "竞品情报分析",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "竞品情报分析",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "营销内容创作",
+  "tags": "市场营销,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "营销文案写作",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "邮件序列营销",
+  "tags": "市场营销,AI技能,中文,MIT"
+ },
+ {
+  "category": "营销销售",
+  "title": "领英客户拓展",
+  "tags": "销售客服,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "创意头脑风暴",
+  "tags": "思维决策,AI技能,中文,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "压力测试 thinking",
+  "tags": "思维决策,AI技能,中文,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "拷问式方案文档",
+  "tags": "思维决策,AI技能,中文,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "方案深度拷问",
+  "tags": "思维决策,AI技能,中文,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "深度价值分析",
+  "tags": "思维决策,AI技能,中文,普通人,MIT"
+ },
+ {
+  "category": "思维决策",
+  "title": "董事会战略研讨",
+  "tags": "思维决策,AI技能,中文,MIT"
+ }
+]

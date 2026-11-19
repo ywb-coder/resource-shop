@@ -1,0 +1,70 @@
+/* 页头品牌图标 */
+.brand-logo{ width:42px; height:42px; border-radius:12px; display:block; object-fit:cover; box-shadow:0 6px 14px rgba(37,99,235,.20); flex:none; }
+@media (max-width:768px){ .brand-logo{ width:36px; height:36px; border-radius:10px; } }
+
+/* ===== 资源类型徽标 ===== */
+.resource-image{ position: relative; }
+.res-badge{ position: absolute; left: 10px; top: 10px; z-index: 3; display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .3px; color: #fff; background: rgba(17,24,39,.82); backdrop-filter: blur(6px); box-shadow: 0 4px 12px rgba(15,23,42,.18); }
+.res-badge i{ font-size: 11px; }
+.res-badge.is-skill{ background: linear-gradient(135deg,#4f46e5,#7c3aed); }
+.res-badge.is-doc{ background: linear-gradient(135deg,#b45309,#d97706); }
+.res-badge.is-software{ background: linear-gradient(135deg,#0e7490,#0891b2); }
+.res-badge.is-test{ background: linear-gradient(135deg,#be185d,#db2777); }
+.res-badge.is-course{ background: linear-gradient(135deg,#15803d,#16a34a); }
+.res-badge.is-inline{ position: static; }
+.product-eyebrow-row{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.product-eyebrow-row .eyebrow{ margin: 0; }
+
+/* 列表页类型筛选 */
+.type-filter{ display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 16px; }
+.type-filter a{ display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border,#e5e7eb); font-size: 13px; color: inherit; text-decoration: none; background: #fff; transition: .18s; }
+.type-filter a:hover{ border-color: #c7d2fe; color: #4f46e5; }
+.type-filter a.active{ background: #111827; border-color: #111827; color: #fff; }
+.type-filter a small{ opacity: .6; font-size: 11px; }
+
+/* ===== 安装教程 ===== */
+.install-guide{ margin-top: 28px; border: 1px solid var(--border,#e8eaf0); border-radius: 18px; background: #fff; overflow: hidden; }
+.install-guide .ig-head{ padding: 20px 22px 0; }
+.install-guide .ig-head h2{ margin: 6px 0 4px; font-size: 20px; }
+.install-guide .ig-head p{ margin: 0; color: #6b7280; font-size: 13px; line-height: 1.7; }
+.ig-tabs{ display: flex; gap: 8px; padding: 16px 22px 0; flex-wrap: wrap; }
+.ig-tabs button{ appearance: none; border: 1px solid #e5e7eb; background: #f9fafb; color: #4b5563; height: 34px; padding: 0 14px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: .18s; }
+.ig-tabs button:hover{ border-color: #c7d2fe; color: #4f46e5; }
+.ig-tabs button.active{ background: #4f46e5; border-color: #4f46e5; color: #fff; box-shadow: 0 6px 16px rgba(79,70,229,.22); }
+.ig-panel{ display: none; padding: 18px 22px 22px; }
+.ig-panel.active{ display: block; }
+.ig-steps{ counter-reset: ig; margin: 0; padding: 0; list-style: none; }
+.ig-steps li{ position: relative; padding: 0 0 16px 38px; font-size: 14px; line-height: 1.75; color: #374151; }
+.ig-steps li:last-child{ padding-bottom: 0; }
+.ig-steps li::before{ counter-increment: ig; content: counter(ig); position: absolute; left: 0; top: 1px; width: 24px; height: 24px; border-radius: 50%; background: #eef2ff; color: #4f46e5; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.ig-steps li:not(:last-child)::after{ content: ""; position: absolute; left: 11px; top: 28px; bottom: 4px; width: 2px; background: #eef2ff; }
+.ig-steps b{ color: #111827; }
+.ig-quote{ position: relative; margin: 12px 0; padding: 14px 16px 14px 16px; border-radius: 12px; background: #f5f3ff; border: 1px dashed #c4b5fd; color: #4c1d95; font-size: 14px; line-height: 1.7; }
+.ig-quote .ig-copy{ position: absolute; right: 10px; top: 10px; border: none; background: #fff; color: #6d28d9; border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(109,40,217,.12); }
+.ig-note{ margin-top: 12px; font-size: 12.5px; color: #6b7280; line-height: 1.7; }
+.ig-files{ width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+.ig-files th,.ig-files td{ text-align: left; padding: 8px 10px; border-bottom: 1px solid #f1f2f6; }
+.ig-files th{ color: #6b7280; font-weight: 600; background: #fafbfc; }
+@media (max-width: 768px){
+  .res-badge{ height: 21px; padding: 0 8px; font-size: 11px; left: 8px; top: 8px; }
+  .install-guide{ border-radius: 14px; margin-top: 20px; }
+  .install-guide .ig-head,.ig-tabs,.ig-panel{ padding-left: 14px; padding-right: 14px; }
+  .ig-steps li{ font-size: 13.5px; }
+  .type-filter{ overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+  .type-filter::-webkit-scrollbar{ display: none; }
+  .type-filter a{ flex: none; }
+}
+
+/* 列表窄卡片：类型徽标不换行、不被压缩 */
+.res-badge{ white-space: nowrap; flex: none; max-width: calc(100% - 16px); overflow: hidden; }
+.resource-card .res-badge{ font-size: 11px; height: 22px; padding: 0 8px; gap: 4px; }
+.resource-card .res-badge i{ font-size: 10px; }
+
+/* 窄卡片徽标：长文案换成短词，避免被裁切 */
+.res-badge .rb-s{ display: none; }
+.catalog-content .res-badge .rb-t{ display: none; }
+.catalog-content .res-badge .rb-s{ display: inline; }
+
+/* 列表横向卡片：封面完整缩放，不裁成竖条 */
+.catalog-content .resource-image{ background: #f6f4f1; }
+.catalog-content .resource-image img{ object-fit: contain; }

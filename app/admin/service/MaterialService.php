@@ -31,7 +31,7 @@ class MaterialService extends BaseCrudService
     protected function allowFields(): array
     {
         return [
-            'category_id', 'goods_type', 'title', 'cover', 'summary', 'description',
+            'category_id', 'goods_type', 'res_type', 'title', 'cover', 'summary', 'description',
             'catalog', 'page_count', 'file_format', 'price', 'original_price', 'delivery_type',
             'pan_url', 'pan_code', 'file_path', 'file_name', 'file_size',
             'use_url', 'use_guide',
@@ -54,6 +54,42 @@ class MaterialService extends BaseCrudService
     {
         $data['delivery_type'] = DeliveryService::typeOf($data);
         return parent::update($id, $data);
+    }
+
+    /**
+     * 发布表单的「根据已有内容提示」：常用标签、近期标题、各分类现有数量。
+     * 只读最近 600 条，够用又不至于每次打开表单都扫全表。
+     */
+    public function formSuggest(): array
+    {
+        $rows = Material::field('category_id,title,tags,summary')
+            ->order('id', 'desc')->limit(600)->select()->toArray();
+
+        $tags = [];
+        $catCounts = [];
+        $titles = [];
+        $summaries = [];
+        foreach ($rows as $r) {
+            $cid = (int) $r['category_id'];
+            $catCounts[$cid] = ($catCounts[$cid] ?? 0) + 1;
+            foreach (array_filter(array_map('trim', explode(',', (string) $r['tags']))) as $t) {
+                $tags[$t] = ($tags[$t] ?? 0) + 1;
+            }
+            if (count($titles) < 15 && mb_strlen((string) $r['title']) <= 30) {
+                $titles[] = $r['title'];
+            }
+            if (count($summaries) < 8 && mb_strlen((string) $r['summary']) > 20) {
+                $summaries[] = $r['summary'];
+            }
+        }
+        arsort($tags);
+
+        return [
+            'tags'      => array_slice($tags, 0, 48, true),
+            'titles'    => $titles,
+            'summaries' => $summaries,
+            'catCounts' => $catCounts,
+        ];
     }
 
     /** 列表：卡密商品附上库存 */

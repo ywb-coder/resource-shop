@@ -15,6 +15,7 @@ class Material extends Base
             'q'           => '',
             'category_id' => '',
             'sort'        => '',
+            'res_type'    => '',
             'page'        => 1,
         ], input('get.') ?: []);
         $page = max(1, (int) $params['page']);
@@ -34,12 +35,17 @@ class Material extends Base
         $title = '全部资料';
         if ($currentCat) $title = $currentCat['name'] . ' - 资料列表';
         if (!empty($params['q'])) $title = '"' . $params['q'] . '" 搜索结果';
+        $typeNames = ['skill' => 'Skill 技能', 'doc' => '资料文档', 'software' => '软件工具', 'test' => '心理测试题'];
+        if (!empty($params['res_type']) && isset($typeNames[$params['res_type']])) {
+            $title = $typeNames[$params['res_type']] . ' - 全部列表';
+        }
 
         return $this->view('material/list', [
             'result'     => $result,
             'params'     => $params,
             'currentCat' => $currentCat,
             'catCounts'  => $service->categoryCounts(),
+            'typeCounts' => $service->resTypeCounts(),
             'catNav'     => $service->categoryNav((int) $params['category_id']),
             'seo_title'  => $title . ' - ' . SystemConfigService::get('site_name', '资料小铺'),
             'searchKw'   => $params['q'] ?? '',

@@ -48,6 +48,10 @@ function categoryTreeOpts(cats) {
               <td>
                 <div class="material-title">[[ item.title ]]</div>
                 <div class="material-meta">
+                  <span v-if="item.res_type" class="badge" style="margin-right:4px"
+                        :class="{skill:'badge-primary',doc:'badge-warning',software:'badge-default',test:'badge-danger',course:'badge-success'}[item.res_type] || 'badge-default'">
+                    [[ {skill: 'Skill 技能', doc: '资料文档', software: '软件工具', test: '心理测试', course: '课程'}[item.res_type] || item.res_type ]]
+                  </span>
                   <span v-if="item.is_hot" class="badge badge-warning" style="margin-right:4px">热门</span>
                   <span v-if="item.is_recommend" class="badge badge-primary" style="margin-right:4px">推荐</span>
                   <span v-if="item.goods_type==2" class="badge" :class="item.stock>0?'badge-primary':'badge-danger'" title="卡密商品，付款后自动发卡">

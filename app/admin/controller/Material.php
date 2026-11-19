@@ -34,7 +34,8 @@ class Material extends Base
     public function create(): \think\Response
     {
         $categories = (new CategoryService())->all();
-        return $this->view('material/form', compact('categories') + ['currentMenu' => 'material', 'pageTitle' => '新增资料']);
+        $suggest    = $this->service->formSuggest();
+        return $this->view('material/form', compact('categories', 'suggest') + ['currentMenu' => 'material', 'pageTitle' => '新增资料']);
     }
 
     public function edit(): \think\Response
@@ -42,7 +43,8 @@ class Material extends Base
         $id         = (int) input('get.id');
         $material   = $this->service->detail($id);
         $categories = (new CategoryService())->all();
-        return $this->view('material/form', compact('material', 'categories') + ['currentMenu' => 'material', 'pageTitle' => '编辑资料']);
+        $suggest    = $this->service->formSuggest();
+        return $this->view('material/form', compact('material', 'categories', 'suggest') + ['currentMenu' => 'material', 'pageTitle' => '编辑资料']);
     }
 
     public function save(): \think\Response

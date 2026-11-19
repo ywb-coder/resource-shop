@@ -3,12 +3,15 @@
 <script>
 window.MATERIAL = {:json_encode($material??null, JSON_UNESCAPED_UNICODE)};
 window.CATEGORIES = {:json_encode($categories, JSON_UNESCAPED_UNICODE)};
+// 已有内容提示：常用标签、近期标题、同类摘要、各分类数量
+window.SUGGEST = {:json_encode($suggest??[], JSON_UNESCAPED_UNICODE)};
 // 分类按层级排：顶级分类后面紧跟它的子分类，子分类写成「上级 / 子级」
 function categoryTreeOpts(cats) {
+  const counts = (window.SUGGEST && window.SUGGEST.catCounts) || {};
   const out = [];
   cats.filter(c => !Number(c.parent_id)).forEach(t => {
     out.push({ value: t.id, label: t.name });
-    cats.filter(c => Number(c.parent_id) === Number(t.id)).forEach(c => out.push({ value: c.id, label: t.name + ' / ' + c.name }));
+    cats.filter(c => Number(c.parent_id) === Number(t.id)).forEach(c => out.push({ value: c.id, label: t.name + ' / ' + c.name + (counts[c.id] ? '（已有 ' + counts[c.id] + ' 条）' : '') }));
   });
   return out;
 }
@@ -28,9 +31,20 @@ function categoryTreeOpts(cats) {
             <biz-select v-model="form.goods_type" :options="goodsTypeOpts" :full="true"></biz-select>
             <div class="form-hint" v-if="form.goods_type == 2">卡密商品：用户付款后自动从「卡密仓库」发一张卡密，并显示使用地址和说明。</div>
           </div>
+          <div class="form-row">
+            <div class="form-item">
+              <div class="form-item-label required">资源类型</div>
+              <biz-select v-model="form.res_type" :options="resTypeOpts" :full="true"></biz-select>
+              <div class="form-hint">决定前台列表和详情页上挂哪个徽标（Skill 技能 / 资料 / 软件 / 测试题）。选好分类后会自动匹配，也可以手动改。</div>
+            </div>
+          </div>
           <div class="form-item">
             <div class="form-item-label required">资料标题</div>
-            <input class="form-input" v-model="form.title" placeholder="请输入资料标题，建议包含年级和科目" maxlength="200">
+            <input class="form-input" v-model="form.title" placeholder="一句话说清是什么、给谁用，例如：小红书爆款标题改写器" maxlength="200">
+            <div class="form-hint" v-if="suggestTitles.length">
+              站内已有标题：
+              <a class="hint-chip" v-for="t in suggestTitles" :key="t" @click="form.title = t">[[ t ]]</a>
+            </div>
           </div>
           <div class="form-row">
             <div class="form-item">
@@ -40,7 +54,11 @@ function categoryTreeOpts(cats) {
           </div>
           <div class="form-item">
             <div class="form-item-label">简介摘要</div>
-            <textarea class="form-textarea" v-model="form.summary" placeholder="一两句话描述资料特点，显示在列表页" maxlength="500"></textarea>
+            <textarea class="form-textarea" v-model="form.summary" placeholder="一两句话描述资料特点，显示在列表页；写清「谁在什么场景下用它、能得到什么」转化最好" maxlength="500"></textarea>
+            <div class="form-hint" v-if="suggestSummaries.length">
+              站内已有摘要，点一下就能参考改写：
+              <a class="hint-chip" v-for="(s, i) in suggestSummaries" :key="i" :title="s" @click="form.summary = s">[[ s.length > 22 ? s.slice(0,22) + '…' : s ]]</a>
+            </div>
           </div>
           <div class="form-item">
             <div class="form-item-label">详情介绍</div>
@@ -59,6 +77,10 @@ function categoryTreeOpts(cats) {
                 @blur="addTag">
             </div>
             <div class="form-hint">按回车或逗号添加标签，点击 × 删除</div>
+            <div class="form-hint" v-if="tagSuggest.length">
+              站内常用标签，点一下加进来：
+              <a class="hint-chip" v-for="t in tagSuggest" :key="t" @click="addTagValue(t)">[[ t ]]</a>
+            </div>
           </div>
         </div>
       </div>
@@ -404,6 +426,7 @@ _createAdminApp({
       materialId: _m.id || 0,
       form: {
         id: _m.id||0, title: _m.title||'', category_id: _m.category_id||'',
+        res_type: _m.res_type||'',
         summary: _m.summary||'', description: _m.description||'',
         price: _m.price||0, original_price: _m.original_price||0,
         page_count: _m.page_count||0, file_format: _m.file_format||'',
@@ -423,6 +446,15 @@ _createAdminApp({
       catalogOpen: !(_m.catalog && (typeof _m.catalog === 'string' ? JSON.parse(_m.catalog) : _m.catalog).length),
       stock: _m.stock || 0,
       goodsTypeOpts: [{ value: 1, label: '资料（网盘 / 文件）' }, { value: 2, label: '卡密商品（激活码软件）' }],
+      resTypeOpts: [
+        { value: 'skill', label: 'Skill 技能（AI 可执行的技能包）' },
+        { value: 'doc', label: '资料文档（PDF / Word / 表格模板）' },
+        { value: 'software', label: '软件工具（可安装的程序）' },
+        { value: 'test', label: '心理测试题（在线答题）' },
+        { value: 'course', label: '课程（视频 / 训练营）' }
+      ],
+      suggestTitles: ((window.SUGGEST||{}).titles||[]).slice(0, 6),
+      suggestSummaries: ((window.SUGGEST||{}).summaries||[]).slice(0, 4),
       formatOpts: ['PDF', 'Word', 'PPT', 'Excel', '压缩包'].map(v => ({ value: v, label: v })),
       levelOpts: [
         { value: 0, label: '平铺' },
@@ -437,10 +469,31 @@ _createAdminApp({
       uploadingPreview: false
     };
   },
+  computed: {
+    // 站内常用标签里，去掉已经加过的
+    tagSuggest() {
+      const all = (window.SUGGEST || {}).tags || {};
+      return Object.keys(all).filter(t => !this.tagList.includes(t)).slice(0, 14);
+    }
+  },
+  watch: {
+    // 选分类时按分类自动匹配资源类型，省得每次手选（用户手动改过就不覆盖）
+    'form.category_id'(val) {
+      if (this._resTypeTouched) return;
+      const id = Number(val);
+      const cat = (window.CATEGORIES || []).find(c => Number(c.id) === id);
+      if (!cat) return;
+      const parent = Number(cat.parent_id);
+      if (parent === 1) this.form.res_type = 'skill';
+      else if (parent === 3) this.form.res_type = 'test';
+      else if (parent === 2) this.form.res_type = [11, 12].includes(id) ? 'software' : 'doc';
+    },
+    'form.res_type'() { this._resTypeTouched = true; }
+  },
   mounted() {
     this._quill = new Quill('#quill-editor', {
       theme: 'snow',
-      placeholder: '资料详细介绍，可包含适用年级、内容亮点等...',
+      placeholder: '这份技能/资料能解决什么问题、适合谁、包里有什么文件、有什么注意事项...',
       modules: { toolbar: [
         [{ header: [1,2,3,false] }],
         ['bold','italic','underline','strike'],
@@ -457,6 +510,9 @@ _createAdminApp({
       const val = this.tagInputVal.trim().replace(/,/g, '');
       if (val && !this.tagList.includes(val)) this.tagList.push(val);
       this.tagInputVal = '';
+    },
+    addTagValue(t) {
+      if (t && !this.tagList.includes(t)) this.tagList.push(t);
     },
     async saveAs(status) {
       if (!this.form.title) return BizHelper.toast('请填写资料标题','warning');

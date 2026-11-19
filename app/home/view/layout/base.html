@@ -17,9 +17,13 @@
     />
     {if !empty($seo_canonical)}
     <link rel="canonical" href="{$seo_canonical}" />
-    {/if}{if !empty($siteConfig.site_favicon)}
-    <link rel="icon" href="{$siteConfig.site_favicon}" />
     {/if}
+    <!-- 网站图标：ico + png 多尺寸 + 苹果桌面图标，全部带文件指纹，改了图标浏览器立刻换 -->
+    <link rel="icon" href="/favicon.ico?v={:filemtime(public_path() . 'favicon.ico')}" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v={:filemtime(public_path() . 'favicon-32.png')}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v={:filemtime(public_path() . 'favicon-192.png')}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v={:filemtime(public_path() . 'apple-touch-icon.png')}" />
+    <meta name="theme-color" content="#2563eb" />
     <link rel="stylesheet" href="/static/lib/fontawesome/css/all.min.css" />
     <link
       rel="stylesheet"
@@ -30,6 +34,10 @@
       rel="stylesheet"
       href="/static/css/shop.css?v={:filemtime(public_path() . 'static/css/shop.css')}"
     />
+    <link
+      rel="stylesheet"
+      href="/static/css/store-extra.css?v={:filemtime(public_path() . 'static/css/store-extra.css')}"
+    />
     {block name="css"}{/block}
   </head>
   <body class="share-store">
@@ -38,9 +46,11 @@
     </div>
     <header class="store-header">
       <a class="store-brand" href="/"
-        ><span class="brand-symbol"
-          ><i class="fa-solid fa-box-archive"></i></span
-        ><span
+        ><img
+          class="brand-logo"
+          src="/favicon-192.png?v={:filemtime(public_path() . 'favicon-192.png')}"
+          alt="{$siteConfig.site_name|default='知集科技'}"
+        /><span
           >{$siteConfig.site_name|default='资料小铺'}<small
             >DIGITAL RESOURCES</small
           ></span

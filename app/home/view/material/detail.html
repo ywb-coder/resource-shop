@@ -1,4 +1,4 @@
-{extend name="layout/base" /}{block name="content"}
+    {extend name="layout/base" /}{block name="content"}
 <div class="store-container">
   <nav class="store-breadcrumb">
     <a href="/list">资料目录</a><span>/</span
@@ -15,9 +15,26 @@
       />
     </div>
     <div class="product-copy">
-      <span class="eyebrow"
-        >{$material.category.name|default='DIGITAL RESOURCE'}</span
-      >
+      <div class="product-eyebrow-row">
+        <span class="eyebrow"
+          >{$material.category.name|default='DIGITAL RESOURCE'}</span
+        >{if ($material.res_type ?? '') == 'skill'}<span
+          class="res-badge is-inline is-skill"
+          ><i class="fa-solid fa-wand-magic-sparkles"></i> Skill 技能</span
+        >{elseif ($material.res_type ?? '') == 'test'}<span
+          class="res-badge is-inline is-test"
+          ><i class="fa-solid fa-clipboard-question"></i> 心理测试</span
+        >{elseif ($material.res_type ?? '') == 'software'}<span
+          class="res-badge is-inline is-software"
+          ><i class="fa-solid fa-compact-disc"></i> 软件工具</span
+        >{elseif ($material.res_type ?? '') == 'doc'}<span
+          class="res-badge is-inline is-doc"
+          ><i class="fa-solid fa-file-lines"></i> 资料文档</span
+        >{elseif ($material.res_type ?? '') == 'course'}<span
+          class="res-badge is-inline is-course"
+          ><i class="fa-solid fa-chalkboard-user"></i> 课程</span
+        >{/if}
+      </div>
       <h1>{$material.title}</h1>
       <p class="product-summary">{$material.summary}</p>
       <div class="product-tags">
@@ -25,14 +42,20 @@
       </div>
       <div class="product-specs">
         <span
+          ><small>资源类型</small
+          ><b
+            >{if ($material.res_type ?? '') == 'skill'}Skill 技能{elseif
+            ($material.res_type ?? '') == 'test'}心理测试题{elseif
+            ($material.res_type ?? '') == 'software'}软件工具{elseif
+            ($material.res_type ?? '') == 'doc'}资料文档{elseif
+            ($material.res_type ?? '') == 'course'}课程{else}数字资料{/if}</b
+          ></span
+        ><span
           ><small>文件格式</small
           ><b>{$material.file_format ?: '电子资料'}</b></span
         ><span
           ><small>内容章节</small
           ><b>{:count($material.catalog??[])} 章</b></span
-        ><span
-          ><small>交付方式</small
-          ><b>{$material.goods_type==2?'激活码':'在线获取'}</b></span
         >
       </div>
       <div class="product-price">
@@ -71,6 +94,9 @@
       {foreach $material.catalog as $chapter}<a href="#description"
         ><small>{$chapter.label|default=''}</small>{$chapter.title}</a
       >{/foreach}
+      {if ($material.res_type ?? '') == 'skill'}<a href="#install"
+        ><small>必读</small>安装教程</a
+      >{/if}
     </aside>
     <article>
       <section class="product-section" id="description">
@@ -95,6 +121,100 @@
         </div>
       </section>
       {/if}
+
+      {if ($material.res_type ?? '') == 'skill'}
+      <section class="install-guide" id="install">
+        <div class="ig-head">
+          <span class="eyebrow">HOW TO INSTALL</span>
+          <h2>安装教程</h2>
+          <p>
+            三种方式任选一种。<strong>不想折腾电脑的，直接用方式一</strong>：把压缩包发给 AI，让它教你装。
+          </p>
+        </div>
+        <div class="ig-tabs">
+          <button type="button" class="active" data-ig="ai">
+            方式一 · AI 聊天安装（推荐）
+          </button>
+          <button type="button" data-ig="manual">方式二 · 手动安装</button>
+          <button type="button" data-ig="online">方式三 · 不安装直接用</button>
+        </div>
+        <div class="ig-panel active" data-ig-panel="ai">
+          <ol class="ig-steps">
+            <li>
+              先点上面的「<b>下载资料</b>」把 zip 存到电脑，<b>不用解压</b>。
+            </li>
+            <li>
+              打开你平时在用的 AI（Claude、ChatGPT、豆包、通义、Kimi、元宝、Cursor
+              都行），新建一个对话。
+            </li>
+            <li>
+              把刚下载的 <b>zip 文件直接拖进对话框</b>（或点输入框旁的附件按钮上传），然后发送下面这句话：
+            </li>
+          </ol>
+          <div class="ig-quote">
+            <button type="button" class="ig-copy" data-copy="1">复制</button>
+            <span id="ig-say"
+              >帮我安装这个 skill：先解压看看里面的 SKILL.md，告诉我它是做什么的、什么时候会用到，
+              然后用最直白的步骤教我在电脑上把它放到正确的位置，每一步都告诉我该点哪里、粘贴什么。</span
+            >
+          </div>
+          <ol class="ig-steps" start="4" style="counter-reset:ig 3">
+            <li>
+              AI 会给你具体路径。一般就是：Windows 放到
+              <b>C:\Users\你的用户名\.claude\skills\</b>，macOS 放到
+              <b>~/.claude/skills/</b>；文件夹不存在就新建一个。
+            </li>
+            <li>
+              放好后重启 AI 工具。之后你正常提需求，它自己会判断该不该用这个技能；也可以输入
+              <b>/技能名</b> 手动叫它。
+            </li>
+          </ol>
+          <p class="ig-note">
+            小提示：如果 AI 说「我读不到你的电脑」，没关系——让它把要执行的命令一条条写出来，你复制到终端（Windows
+            用 PowerShell）里执行，效果完全一样。
+          </p>
+        </div>
+        <div class="ig-panel" data-ig-panel="manual">
+          <ol class="ig-steps">
+            <li>解压下载的 zip，里面那个包含 <b>SKILL.md</b> 的文件夹就是技能本体。</li>
+            <li>
+              自己用：整个文件夹复制到 <b>~/.claude/skills/</b>；给团队/项目用：放到项目根目录的
+              <b>.claude/skills/</b> 下。
+            </li>
+            <li>重启 AI 工具（或重新打开项目），任务匹配时会自动加载，也可以 <b>/技能名</b> 手动调用。</li>
+          </ol>
+          <table class="ig-files">
+            <thead>
+              <tr><th>文件</th><th>用途</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><b>SKILL.md</b></td><td>技能主文件，AI 实际执行的就是它，请勿删改</td></tr>
+              <tr><td>中文使用说明.md</td><td>这个技能能干什么、什么时候用、怎么问效果最好</td></tr>
+              <tr><td>示例输入.md</td><td>可以直接照抄的问法，改成你的情况就能用</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ig-panel" data-ig-panel="online">
+          <ol class="ig-steps">
+            <li>用记事本 / 文本编辑器打开 <b>SKILL.md</b>（手机也能打开）。</li>
+            <li>
+              把里面「技能说明 + 工作流程」的部分复制下来，粘贴到任意 AI
+              对话框的开头，当成一段长期指令。
+            </li>
+            <li>在同一条对话里接着写你的需求，AI 就会按这套流程办事；下次再聊时重新粘贴一次即可。</li>
+          </ol>
+          <p class="ig-note">
+            适合不想动文件、只想在手机上用的人。缺点是每次新对话都要重新粘贴一次。
+          </p>
+        </div>
+      </section>
+      {elseif !empty($material.use_guide)}
+      <section class="product-section" id="install">
+        <span class="eyebrow">HOW TO USE</span>
+        <h2>使用说明</h2>
+        <div class="product-description">{$material.use_guide|raw}</div>
+      </section>
+      {/if}
     </article>
   </div>
   {if !empty($related)}
@@ -110,4 +230,42 @@
   </section>
   {/if}
 </div>
+<script>
+  (function () {
+    var wrap = document.getElementById('install');
+    if (!wrap) return;
+    var tabs = wrap.querySelectorAll('.ig-tabs button');
+    var panels = wrap.querySelectorAll('.ig-panel');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabs.forEach(function (b) { b.classList.remove('active'); });
+        panels.forEach(function (p) {
+          p.classList.toggle('active', p.getAttribute('data-ig-panel') === btn.getAttribute('data-ig'));
+        });
+        btn.classList.add('active');
+      });
+    });
+    var copyBtn = wrap.querySelector('.ig-copy');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var text = (document.getElementById('ig-say') || {}).innerText || '';
+        var done = function () {
+          copyBtn.textContent = '已复制';
+          setTimeout(function () { copyBtn.textContent = '复制'; }, 1600);
+        };
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text.replace(/\s+/g, ' ').trim()).then(done, done);
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = text.replace(/\s+/g, ' ').trim();
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch (e) {}
+          document.body.removeChild(ta);
+          done();
+        }
+      });
+    }
+  })();
+</script>
 {/block}

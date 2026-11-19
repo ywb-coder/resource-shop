@@ -33,6 +33,10 @@ class MaterialService
         if (!empty($params['free'])) {
             $query->where('price', 0);
         }
+        // 资源类型筛选：skill / doc / software / test
+        if (!empty($params['res_type'])) {
+            $query->where('res_type', (string) $params['res_type']);
+        }
 
         // 排序字段必须先于兜底的 sort/id，否则永远只是同权重时的次级排序
         match ($params['sort'] ?? '') {
@@ -173,6 +177,14 @@ class MaterialService
             if ($top !== (int) $id) $counts[$top] = ($counts[$top] ?? 0) + $n;
         }
         $counts[0] = $total;
+        return $counts;
+    }
+
+    /** 各资源类型的公开数量：['skill'=>265,'doc'=>0,...,'all'=>287] */
+    public function resTypeCounts(): array
+    {
+        $counts = array_map('intval', $this->visible()->group('res_type')->column('COUNT(*)', 'res_type'));
+        $counts['all'] = array_sum($counts);
         return $counts;
     }
 

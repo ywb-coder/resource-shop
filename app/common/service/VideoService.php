@@ -34,6 +34,7 @@ class VideoService
         return $material instanceof Material && (int) $material->goods_type === self::GOODS_VIDEO;
     }
 
+    /** 旧版设备授权 Cookie 名（已停用，仅排障参考） */
     public static function cookieName(int $materialId): string
     {
         return 'vg_' . $materialId;
@@ -147,29 +148,20 @@ class VideoService
     /**
      * 当前访问者在这份视频上的授权。
      *
-     * 登录用户优先按 user_id 认（换手机、换浏览器都能看）；未登录只能靠 Cookie 里的 token。
+     * 只按 user_id 认（换手机、换浏览器登录同一账号都能看）；未登录一律无授权。
      */
     public static function grantFor(Material $material, int $userId): ?VideoGrant
     {
-        if ($userId > 0) {
-            $g = VideoGrant::where('material_id', $material->id)
-                ->where('user_id', $userId)
-                ->order('id', 'desc')
-                ->find();
-            if ($g) {
-                return $g;
-            }
+        // 权益只认账号：换设备/换浏览器登录同一账号即可看。
+        // 旧版曾用 Cookie token 做设备兜底，退出登录后 cookie 仍留在浏览器，
+        // 会让新账号/游客误以为已解锁，已彻底移除。
+        if ($userId <= 0) {
+            return null;
         }
-
-        $token = (string) ($_COOKIE[self::cookieName((int) $material->id)] ?? '');
-        if (preg_match('/^[a-f0-9]{32}$/', $token)) {
-            $g = VideoGrant::where('material_id', $material->id)->where('token', $token)->find();
-            if ($g) {
-                return $g;
-            }
-        }
-
-        return null;
+        return VideoGrant::where('material_id', $material->id)
+            ->where('user_id', $userId)
+            ->order('id', 'desc')
+            ->find();
     }
 
     /** 允许下载？授权有效 + 商品开了下载开关 + 未超出次数 */
@@ -373,17 +365,22 @@ class VideoService
         return $t === false ? 0 : $t;
     }
 
-    /** 写授权 Cookie（httponly，JS 偷不到） */
-    public static function remember(int $materialId, string $token): void
+    /** 清掉旧版设备授权 Cookie（vg_*）：授权只认账号，cookie 不再参与鉴权 */
+    public static function clearDeviceCookies(): void
     {
-        $expire = self::COOKIE_DAYS > 0 ? time() + self::COOKIE_DAYS * 86400 : 0;
-        setcookie(self::cookieName($materialId), $token, [
-            'expires'  => $expire,
-            'path'     => '/',
-            'secure'   => (bool) env('COOKIE_SECURE', false),
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ]);
+        foreach (array_keys($_COOKIE) as $name) {
+            $name = (string) $name;
+            if (!str_starts_with($name, 'vg_')) {
+                continue;
+            }
+            setcookie($name, '', [
+                'expires'  => time() - 86400,
+                'path'     => '/',
+                'secure'   => (bool) env('COOKIE_SECURE', false),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+        }
     }
 
     /** 记一次下载，返回累计次数 */

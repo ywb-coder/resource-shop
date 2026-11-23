@@ -25,6 +25,7 @@ class Video extends Base
             return redirect('/detail/' . $id);
         }
 
+        VideoService::clearDeviceCookies(); // 旧版设备 cookie 不再鉴权，顺手清掉
         $grant    = VideoService::grantFor($material, $this->userId);
         $download = VideoService::downloadState($material, $grant);
         $isCourse = VideoService::isCourse($material);
@@ -103,8 +104,6 @@ class Video extends Base
         } catch (\RuntimeException $e) {
             return $this->error($e->getMessage());
         }
-
-        VideoService::remember($id, (string) $r['grant']->token);
 
         $material = Material::find($id);
         $download = VideoService::downloadState($material, $r['grant']);

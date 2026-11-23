@@ -42,6 +42,7 @@ class User extends Base
 
     public function logout(): mixed
     {
+        \app\common\service\VideoService::clearDeviceCookies();
         \think\facade\Session::destroy();
         return redirect('/');
     }

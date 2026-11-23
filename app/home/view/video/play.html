@@ -1,0 +1,180 @@
+{extend name="layout/base" /}{block name="content"}
+<style>
+  /* 只改上下内边距：左右留给 .store-container 的 28px，写成 padding 简写会把它清零 */
+  .vv-wrap { padding-top: 24px; padding-bottom: 64px; }
+  .vv-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+  .vv-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .vv-player { position: relative; background: #0b0e14; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; }
+  .vv-player video { width: 100%; height: 100%; display: block; background: #000; }
+  .vv-lock { aspect-ratio: 16 / 9; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; border-radius: var(--radius);
+    background: linear-gradient(160deg, #0f1a33 0%, #16233f 55%, #0b1220 100%); color: #fff; }
+  .vv-lock i.fa-lock { font-size: 34px; color: #7ea6ff; margin-bottom: 16px; }
+  /* 锁定面板是固定比例的 flex 容器，子元素必须禁止收缩，否则输入框会被压扁 */
+  .vv-lock > * { flex-shrink: 0; }
+  .vv-lock h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+  .vv-lock p { font-size: 13px; color: #a8b6cf; line-height: 1.7; max-width: 420px; }
+  .vv-field { display: flex; gap: 10px; width: 100%; max-width: 460px; margin-top: 20px; }
+  .vv-field input { flex: 1; min-width: 0; height: 46px; padding: 0 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08); color: #fff; font-size: 14px; letter-spacing: .3px; outline: none; }
+  .vv-field input::placeholder { color: #7f8ba6; }
+  .vv-field input:focus { border-color: #7ea6ff; background: rgba(255,255,255,.12); }
+  .vv-field .button { height: 46px; padding: 0 22px; white-space: nowrap; }
+  .vv-err { margin-top: 12px; font-size: 13px; color: #ff9aa6; min-height: 18px; }
+  .vv-title { font-size: 22px; line-height: 1.45; color: var(--text); margin: 20px 0 10px; font-weight: 700; }
+  .vv-specs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .vv-specs span { font-size: 12px; color: var(--text-muted); background: #f4f7fc; border: 1px solid var(--border);
+    padding: 5px 10px; border-radius: 999px; }
+  .vv-desc { margin-top: 18px; font-size: 14px; line-height: 1.85; color: #3d4658; }
+  .vv-side { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .vv-cover { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius); background: #eef2f8; display: block; }
+  .vv-side-body { padding: 16px; }
+  .vv-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-muted); padding: 7px 0; }
+  .vv-row b { color: var(--text); font-weight: 600; }
+  .vv-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px; border-radius: 999px; }
+  .vv-badge.ok { background: #e6f9f1; color: #0a8f68; }
+  .vv-badge.lock { background: #fff2e8; color: #b45309; }
+  .vv-dl { width: 100%; margin-top: 12px; }
+  .vv-dl[disabled] { opacity: .5; pointer-events: none; }
+  .vv-note { font-size: 12px; color: var(--text-light); line-height: 1.7; margin-top: 10px; }
+  @media (max-width: 900px) {
+    .vv-grid { grid-template-columns: 1fr; }
+    .vv-side { position: static; }
+    .vv-title { font-size: 18px; }
+    /* 手机上 16:9 太扁，塞不下输入框，改成按内容撑高 */
+    .vv-lock { aspect-ratio: auto; min-height: 340px; }
+    .vv-field { flex-direction: column; }
+    /* 横排时的 flex:1 在竖排会变成「高度从 0 开始拉伸」，输入框会被压扁 */
+    .vv-field input { flex: none; width: 100%; }
+    .vv-field .button { width: 100%; }
+  }
+</style>
+
+<div class="store-container vv-wrap">
+  <nav class="crumbs" aria-label="面包屑">
+    <a href="/">首页</a><span>/</span><a href="/list?res_type=course">视频课</a><span>/</span><b>播放</b>
+  </nav>
+
+  <div class="vv-grid">
+    <div>
+      {if $unlocked}
+      <div class="vv-player">
+        <video
+          id="vv-player"
+          controls
+          playsinline
+          preload="metadata"
+          controlslist="nodownload"
+          poster="{$material.cover ?: ''}"
+          src="/video/stream?id={$material.id}"
+        ></video>
+      </div>
+      {else}
+      <div class="vv-lock">
+        <i class="fa-solid fa-lock"></i>
+        <h2>输入卡密解锁</h2>
+        <p>卡密一次性使用，解锁后保存在你的账号里；以后换设备登录就能看，不用再找卡密。</p>
+        <div class="vv-field">
+          <input id="vv-code" type="text" placeholder="请输入卡密，如 ABC123 或 ABC123 密码" autocomplete="off" />
+          <button class="button" id="vv-unlock" type="button">{if $isLogged}解锁观看{else}登录并解锁{/if}</button>
+        </div>
+        <p class="vv-err" id="vv-err">{if !$isLogged}<span style="color:#9fb0cd">还没登录，点按钮会先让你登录或注册。</span>{/if}</p>
+      </div>
+      {/if}
+
+      <h1 class="vv-title">{$material.title}</h1>
+      <div class="vv-specs">
+        <span><i class="fa-regular fa-clock"></i> {$duration ?: '时长未知'}</span>
+        {if $quality}<span><i class="fa-solid fa-tv"></i> {$quality}</span>{/if}
+        <span><i class="fa-solid fa-key"></i> 卡密解锁</span>
+        {if $material.video_download == 1}<span><i class="fa-solid fa-download"></i> 可下载</span>{else}<span><i class="fa-solid fa-lock"></i> 仅在线观看</span>{/if}
+      </div>
+
+      {if !empty($material.summary)}<p class="vv-desc">{$material.summary}</p>{/if}
+      {if !empty($material.description)}<div class="vv-desc">{$material.description|raw}</div>{/if}
+    </div>
+
+    <aside class="vv-side">
+      <div class="vv-card">
+        {if !empty($material.cover)}<img class="vv-cover" src="{$material.cover}" alt="{$material.title}" />{/if}
+        <div class="vv-side-body">
+          <div class="vv-row">
+            <span>观看状态</span>
+            {if $unlocked}<span class="vv-badge ok"><i class="fa-solid fa-circle-check"></i> 已解锁</span>{else}<span class="vv-badge lock"><i class="fa-solid fa-lock"></i> 未解锁</span>{/if}
+          </div>
+          <div class="vv-row"><span>视频时长</span><b>{$duration ?: '—'}</b></div>
+          {if $quality}<div class="vv-row"><span>清晰度</span><b>{$quality}</b></div>{/if}
+
+          {if $unlocked}
+            {if $download.allowed}
+              <a class="button vv-dl" href="/video/download?id={$material.id}">
+                <i class="fa-solid fa-download"></i> 下载视频{notempty name="download.limit"}（剩 {$download.remain} 次）{/notempty}
+              </a>
+            {else}
+              <button class="button vv-dl" type="button" disabled>
+                <i class="fa-solid fa-ban"></i> {$download.reason}
+              </button>
+            {/if}
+          {else}
+            <button class="button vv-dl" type="button" onclick="document.getElementById('vv-code') && document.getElementById('vv-code').focus()">
+              <i class="fa-solid fa-key"></i> 先输入卡密解锁
+            </button>
+          {/if}
+
+          <p class="vv-note">
+            {if $unlocked}
+              解锁状态已绑定当前浏览器{notempty name="loginUser"}与账号{/notempty}，清理 Cookie 后用同一张卡密可重新解锁。
+            {else}
+              还没拿到卡密？{if !empty($material.wechat) || !empty($siteConfig.default_wechat)}请联系客服：<b>{$material.wechat ?: $siteConfig.default_wechat}</b>{else}请联系站内客服获取{/if}
+            {/if}
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+(function () {
+  var btn = document.getElementById('vv-unlock');
+  if (!btn) return;
+  var input = document.getElementById('vv-code');
+  var errBox = document.getElementById('vv-err');
+
+  function say(msg) { errBox.textContent = msg || ''; }
+
+  async function doUnlock() {
+    var code = (input.value || '').trim();
+    if (!code) { say('请先输入卡密'); input.focus(); return; }
+    btn.disabled = true;
+    var old = btn.innerHTML;
+    btn.innerHTML = '解锁中...';
+    say('');
+    var r = await window.BizHelper.request('/video/unlock', { id: {$material.id}, code: code });
+    if (r.code === 401) {
+      btn.disabled = false;
+      btn.innerHTML = old;
+      say('登录后会自动继续兑换');
+      window.openLogin('login', function () { doUnlock(); });
+      return;
+    }
+    if (r.code === 0) {
+      btn.innerHTML = '解锁成功，加载中...';
+      location.reload();
+      return;
+    }
+    btn.disabled = false;
+    btn.innerHTML = old;
+    say(r.msg || '解锁失败，请重试');
+  }
+
+  btn.addEventListener('click', doUnlock);
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); doUnlock(); }
+  });
+  input.focus();
+})();
+</script>
+{/block}

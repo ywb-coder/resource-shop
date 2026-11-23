@@ -35,7 +35,7 @@ class Material extends Base
         $title = '全部资源';
         if ($currentCat) $title = $currentCat['name'];
         if (!empty($params['q'])) $title = '"' . $params['q'] . '" 的搜索结果';
-        $typeNames = ['skill' => 'Skill 技能', 'doc' => '资料文档', 'software' => '软件工具', 'test' => '心理测试题', 'course' => '课程'];
+        $typeNames = ['skill' => 'Skill 技能', 'doc' => '资料文档', 'software' => '软件工具', 'test' => '心理测试题', 'course' => '视频课'];
         if (!empty($params['res_type']) && isset($typeNames[$params['res_type']])) {
             $title = $typeNames[$params['res_type']];
         }
@@ -45,6 +45,7 @@ class Material extends Base
         return $this->view('material/list', [
             'result'     => $result,
             'params'     => $params,
+            'typeNames'  => $typeNames,
             'currentCat' => $currentCat,
             'catCounts'  => $counts,
             'typeCounts' => $service->resTypeCounts(),
@@ -75,12 +76,37 @@ class Material extends Base
             : [];
         $related = $service->getRelated($id, $material['category_id'], 5);
 
+        // 视频课：这门课是不是已经在这个账号下（卡密课没有订单，只能查授权表）
+        $owned = false;
+        if ($this->userId && (int) ($material['goods_type'] ?? 1) === \app\common\service\VideoService::GOODS_VIDEO) {
+            $owned = (bool) \app\common\service\VideoService::grantFor(
+                \app\common\model\Material::find($id),
+                $this->userId
+            );
+        }
+
+        // 视频课：详情页要展示「几章几节、总时长」，而不是文件格式
+        // 注意 getDetail() 返回的是数组，不能直接传给只认模型的 isVideo()
+        $courseStat = null;
+        if ((int) ($material['goods_type'] ?? 1) === \app\common\service\VideoService::GOODS_VIDEO) {
+            $stat = \app\common\service\VideoService::courseStat(\app\common\model\Material::find($id));
+            if ($stat['lessons'] > 0) {
+                $h = intdiv($stat['seconds'], 3600);
+                $m = intdiv($stat['seconds'] % 3600, 60);
+                $courseStat = $stat + [
+                    'total_text' => $h > 0 ? sprintf('%d 小时 %d 分', $h, $m) : sprintf('%d 分钟', $m),
+                ];
+            }
+        }
+
         $title = $material['seo_title'] ?: $material['title'];
         return $this->view('material/detail', [
             'material'     => $material,
             'tagList'      => $tagList,
             'related'      => $related,
             'hasPurchased' => $hasPurchased,
+            'owned'        => $owned,
+            'courseStat'   => $courseStat,
             'hideTabbar'   => true, // 详情页手机端有自己的吸底购买栏
             // 卡密商品显示库存，普通资料用不到
             'cardStock'    => (int) ($material['goods_type'] ?? 1) === \app\common\service\CardKeyService::GOODS_CARD

@@ -62,6 +62,8 @@ Route::group('/card', function () {
     Route::get('/list', 'Card/list');
     Route::post('/import', 'Card/import');
     Route::post('/delete', 'Card/delete');
+    Route::post('/unbind', 'Card/unbind');
+    Route::post('/rebind', 'Card/rebind');
     Route::get('/export', 'Card/export');
 });
 
@@ -97,6 +99,21 @@ Route::group('/config', function () {
     Route::post('/question/reply', 'Question/reply');
     Route::post('/question/delete', 'Question/delete');
     Route::post('/upload-key', 'Config/uploadKey');
+});
+// 课程课时管理页
+Route::get('/course', 'Course/index');
+
+// 视频课：分片上传（资料表单里的「视频文件」区块调用）
+Route::group('/video', function () {
+    Route::post('/init', 'Video/init');
+    Route::post('/chunk', 'Video/chunk');
+    Route::post('/finish', 'Video/finish');
+    Route::post('/remove', 'Video/remove');
+    // 课程课时
+    Route::get('/course', 'Video/course');
+    Route::post('/lesson/save', 'Video/lessonSave');
+    Route::post('/lesson/delete', 'Video/lessonDelete');
+    Route::post('/import', 'Video/import');
 });
 
 

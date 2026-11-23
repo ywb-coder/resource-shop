@@ -1,0 +1,307 @@
+{extend name="layout/base" /}
+{block name="content"}
+<script>
+window.COURSE_INFO = {:json_encode($material ?? [], JSON_UNESCAPED_UNICODE)};
+</script>
+<div id="app" v-cloak>
+
+  <div class="admin-card">
+    <div class="biz-toolbar">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+        <img v-if="cover" :src="cover" style="width:38px;height:38px;border-radius:6px;object-fit:cover;flex:none;">
+        <div style="min-width:0;">
+          <div style="font-weight:700;font-size:14px;">[[ title ]]</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+            [[ stat.chapters ]] 章 · [[ stat.lessons ]] 节 · 总时长 [[ statText ]]
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn-default" :href="'/video/' + mid" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i> 前台预览</a>
+      <a class="btn-default" :href="'/admin/material/edit?id=' + mid"><i class="fa-solid fa-pen"></i> 编辑商品</a>
+      <button class="btn-primary" @click="openNew()"><i class="fa-solid fa-plus"></i> 新增课时</button>
+    </div>
+
+    <div style="padding:0 20px 20px;">
+      <div v-if="loading" class="biz-loading"></div>
+      <template v-else>
+        <table class="biz-table" v-if="flat.length">
+          <thead>
+            <tr>
+              <th style="width:90px">章节</th>
+              <th style="width:64px">序号</th>
+              <th style="width:96px">编号</th>
+              <th>课时标题</th>
+              <th style="width:80px">时长</th>
+              <th style="width:88px">大小</th>
+              <th style="width:70px">状态</th>
+              <th style="width:250px;white-space:nowrap">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="ch in chapters" :key="ch.no">
+              <tr>
+                <td colspan="8" style="background:#f7f9fd;font-weight:700;font-size:13px;">
+                  第 [[ ch.no ]] 章 · [[ ch.title ]]
+                  <span style="color:var(--text-muted);font-weight:400;margin-left:8px;">[[ ch.lessons.length ]] 节</span>
+                </td>
+              </tr>
+              <tr v-for="l in ch.lessons" :key="l.id">
+                <td style="color:var(--text-muted);">[[ ch.no ]]</td>
+                <td>[[ l.lesson_no ]]</td>
+                <td style="font-family:Menlo,Consolas,monospace;font-size:12px;">[[ l.code ]]</td>
+                <td>
+                  <div style="font-weight:600;">[[ l.title ]]</div>
+                  <div v-if="l.summary" style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">[[ l.summary ]]</div>
+                </td>
+                <td>[[ l.duration_text || '-' ]]</td>
+                <td>[[ l.size ? fmtSize(l.size) : '-' ]]</td>
+                <td>
+                  <span :class="'badge ' + (l.video_path ? 'badge-success' : 'badge-danger')">
+                    [[ l.video_path ? '有视频' : '缺视频' ]]
+                  </span>
+                </td>
+                <td style="white-space:nowrap">
+                  <button class="biz-btn biz-btn-edit" @click="openEdit(l)"><i class="fa-solid fa-pen"></i> 编辑</button>
+                  <button class="biz-btn biz-btn-edit" @click="replaceVideo(l)"><i class="fa-solid fa-video"></i> 换视频</button>
+                  <button class="biz-btn biz-btn-del" @click="del(l)"><i class="fa-solid fa-trash-can"></i> 删除</button>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <div v-else class="biz-empty"><i class="fa-solid fa-film"></i><p>还没有课时，点右上角「新增课时」开始</p></div>
+      </template>
+    </div>
+  </div>
+
+  <!-- 新增/编辑课时 -->
+  <div class="modal-mask" v-if="fm.show">
+    <div class="modal-box" style="width:720px;max-width:96vw;">
+      <div class="modal-header">
+        <h4><i class="fa-solid fa-film" style="color:var(--primary);margin-right:6px;"></i>[[ fm.id ? '编辑课时' : '新增课时' ]]</h4>
+        <button class="modal-close" @click="fm.show=false"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-item">
+            <div class="form-item-label required">第几章</div>
+            <input class="form-input" type="number" min="1" v-model.number="fm.chapter_no">
+          </div>
+          <div class="form-item">
+            <div class="form-item-label">章名</div>
+            <input class="form-input" v-model="fm.chapter_title" placeholder="如：认识 WorkBuddy 与 Agent">
+          </div>
+          <div class="form-item" style="width:110px;flex:none;">
+            <div class="form-item-label">章内序号</div>
+            <input class="form-input" type="number" min="1" v-model.number="fm.lesson_no">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-item" style="width:180px;flex:none;">
+            <div class="form-item-label">课时编号</div>
+            <input class="form-input" v-model="fm.code" placeholder="WB-01-01">
+          </div>
+          <div class="form-item">
+            <div class="form-item-label required">课时标题</div>
+            <input class="form-input" v-model="fm.title" maxlength="200">
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-item-label">学习目标 / 简介</div>
+          <textarea class="form-textarea" v-model="fm.summary" maxlength="500" placeholder="显示在播放页课时标题下方"></textarea>
+        </div>
+
+        <div class="form-item">
+          <div class="form-item-label">视频</div>
+          <div v-if="fm.video_path" class="file-info">
+            <i class="fa-solid fa-file-video"></i>
+            <span class="file-name">[[ fm.video_path.split('/').pop() ]]</span>
+            <span class="file-size">[[ fmtSize(fm.size) ]][[ durText(fm.duration) ]]</span>
+            <button class="biz-btn biz-btn-del" @click="clearVideo" style="flex-shrink:0"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <label v-else class="file-upload-zone" :style="up.loading ? 'pointer-events:none;opacity:.75' : ''">
+            <i class="fa-solid fa-video"></i>
+            <span>[[ up.loading ? '上传中 ' + up.pct + '%' : '点击选择视频文件' ]]</span>
+            <span style="font-size:12px">mp4 / mov，单个不超过 3GB，自动分片上传</span>
+            <input type="file" accept="video/mp4,video/quicktime,.mp4,.mov" style="display:none"
+                   @change="uploadVideo" :disabled="up.loading">
+          </label>
+          <div v-if="up.loading" style="margin-top:10px;">
+            <div style="height:6px;background:#eef2f8;border-radius:999px;overflow:hidden;">
+              <div :style="'height:100%;width:' + up.pct + '%;background:var(--primary);transition:width .2s'"></div>
+            </div>
+            <div class="form-hint" style="margin-top:6px;">[[ up.stage ]]</div>
+          </div>
+        </div>
+
+        <div class="form-item">
+          <label class="form-switch-wrap">
+            <input type="checkbox" :checked="fm.status == 1" @change="fm.status = $event.target.checked ? 1 : 0">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+            <span>[[ fm.status == 1 ? '上架（学员能看到）' : '隐藏' ]]</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-default" @click="fm.show=false">取消</button>
+        <button class="btn-primary" :disabled="fm.saving || up.loading" @click="save">
+          [[ fm.saving ? '保存中...' : '保存' ]]
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+const COURSE = window.COURSE_INFO || {};
+_createAdminApp({
+  delimiters: ['[[',']]'],
+  data() {
+    return {
+      mid: COURSE.id || 0,
+      title: COURSE.title || '',
+      cover: COURSE.cover || '',
+      loading: true,
+      chapters: [],
+      stat: { chapters: 0, lessons: 0, seconds: 0 },
+      fm: this.blankLesson(),
+      up: { loading: false, pct: 0, stage: '' }
+    };
+  },
+  computed: {
+    flat() { return this.chapters.flatMap(c => c.lessons); },
+    statText() {
+      const s = this.stat.seconds || 0;
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+      return h ? h + ' 小时 ' + m + ' 分' : m + ' 分钟';
+    }
+  },
+  async mounted() {
+    await this.load();
+  },
+  methods: {
+    blankLesson() {
+      return {
+        id: 0, chapter_no: 1, chapter_title: '', lesson_no: 1, code: '', title: '', summary: '',
+        video_path: '', duration: 0, size: 0, width: 0, height: 0, status: 1, saving: false, show: false
+      };
+    },
+    fmtSize(b) { return BizHelper.formatSize(b || 0); },
+    durText(s) {
+      if (!s) return '';
+      const m = Math.floor(s / 60), sec = s % 60;
+      return ' · ' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+    },
+    async load() {
+      this.loading = true;
+      const r = await BizHelper.get('/admin/video/course?material_id=' + this.mid);
+      if (r.code === 0) {
+        this.chapters = r.data.chapters || [];
+        this.stat = r.data.stat || this.stat;
+      } else {
+        BizHelper.toast(r.msg || '加载失败', 'error');
+      }
+      this.loading = false;
+    },
+    openNew() {
+      const last = this.chapters[this.chapters.length - 1];
+      this.fm = this.blankLesson();
+      this.fm.show = true;
+      if (last) {
+        this.fm.chapter_no = last.no;
+        this.fm.chapter_title = last.title;
+        this.fm.lesson_no = last.lessons.length + 1;
+      }
+    },
+    openEdit(l) {
+      this.fm = Object.assign(this.blankLesson(), {
+        id: l.id, chapter_no: l.chapter_no, chapter_title: l.chapter_title, lesson_no: l.lesson_no,
+        code: l.code, title: l.title, summary: l.summary, video_path: l.video_path || '',
+        duration: l.duration || 0, size: l.size || 0, width: l.width || 0, height: l.height || 0,
+        status: l.status == 1 ? 1 : 0, show: true
+      });
+    },
+    replaceVideo(l) { this.openEdit(l); },
+    clearVideo() {
+      this.fm.video_path = ''; this.fm.duration = 0; this.fm.size = 0; this.fm.width = 0; this.fm.height = 0;
+    },
+    async save() {
+      if (!this.fm.title) return BizHelper.toast('请填写课时标题', 'warning');
+      this.fm.saving = true;
+      const r = await BizHelper.request('/admin/video/lesson/save', {
+        id: this.fm.id, material_id: this.mid,
+        chapter_no: this.fm.chapter_no, chapter_title: this.fm.chapter_title,
+        lesson_no: this.fm.lesson_no, code: this.fm.code, title: this.fm.title,
+        summary: this.fm.summary, video_path: this.fm.video_path,
+        duration: this.fm.duration, size: this.fm.size, width: this.fm.width, height: this.fm.height,
+        status: this.fm.status
+      });
+      this.fm.saving = false;
+      if (r.code === 0) {
+        BizHelper.toast('已保存');
+        this.fm.show = false;
+        this.load();
+      } else {
+        BizHelper.toast(r.msg || '保存失败', 'error');
+      }
+    },
+    async del(l) {
+      const ok = await BizHelper.confirm('删除课时「' + l.title + '」？视频文件也会一起删除。');
+      if (!ok) return;
+      const r = await BizHelper.request('/admin/video/lesson/delete', { id: l.id });
+      if (r.code === 0) { BizHelper.toast('已删除'); this.load(); }
+      else BizHelper.toast(r.msg || '删除失败', 'error');
+    },
+    async uploadVideo(e) {
+      const file = e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024 * 1024) return BizHelper.toast('单个视频不能超过 3GB', 'error');
+      const CHUNK = 8 * 1024 * 1024;
+      const chunks = Math.ceil(file.size / CHUNK);
+      this.up.loading = true; this.up.pct = 0; this.up.stage = '创建上传会话...';
+      try {
+        const init = await BizHelper.request('/admin/video/init', { name: file.name, size: file.size, chunks });
+        if (init.code !== 0) throw new Error(init.msg);
+        const uid = init.data.upload_id;
+        for (let i = 0; i < chunks; i++) {
+          const blob = file.slice(i * CHUNK, Math.min((i + 1) * CHUNK, file.size));
+          let ok = false, last = '';
+          for (let a = 0; a < 3 && !ok; a++) {
+            try {
+              const fd = new FormData();
+              fd.append('upload_id', uid); fd.append('index', i); fd.append('file', blob, 'chunk');
+              const res = await fetch('/admin/video/chunk', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': window.CSRF_TOKEN || '' } });
+              const data = await res.json();
+              if (data.code === 0) ok = true; else last = data.msg;
+            } catch (_) { last = '网络中断'; }
+            if (!ok) await new Promise(r => setTimeout(r, 600 * (a + 1)));
+          }
+          if (!ok) throw new Error('第 ' + (i + 1) + ' 片失败：' + last);
+          this.up.pct = Math.round((i + 1) / chunks * 92);
+          this.up.stage = '已上传 ' + (i + 1) + ' / ' + chunks + ' 片';
+        }
+        this.up.stage = '视频处理中（写索引，大文件要十几秒）...';
+        this.up.pct = 96;
+        const fin = await BizHelper.request('/admin/video/finish', { upload_id: uid });
+        if (fin.code !== 0) throw new Error(fin.msg);
+        const d = fin.data;
+        this.fm.video_path = d.path; this.fm.duration = d.duration; this.fm.size = d.size;
+        this.fm.width = d.width; this.fm.height = d.height;
+        this.up.pct = 100;
+        BizHelper.toast('视频上传完成');
+        if (d.warning) setTimeout(() => BizHelper.toast(d.warning, 'warning'), 700);
+      } catch (err) {
+        BizHelper.toast(err.message || '上传失败', 'error');
+        this.up.pct = 0;
+      } finally {
+        this.up.loading = false; this.up.stage = '';
+      }
+    }
+  }
+}).mount('#app');
+</script>
+{/block}

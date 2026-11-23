@@ -131,6 +131,16 @@ class User extends Base
         ]);
     }
 
+    /** 我的课程：卡密兑换的课程（权益在授权表，不在订单表） */
+    public function courses(): \think\Response
+    {
+        $this->requireLogin();
+        return $this->view('user/courses', [
+            'courses'   => \app\common\service\VideoService::coursesOfUser($this->userId),
+            'seo_title' => '我的课程',
+        ]);
+    }
+
     public function orders(): \think\Response
     {
         $this->requireLogin();

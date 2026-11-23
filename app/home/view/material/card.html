@@ -9,7 +9,7 @@
     >{elseif ($item.res_type ?? '') == 'test'}<span class="res-badge is-test"><i class="fa-solid fa-clipboard-question"></i>测试</span
     >{elseif ($item.res_type ?? '') == 'software'}<span class="res-badge is-software"><i class="fa-solid fa-compact-disc"></i>软件</span
     >{elseif ($item.res_type ?? '') == 'doc'}<span class="res-badge is-doc"><i class="fa-solid fa-file-lines"></i>资料</span
-    >{elseif ($item.res_type ?? '') == 'course'}<span class="res-badge is-course"><i class="fa-solid fa-chalkboard-user"></i>课程</span
+    >{elseif ($item.res_type ?? '') == 'course'}<span class="res-badge is-course"><i class="fa-solid fa-circle-play"></i>视频课</span
     >{/if}
   </a>
   <div class="rc-body">
@@ -17,7 +17,7 @@
     <h3><a href="/detail/{$item.id}">{$item.title}</a></h3>
     <p>{$item.summary|default=''}</p>
     <div class="rc-foot">
-      <strong>{if $item.price==0}免费{else}<small>¥</small>{$item.price}{/if}</strong>
+      <strong>{if ($item.goods_type ?? 1) == 3}<em style="font-style:normal;font-size:12.5px;color:#b45309;">卡密解锁</em>{elseif $item.price==0}免费{else}<small>¥</small>{$item.price}{/if}</strong>
       <a href="/detail/{$item.id}">查看详情 <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </div>

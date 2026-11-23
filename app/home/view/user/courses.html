@@ -1,0 +1,49 @@
+{extend name="layout/base" /}{block name="content"}
+<div class="store-container user-layout">
+  {assign name="active" value="courses" /}
+  {include file="user/sidebar" /}
+  <section class="user-main">
+    <div class="collection-heading">
+      <div>
+        <span class="eyebrow">YOUR COURSES</span>
+        <h1>我的课程</h1>
+      </div>
+      <span>共 {:count($courses)} 门课程</span>
+    </div>
+
+    {if !empty($courses)}
+    <div class="user-row-list">
+      {foreach $courses as $c}
+      <div class="user-row">
+        {if !empty($c.cover)}<a class="ur-thumb" href="/detail/{$c.material_id}"
+          ><img src="{$c.cover|thumb}" alt="{$c.title}" loading="lazy" /></a
+        >{else}<span class="ur-thumb"><i class="fa-solid fa-clapperboard"></i></span>{/if}
+        <div class="ur-info">
+          <div class="ur-kicker">
+            {$c.chapters} 章 · {$c.lessons} 节{if $c.duration_text} · 总时长 {$c.duration_text}{/if}
+          </div>
+          <div class="ur-title">{$c.title}</div>
+          <div class="ur-meta">
+            {if $c.unlock_text}<span><i class="fa-solid fa-key"></i>解锁于 {$c.unlock_text}</span>{/if}
+            {if $c.last_text}<span><i class="fa-regular fa-clock"></i>最近观看 {$c.last_text}</span>{/if}
+            {if $c.status != 1}<span><i class="fa-solid fa-circle-exclamation"></i>课程已下架</span>{/if}
+          </div>
+        </div>
+        <div class="ur-actions">
+          <a class="button" href="/video/{$c.material_id}{if $c.first_lesson}?l={$c.first_lesson}{/if}"
+            ><i class="fa-solid fa-circle-play"></i> 继续学习</a
+          ><a class="button secondary" href="/detail/{$c.material_id}">课程介绍</a>
+        </div>
+      </div>
+      {/foreach}
+    </div>
+    {else}
+    <div class="store-empty">
+      <h2>还没有课程</h2>
+      <p>拿到卡密后，到课程页面输入卡密即可解锁；解锁的课程会长期保存在这里。</p>
+      <a class="button" href="/list?res_type=course">去看看视频课</a>
+    </div>
+    {/if}
+  </section>
+</div>
+{/block}

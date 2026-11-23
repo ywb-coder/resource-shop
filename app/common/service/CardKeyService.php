@@ -18,9 +18,24 @@ class CardKeyService
 {
     public const GOODS_CARD = 2;
 
+    /** 视频课：卡密由站外售卖，站内只负责兑换核销 */
+    public const GOODS_VIDEO = 3;
+
     public static function isCard(Material $material): bool
     {
         return (int) $material->goods_type === self::GOODS_CARD;
+    }
+
+    /**
+     * 这份商品用不用「卡密仓库」。
+     *
+     * 卡密商品（激活码软件）和视频课都从同一个仓库导卡，区别只在交付环节：
+     * 前者付款后自动发卡，后者要买家自己输卡密兑换观看权限。
+     */
+    public static function supportsCards($material): bool
+    {
+        return $material instanceof Material
+            && in_array((int) $material->goods_type, [self::GOODS_CARD, self::GOODS_VIDEO], true);
     }
 
     /** 未售库存 */
@@ -59,7 +74,7 @@ class CardKeyService
     public function import(int $materialId, string $text): array
     {
         $material = Material::find($materialId);
-        if (!$material || !self::isCard($material)) {
+        if (!$material || !self::supportsCards($material)) {
             throw new \RuntimeException('请选择卡密商品');
         }
         $cards = self::parse($text);

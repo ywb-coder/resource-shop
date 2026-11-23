@@ -42,6 +42,7 @@ Route::post('/user/login', 'User/login');
 Route::post('/user/register', 'User/register');
 Route::get('/user/logout', 'User/logout');
 Route::get('/user/center', 'User/center');
+Route::get('/user/courses', 'User/courses');
 Route::get('/user/orders', 'User/orders');
 
 // 我有问题
@@ -53,3 +54,9 @@ Route::get('/terms', 'Page/terms');
 Route::get('/user/profile', 'User/profile');
 Route::post('/user/profile/save', 'User/profileSave');
 Route::post('/user/avatar/upload', 'User/avatarUpload');
+
+// 视频课（卡密解锁观看）
+Route::get('/video/<id>', 'Video/index')->pattern(['id' => '\d+']);
+Route::post('/video/unlock', 'Video/unlock');
+Route::get('/video/stream', 'Video/stream');
+Route::get('/video/download', 'Video/download');

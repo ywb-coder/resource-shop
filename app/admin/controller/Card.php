@@ -58,6 +58,34 @@ class Card extends Base
         return $this->success(['deleted' => $n]);
     }
 
+    /** POST /admin/card/rebind  把已兑换的卡密改绑到另一个账号 */
+    public function rebind(): \think\Response
+    {
+        $id = (int) input('post.id');
+        $account = (string) input('post.account', '');
+        if (!$id) {
+            return $this->error('参数错误');
+        }
+        try {
+            $r = $this->service->rebind($id, $account);
+        } catch (\RuntimeException $e) {
+            return $this->error($e->getMessage());
+        }
+        return $this->success($r, $r['changed'] ? '已改绑到 ' . $r['nickname'] : '这张卡本来就绑在这个账号上');
+    }
+
+    /** POST /admin/card/unbind  视频课买家换设备：清掉这张卡绑过的设备指纹 */
+    public function unbind(): \think\Response
+    {
+        $id = (int) input('post.id');
+        if (!$id) {
+            return $this->error('参数错误');
+        }
+        \app\common\service\VideoService::unbindCard($id);
+        LogService::record('卡密仓库', '解绑设备', "卡密 ID {$id} 清空设备绑定，允许在新设备重新兑换");
+        return $this->success();
+    }
+
     /** GET /admin/card/export?material_id=&status=  导出 CSV，Excel 能直接打开 */
     public function export(): \think\Response
     {

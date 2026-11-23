@@ -1,0 +1,88 @@
+{extend name="layout/base" /}
+{block name="content"}
+<div class="admin-card">
+  <div class="biz-toolbar">
+    <div>
+      <div style="font-weight:700;font-size:14px;">视频课</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">
+        一门课 = 一个商品 + 若干课时。卡密在「卡密仓库」导入，买家兑换后归到账号。
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <a class="btn-default" href="/admin/card"><i class="fa-solid fa-key"></i> 卡密仓库</a>
+    <a class="btn-primary" href="/admin/material/create"><i class="fa-solid fa-plus"></i> 新建视频课</a>
+  </div>
+
+  <div style="padding:0 20px 20px;">
+    {if !empty($courses)}
+    <table class="biz-table">
+      <thead>
+        <tr>
+          <th>课程</th>
+          <th style="width:110px">章节 / 课时</th>
+          <th style="width:100px">总时长</th>
+          <th style="width:100px">课时视频</th>
+          <th style="width:140px">卡密（未售 / 已售）</th>
+          <th style="width:90px">状态</th>
+          <th style="width:250px;white-space:nowrap">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {foreach $courses as $c}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              {if !empty($c.cover)}
+              <img src="{$c.cover|thumb}" style="width:56px;height:36px;border-radius:6px;object-fit:cover;flex:none;">
+              {else}
+              <div style="width:56px;height:36px;border-radius:6px;background:#eef2f8;display:flex;align-items:center;justify-content:center;color:#b0b8cc;flex:none;">
+                <i class="fa-solid fa-film"></i>
+              </div>
+              {/if}
+              <div style="min-width:0;">
+                <div style="font-weight:600;">{$c.title}</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">ID {$c.id}</div>
+              </div>
+            </div>
+          </td>
+          <td>{$c.chapters} 章 · {$c.lessons} 节</td>
+          <td>{$c.duration}</td>
+          <td>
+            {if $c.missing > 0}
+            <span class="badge badge-danger">缺 {$c.missing} 节</span>
+            {elseif $c.lessons > 0}
+            <span class="badge badge-success">齐全</span>
+            {else}
+            <span class="badge badge-default">未上传</span>
+            {/if}
+          </td>
+          <td>
+            <span class="badge {if $c.unsold > 0}badge-primary{else}badge-default{/if}">{$c.unsold}</span>
+            <span style="font-size:12px;color:var(--text-muted);"> / {$c.sold}</span>
+          </td>
+          <td>
+            {if $c.status == 1 && $c.is_hidden == 0}
+            <span class="badge badge-success">上架</span>
+            {else}
+            <span class="badge badge-default">{if $c.is_hidden == 1}已隐藏{else}未上架{/if}</span>
+            {/if}
+          </td>
+          <td style="white-space:nowrap">
+            <a class="biz-btn biz-btn-edit" href="/admin/course?material_id={$c.id}"><i class="fa-solid fa-list-ol"></i> 管理课时</a>
+            <a class="biz-btn biz-btn-edit" href="/admin/card?material_id={$c.id}"><i class="fa-solid fa-key"></i> 卡密</a>
+            <a class="biz-btn biz-btn-edit" href="/admin/material/edit?id={$c.id}"><i class="fa-solid fa-pen"></i> 编辑</a>
+            <a class="biz-btn biz-btn-edit" href="/video/{$c.id}" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i></a>
+          </td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {else}
+    <div class="biz-empty">
+      <i class="fa-solid fa-film"></i>
+      <p>还没有视频课。到「资料管理 → 新建」，商品类型选「视频课（卡密解锁观看）」即可。</p>
+    </div>
+    {/if}
+  </div>
+</div>
+{/block}

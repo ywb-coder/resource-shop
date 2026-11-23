@@ -32,7 +32,7 @@
           ><i class="fa-solid fa-file-lines"></i> 资料文档</span
         >{elseif ($material.res_type ?? '') == 'course'}<span
           class="res-badge is-inline is-course"
-          ><i class="fa-solid fa-chalkboard-user"></i> 课程</span
+          ><i class="fa-solid fa-clapperboard"></i> 视频课</span
         >{/if}
       </div>
       <h1>{$material.title}</h1>
@@ -48,12 +48,15 @@
             ($material.res_type ?? '') == 'test'}心理测试题{elseif
             ($material.res_type ?? '') == 'software'}软件工具{elseif
             ($material.res_type ?? '') == 'doc'}资料文档{elseif
-            ($material.res_type ?? '') == 'course'}课程{else}数字资料{/if}</b
+            ($material.res_type ?? '') == 'course'}视频课{else}数字资料{/if}</b
           ></span
         ><span
-          ><small>文件格式</small
-          ><b>{$material.file_format ?: '电子资料'}</b></span
-        >{if count($material.catalog ?? [])}<span
+          ><small>{if $material.goods_type == 3}课程结构{else}文件格式{/if}</small
+          ><b>{if $material.goods_type == 3}{if !empty($courseStat)}{$courseStat.chapters} 章 · {$courseStat.lessons} 节{else}视频课{/if}{else}{$material.file_format ?: '电子资料'}{/if}</b></span
+        >{if $material.goods_type == 3}{if !empty($courseStat)}<span
+          ><small>总时长</small
+          ><b>{$courseStat.total_text}</b></span
+        >{/if}{elseif count($material.catalog ?? [])}<span
           ><small>内容章节</small
           ><b>{:count($material.catalog)} 章</b></span
         >{else}<span
@@ -62,13 +65,19 @@
         >{/if}
       </div>
       <div class="product-price">
-        {if $material.price==0}<strong>免费</strong><em>下载后即可获得全部文件</em>{else}<strong
+        {if $material.goods_type == 3}{if !empty($owned)}<strong>已拥有</strong><em
+          >这门课已保存到你的账号，登录即可观看</em
+        >{else}<strong>卡密观看</strong><em
+          >输入卡密即可解锁，长期有效</em
+        >{/if}{else}{if $material.price==0}<strong>免费</strong><em>下载后即可获得全部文件</em>{else}<strong
           ><small>¥</small>{$material.price}</strong
         >{if
-        $material.original_price>$material.price}<s>¥{$material.original_price}</s>{/if}{/if}
+        $material.original_price>$material.price}<s>¥{$material.original_price}</s>{/if}{/if}{/if}
       </div>
       <div class="product-purchase">
-        {if $hasPurchased}<button
+        {if $material.goods_type == 3}<a class="button" href="/video/{$material.id}">
+          <i class="fa-solid fa-circle-play"></i> {if !empty($owned)}继续学习{else}立即观看{/if}</a
+        >{elseif $hasPurchased}<button
           class="button"
           onclick="downloadMaterial({$material.id})"
         >
@@ -83,7 +92,7 @@
         >{/if}{/if}
       </div>
       <p class="product-fineprint">
-        获取后可从「我的资料」随时找回。{if !empty($material.wechat) ||
+        {if $material.goods_type == 3}解锁后可在「我的课程」随时观看，换设备登录即可。{else}获取后可从「我的资料」随时找回。{/if}{if !empty($material.wechat) ||
         !empty($siteConfig.default_wechat)}<span
           >客服：{$material.wechat ?: $siteConfig.default_wechat}</span
         >{/if}
@@ -94,22 +103,35 @@
     <aside class="product-outline">
       <span class="eyebrow">QUICK NAV</span>
       <h2>快速定位</h2>
+      {if $material.goods_type == 3}
+      <a href="#description"><small>01</small>课程介绍</a>
+      {if !empty($material.previews)}<a href="#peek"><small>02</small>效果预览</a>{/if}
+      <div class="po-files">
+        <b>课程信息</b>
+        <span>{if !empty($courseStat)}{$courseStat.chapters} 章 · {$courseStat.lessons} 节{else}视频课{/if}</span>
+        <span>{if !empty($courseStat)}总时长 {$courseStat.total_text}{else}在线观看{/if}</span>
+        <span>卡密解锁 · 长期有效</span>
+      </div>
+      {else}
       <a href="#description"><small>01</small>功能说明</a>
       {if ($material.res_type ?? '') == 'skill'}<a href="#install"
         ><small>02</small>安装教程</a
       >{/if}
       {if !empty($material.previews)}<a href="#peek"><small>03</small>效果预览</a>{/if}
+      {if ($material.res_type ?? '') == 'skill'}
       <div class="po-files">
         <b>包内文件</b>
         <span>SKILL.md</span>
         <span>中文使用说明.md</span>
         <span>LICENSE · SOURCE.txt</span>
       </div>
+      {/if}
+      {/if}
     </aside>
     <article>
       <section class="product-section" id="description">
         <span class="eyebrow">WHAT'S INSIDE</span>
-        <h2>这个技能能做什么</h2>
+        <h2>{if $material.goods_type == 3}这门课讲什么{else}这个技能能做什么{/if}</h2>
         <div class="product-description">{$material.description|raw}</div>
       </section>
       {if !empty($material.previews)}
@@ -228,7 +250,7 @@
   {if !empty($related)}
   <section class="store-collection">
     <div class="collection-heading">
-      <h2>同类技能</h2>
+      <h2>{if $material.goods_type == 3}相关推荐{else}同类技能{/if}</h2>
       <a href="/list">浏览更多 →</a>
     </div>
     <div class="resource-grid">

@@ -45,7 +45,7 @@
             </tr>
           </tbody>
         </table>
-        <div v-else class="biz-empty"><i class="fa-solid fa-key"></i><p>[[ kw ? '没有匹配的商品' : '还没有卡密商品，先到「资料管理」新建一个，商品类型选「卡密商品」' ]]</p></div>
+        <div v-else class="biz-empty"><i class="fa-solid fa-key"></i><p>[[ kw ? '没有匹配的商品' : '还没有卡密商品，先到「资料管理」新建一个，商品类型选「卡密商品」或「视频课」' ]]</p></div>
       </template>
     </div>
   </div>
@@ -76,10 +76,11 @@
                 <th>卡号</th>
                 <th>密码</th>
                 <th style="width:80px">状态</th>
+                <th style="width:120px">绑定账号</th>
                 <th>订单号</th>
                 <th style="width:140px">售出时间</th>
                 <th style="width:130px">导入批次</th>
-                <th style="width:90px">操作</th>
+                <th style="width:170px">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -87,11 +88,30 @@
                 <td><input type="checkbox" v-if="item.status == 0" :value="item.id" v-model="selected"></td>
                 <td style="font-family:Menlo,Consolas,monospace;">[[ item.card_no ]]</td>
                 <td style="font-family:Menlo,Consolas,monospace;color:var(--text-muted);">[[ item.card_secret || '-' ]]</td>
-                <td><span :class="item.status == 1 ? 'badge badge-default' : 'badge badge-success'">[[ item.status == 1 ? '已售' : '未售' ]]</span></td>
+                <td>
+                  <span :class="item.status == 1 ? 'badge badge-default' : 'badge badge-success'">[[ item.status == 1 ? '已售' : '未售' ]]</span>
+                  <div v-if="item.device_count" style="font-size:11px;color:var(--text-muted);margin-top:3px;">
+                    <i class="fa-solid fa-mobile-screen"></i> [[ item.device_count ]] 台设备
+                  </div>
+                </td>
+                <td style="font-size:12px;">
+                  <span v-if="item.user_name">[[ item.user_name ]]</span>
+                  <span v-else style="color:var(--text-light);">-</span>
+                </td>
                 <td style="font-size:12px;">[[ item.order_no || '-' ]]</td>
                 <td style="font-size:12px;">[[ item.sold_time || '-' ]]</td>
                 <td style="font-size:12px;color:var(--text-muted);">[[ item.batch_no ]]</td>
-                <td><button v-if="item.status == 0" class="biz-btn biz-btn-del" @click="del([item.id])"><i class="fa-solid fa-trash-can"></i> 删除</button></td>
+                <td>
+                  <button v-if="item.status == 0" class="biz-btn biz-btn-del" @click="del([item.id])"><i class="fa-solid fa-trash-can"></i> 删除</button>
+                  <template v-else>
+                    <button class="biz-btn biz-btn-edit" @click="rebind(item)" title="买家换账号或兑错了账号">
+                      <i class="fa-solid fa-right-left"></i> 改绑
+                    </button>
+                    <button v-if="item.device_count > 0" class="biz-btn biz-btn-edit" @click="unbind(item)" title="买家换设备时点这里">
+                      <i class="fa-solid fa-link-slash"></i> 解绑
+                    </button>
+                  </template>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -237,6 +257,35 @@ _createAdminApp({
       const r = await BizHelper.request('/admin/card/delete', { ids });
       if (r.code === 0) { BizHelper.toast('已删除 ' + r.data.deleted + ' 张'); this.loadProducts(); this.load(); }
       else BizHelper.toast(r.msg || '删除失败', 'error');
+    },
+    async rebind(item) {
+      const res = await Swal.fire({
+        title: '把这张卡改绑到另一个账号',
+        html: '卡密：<b>' + item.card_no + '</b><br><span style="font-size:12px;color:#8a94a8">当前绑定：' + (item.user_name || '未绑定') + '</span>',
+        input: 'text',
+        inputLabel: '买家账号（手机号 / 邮箱 / 昵称）',
+        inputPlaceholder: '输入后点确定',
+        showCancelButton: true,
+        confirmButtonText: '改绑',
+        cancelButtonText: '取消',
+        inputValidator: (v) => (!v || !v.trim()) ? '请输入账号' : null
+      });
+      if (!res.value) return;
+      const r = await BizHelper.request('/admin/card/rebind', { id: item.id, account: res.value.trim() });
+      if (r.code === 0) {
+        item.user_name = r.data.nickname;
+        item.device_count = 0;
+        BizHelper.toast(r.msg);
+      } else {
+        BizHelper.toast(r.msg || '改绑失败', 'error');
+      }
+    },
+    async unbind(item) {
+      const ok = await BizHelper.confirm(`解绑「${item.card_no}」绑定的 ${item.device_count} 台设备？解绑后买家可以在新设备上重新输入这张卡密。`, { confirm: '解绑' });
+      if (!ok) return;
+      const r = await BizHelper.request('/admin/card/unbind', { id: item.id });
+      if (r.code === 0) { item.device_count = 0; BizHelper.toast('已解绑'); }
+      else BizHelper.toast(r.msg || '解绑失败', 'error');
     },
     delSelected() { this.del([...this.selected]); },
     exportCsv() {

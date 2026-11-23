@@ -36,6 +36,7 @@ class FeishuNotifyService
             'free'    => 'feishu_notify_free',
             'user'    => 'feishu_notify_user',
             'comment' => 'feishu_notify_comment',
+            'card'    => 'feishu_notify_card',
             default   => '',
         };
     }
@@ -114,6 +115,43 @@ class FeishuNotifyService
         }
         $lines[] = '**时间**：' . date('Y-m-d H:i:s');
         self::send('💬 收到新的提问', implode("\n", $lines), 'purple');
+    }
+
+    /** 视频课卡密兑换成功 */
+    public static function cardUnlocked(array $info): void
+    {
+        if (!self::enabled('card')) {
+            return;
+        }
+        $nickname = '';
+        $account  = '';
+        if (!empty($info['user_id'])) {
+            try {
+                $u = \app\common\model\User::where('id', (int) $info['user_id'])->find();
+                if ($u) {
+                    $nickname = (string) $u->nickname;
+                    $account  = (string) $u->phone ?: (string) $u->email;
+                }
+            } catch (\Throwable $e) {
+                // 查不到用户不影响通知
+            }
+        }
+        $lines = [
+            '**课程**：' . (string) ($info['title'] ?? ''),
+            '**卡密**：' . (string) ($info['card_no'] ?? ''),
+        ];
+        if ($nickname !== '') {
+            $lines[] = '**买家**：' . $nickname;
+        }
+        if ($account !== '') {
+            $lines[] = '**账号**：' . self::mask($account);
+        }
+        if (!empty($info['ip'])) {
+            $lines[] = '**IP**：' . (string) $info['ip'];
+        }
+        $lines[] = '**时间**：' . date('Y-m-d H:i:s');
+        $lines[] = '**提示**：卡密已作废，权益归该账号';
+        self::send('🔑 课程卡密解锁', implode("\n", $lines), 'violet');
     }
 
     /**

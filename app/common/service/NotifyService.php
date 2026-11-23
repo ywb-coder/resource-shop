@@ -45,6 +45,12 @@ class NotifyService
         self::guard(static fn() => FeishuNotifyService::userRegistered($user));
     }
 
+    /** 视频课卡密兑换成功：目前只推飞书 */
+    public static function cardUnlocked(array $info): void
+    {
+        self::guard(static fn() => FeishuNotifyService::cardUnlocked($info));
+    }
+
     public static function questionCreated(array $question, int $userId = 0): void
     {
         $nickname = '';

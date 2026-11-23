@@ -33,7 +33,7 @@ class Config extends Base
             'default_wechat', 'default_wechat_qr', 'watermark_text', 'watermark_opacity',
             'wecom_webhook', 'wecom_notify_pending', 'wecom_notify_paid',
             'feishu_webhook', 'feishu_secret', 'feishu_notify_order', 'feishu_notify_paid',
-            'feishu_notify_free', 'feishu_notify_user', 'feishu_notify_comment',
+            'feishu_notify_free', 'feishu_notify_user', 'feishu_notify_comment', 'feishu_notify_card',
             'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from_name',
         ];
 

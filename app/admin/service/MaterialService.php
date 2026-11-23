@@ -35,6 +35,8 @@ class MaterialService extends BaseCrudService
             'catalog', 'page_count', 'file_format', 'price', 'original_price', 'delivery_type',
             'pan_url', 'pan_code', 'file_path', 'file_name', 'file_size',
             'use_url', 'use_guide',
+            'video_path', 'video_duration', 'video_size', 'video_width', 'video_height',
+            'video_download', 'video_dl_limit', 'video_dev_limit',
             'wechat', 'tags', 'seo_title', 'seo_keywords', 'seo_description',
             'status', 'is_hidden', 'is_hot', 'is_recommend', 'sort',
         ];
@@ -104,7 +106,7 @@ class MaterialService extends BaseCrudService
 
         foreach ($result['list'] as &$row) {
             $row['download_count'] = $downloads[(int) $row['id']] ?? 0;
-            if ((int) ($row['goods_type'] ?? 1) === \app\common\service\CardKeyService::GOODS_CARD) {
+            if (\app\common\service\CardKeyService::supportsCards($row)) {
                 $row['stock'] = \app\common\service\CardKeyService::stock((int) $row['id']);
             }
         }

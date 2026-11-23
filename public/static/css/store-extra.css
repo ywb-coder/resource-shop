@@ -19,7 +19,7 @@
 .section-head > a:hover{ text-decoration:underline; }
 
 /* ---------- 公告条 ---------- */
-.store-announcement{ background:#101a33; color:#c8d4ee; font-size:12px; letter-spacing:.6px; height:34px; line-height:34px; }
+.store-announcement{ background:#101a33; color:#c8d4ee; font-size:14px; letter-spacing:.6px; height:38px; line-height:38px; }
 
 /* ---------- 页头 ---------- */
 .store-header{ padding:18px 32px; max-width:1240px; border-bottom:1px solid var(--line); }
@@ -46,15 +46,15 @@
 .hero-tags a:hover{ background:var(--primary); color:#fff; }
 
 /* 精选：深色舞台托住任意配色的封面，避免每张海报把页面颜色带跑 */
-.feature-stage{ position:relative; border-radius:22px; padding:26px 26px 20px; background:linear-gradient(160deg,#1b2a5c 0%,#2f56d6 62%,#4d6fe8 100%); box-shadow:0 26px 60px rgba(28,46,110,.28); overflow:hidden; }
+.feature-stage{ position:relative; border-radius:22px; padding:22px 22px 18px; background:linear-gradient(160deg,#1b2a5c 0%,#2f56d6 62%,#4d6fe8 100%); box-shadow:0 26px 60px rgba(28,46,110,.28); overflow:hidden; }
 .feature-stage::before{ content:""; position:absolute; width:320px; height:320px; border-radius:50%; right:-110px; top:-130px; background:rgba(255,255,255,.10); }
 .feature-flag{ position:relative; display:inline-block; font-size:11px; font-weight:700; letter-spacing:1.2px; color:#fff; background:rgba(255,255,255,.18); padding:5px 12px; border-radius:999px; margin-bottom:18px; backdrop-filter:blur(4px); }
 .feature-poster{ position:relative; display:block; width:172px; margin:0 auto; transform:rotate(-4deg); transition:transform .3s; }
 .feature-poster:hover{ transform:rotate(0) translateY(-4px); }
 .feature-poster img{ width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; box-shadow:0 18px 34px rgba(8,16,44,.42); }
 .feature-meta{ position:relative; margin-top:20px; text-align:center; }
-.feature-meta small{ display:block; font-size:11px; letter-spacing:1px; color:rgba(255,255,255,.66); margin-bottom:5px; }
-.feature-meta a{ display:block; color:#fff; font-size:15px; font-weight:600; line-height:1.5; }
+.feature-meta small{ display:block; font-size:12.5px; letter-spacing:1px; color:rgba(255,255,255,.66); margin-bottom:6px; }
+.feature-meta a{ display:block; color:#fff; font-size:18px; font-weight:600; line-height:1.5; }
 
 /* ---------- 三大板块 ---------- */
 .section-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
@@ -211,7 +211,7 @@
 }
 @media (max-width:768px){
   .store-container{ padding:0 16px; }
-  .store-announcement{ font-size:11px; letter-spacing:0; height:30px; line-height:30px; padding:0 10px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .store-announcement{ font-size:12px; letter-spacing:0; height:32px; line-height:32px; padding:0 10px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
   .store-header{ padding:12px 16px; gap:12px; }
   .store-brand span{ font-size:15px; }
   .store-brand small{ display:none; }
@@ -362,7 +362,7 @@
 @media (max-width:768px){
   /* 公告条文字比屏幕宽，允许换行；顺带兜住所有残余横向溢出 */
   html,body,.share-store{ overflow-x:hidden; max-width:100%; }
-  .store-announcement{ height:auto; min-height:30px; line-height:1.7; white-space:normal; padding:6px 14px; font-size:11px; }
+  .store-announcement{ height:auto; min-height:32px; line-height:1.7; white-space:normal; padding:7px 14px; font-size:12px; }
   .store-header nav{ flex-basis:100%; width:auto; }
   .store-header{ justify-content:flex-start; }
   .store-actions{ margin-left:auto; }
@@ -375,10 +375,10 @@
 /* ---------- 本周精选轮播（5 个位，淡入淡出 + 圆点） ---------- */
 .feature-slides{
   position:relative;
-  width:min(320px,86%);
+  width:min(430px,100%);
   aspect-ratio:16/10;
   margin:0 auto;
-  padding:7px;
+  padding:6px;
   border-radius:16px;
   background:rgba(255,255,255,.14);
 }
@@ -442,7 +442,7 @@
   .feature-slides{ width:100%; }
   .feature-flag{ margin-bottom:12px; }
   .feature-meta{ margin-top:14px; }
-  .feature-meta a{ font-size:14px; }
+  .feature-meta a{ font-size:16px; }
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -572,3 +572,55 @@
 @media (prefers-reduced-motion: reduce){
   .feature-track{ transition:none; }
 }
+
+/* ---------- 用户中心：我的课程 / 我的资料（与「订单记录」同一套视觉） ---------- */
+.user-row-list{ display:grid; gap:14px; }
+.user-row{ display:flex; align-items:center; gap:20px; padding:18px 20px; border:1px solid var(--line); border-radius:12px; background:#fdfdff; transition:.2s; }
+.user-row:hover{ border-color:#cfd9f2; box-shadow:0 12px 28px rgba(23,37,84,.07); }
+.ur-thumb{ flex:none; width:112px; height:70px; border-radius:9px; overflow:hidden; background:#eef2fa; display:flex; align-items:center; justify-content:center; color:#a9b6d0; font-size:20px; }
+.ur-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.ur-info{ flex:1; min-width:0; }
+.ur-kicker{ font-size:11.5px; letter-spacing:.3px; color:#8996b0; }
+.ur-title{ font-size:15.5px; font-weight:650; color:var(--ink); margin:6px 0 7px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ur-meta{ display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:#78849c; }
+.ur-meta i{ margin-right:5px; color:#9aa3b8; }
+.ur-actions{ flex:none; display:flex; gap:10px; }
+.ur-actions .button{ padding:9px 16px; font-size:13px; border-radius:8px; }
+.ur-actions .button i{ font-size:12px; }
+.user-main .store-empty{ padding:56px 16px; }
+
+@media (max-width: 820px){
+  .user-row{ flex-wrap:wrap; gap:14px; padding:14px; }
+  .ur-thumb{ width:88px; height:58px; }
+  .ur-info{ flex:1 1 60%; }
+  .ur-actions{ width:100%; }
+  .ur-actions .button{ flex:1; }
+}
+
+/* ---------- 用户中心：问题反馈（原 account 主题里抽出来，改用站点主色） ---------- */
+.q-form{ margin:0 0 22px; padding:16px; border:1px solid var(--line); border-radius:12px; background:#fbfcff; }
+.q-textarea{ width:100%; border:1px solid var(--line); border-radius:8px; padding:11px 13px; font-size:14px; line-height:1.7; font-family:inherit; color:var(--ink); background:#fff; resize:vertical; outline:none; transition:border-color .18s, box-shadow .18s; }
+.q-textarea:focus{ border-color:rgba(22,119,255,.5); box-shadow:0 0 0 3px rgba(22,119,255,.10); }
+.q-form-foot{ display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap; }
+.q-contact{ flex:1; min-width:12em; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:13px; color:var(--ink); background:#fff; outline:none; transition:border-color .18s; }
+.q-contact:focus{ border-color:rgba(22,119,255,.5); box-shadow:0 0 0 3px rgba(22,119,255,.10); }
+.q-form .button{ padding:10px 18px; font-size:13px; border-radius:8px; }
+.q-list{ display:grid; }
+.q-item{ padding:16px 0; border-bottom:1px solid var(--line); }
+.q-item:last-child{ border-bottom:0; }
+.q-item-head{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.q-status{ font-size:12px; padding:2px 10px; border-radius:999px; font-weight:500; }
+.q-status.pending{ background:#fff5e6; color:#b8690b; }
+.q-status.replied{ background:#e8f0ff; color:#2f56d6; }
+.q-time{ font-size:12px; color:#8996b0; display:inline-flex; align-items:center; gap:5px; }
+.q-content{ font-size:14px; line-height:1.75; color:var(--ink); white-space:pre-line; word-break:break-word; }
+.q-reply{ margin-top:12px; padding:12px 14px; background:#f4f7ff; border-radius:8px; }
+.q-reply-head{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#2f56d6; margin-bottom:6px; }
+.q-reply-head .q-time{ color:#8996b0; font-weight:400; }
+.q-reply-body{ font-size:14px; line-height:1.75; color:var(--ink); white-space:pre-line; word-break:break-word; }
+
+/* ---------- 用户中心侧栏：hover 与当前页高亮 ---------- */
+.user-nav a{ border-radius:9px; color:#4a5670; transition:background .16s, color .16s; }
+.user-nav a:hover{ background:#f1f5fd; color:var(--primary); }
+.user-nav a.active{ background:#e8f0ff; color:var(--primary); font-weight:600; }
+.user-nav a.active i{ color:var(--primary); }

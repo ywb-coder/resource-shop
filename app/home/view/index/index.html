@@ -1,26 +1,55 @@
 {extend name="layout/base" /} {block name="content"}
+<style>
+  /* ---------- 首页课程区（主推）：左说明 右课程目录 ---------- */
+  .course-spot { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; padding: 30px 32px; border-radius: var(--card-r); border: 1px solid var(--line); background: #fff; transition: .22s; }
+  .course-spot + .course-spot { margin-top: 18px; }
+  .course-spot:hover { box-shadow: 0 18px 44px rgba(23, 37, 84, .09); border-color: #cfd9f2; }
+  .cs-left h3 { font-size: 25px; font-weight: 800; line-height: 1.42; letter-spacing: -.4px; color: var(--ink); margin: 10px 0 12px; }
+  .cs-sum { font-size: 13.5px; line-height: 1.9; color: var(--muted); }
+  .cs-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12.5px; color: #4b5b7d; margin-top: 16px; }
+  .cs-meta i { font-size: 11.5px; color: #98a2b8; margin-right: 5px; }
+  .cs-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .cs-actions .button { height: 44px; padding: 0 22px; font-size: 14px; }
+  .cs-right { background: var(--soft); border-radius: 12px; padding: 16px 20px 12px; border: 1px solid #eef1f8; }
+  .cs-rt { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .cs-rt b { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .cs-rt small { font-size: 12px; color: #98a2b8; }
+  .cs-chaps { list-style: none; margin: 8px 0 0; padding: 0; }
+  .cs-chaps li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed #e3e8f4; }
+  .cs-chaps li:last-child { border-bottom: none; }
+  .cs-no { flex: none; width: 22px; height: 22px; border-radius: 7px; background: #e5ebfc; color: #2f56d6; font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .cs-name { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cs-chaps small { flex: none; font-size: 12px; color: #98a2b8; }
+  .cs-more { display: inline-block; margin-top: 8px; font-size: 12.5px; color: var(--primary); font-weight: 600; }
+  @media (max-width: 900px) {
+    .course-spot { grid-template-columns: 1fr; gap: 22px; padding: 22px; }
+    .cs-left h3 { font-size: 20px; }
+  }
+</style>
+
 <section class="hero store-container">
   <div class="hero-copy">
-    <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> 开源 · 可商用 · 免费下载</span>
-    <h1>给 AI 装上专业技能，<br />把重复的活交出去<span>。</span></h1>
+    <span class="eyebrow"><i class="fa-solid fa-clapperboard"></i> 真人录屏 · 逐节跟练 · 卡密解锁</span>
+    <h1>跟着录屏学，<br />把 AI 用成真正的生产力<span>。</span></h1>
     <p class="hero-lead">
-      收录 <b>{$resourceCount}</b> 个开源 AI 技能，覆盖电商运营、自媒体、AI 短剧、营销销售与办公效率。
-      下载压缩包，把文件发给你的 AI，一句话就能装好。
+      已上线 <b>{$courseTotal}</b> 门实战录播课、共 <b>{$lessonTotal}</b> 节课 <b>{$lessonHours}</b>，
+      全程真人操作录屏，一节对着屏幕做一遍，学完手里就有能直接用的成果。
+      另备 <b>{$skillTotal}</b> 个开源技能，装到 AI 上即可调用。
     </p>
     <form class="store-search hero-search" action="/list">
       <i class="fa-solid fa-magnifying-glass"></i
       ><input
         name="q"
-        aria-label="搜索技能"
-        placeholder="搜索：亚马逊选品、小红书文案、简历筛选"
-      /><button>搜索技能</button>
+        aria-label="搜索课程与技能"
+        placeholder="搜索：WorkBuddy、Agent 实战、小红书文案"
+      /><button>搜索</button>
     </form>
     <div class="hero-tags">
       <span>热门：</span>
-      <a href="/list?q=亚马逊">亚马逊</a>
+      <a href="/list?res_type=course">录播课</a>
+      <a href="/list?q=WorkBuddy">WorkBuddy</a>
+      <a href="/list?q=Agent">Agent</a>
       <a href="/list?q=小红书">小红书</a>
-      <a href="/list?q=SEO">SEO</a>
-      <a href="/list?q=简历">简历</a>
       <a href="/list?q=PPT">PPT</a>
     </div>
   </div>
@@ -173,11 +202,114 @@
   })();
 </script>
 
+{if $courses}
+<section class="store-container section-block" id="courses">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">录播课程 · 主打</span>
+      <h2>跟着录屏，一节一节做出来</h2>
+    </div>
+    <a href="/list?res_type=course">全部课程（{$courseTotal}） →</a>
+  </div>
+  {foreach $courses as $c}
+  <div class="course-spot">
+    <div class="cs-left">
+      <span class="eyebrow"><i class="fa-solid fa-circle-play"></i> 录播课 · 卡密解锁</span>
+      <h3>{$c.title}</h3>
+      <p class="cs-sum">{$c.summary}</p>
+      <div class="cs-meta">
+        <span><i class="fa-solid fa-layer-group"></i>{$c.chapters_all} 章 · {$c.lessons} 节</span>
+        {if $c.hours}<span><i class="fa-regular fa-clock"></i>{$c.hours}</span>{/if}
+        <span><i class="fa-solid fa-key"></i>一卡解锁整门课</span>
+        <span><i class="fa-solid fa-download"></i>可下载</span>
+      </div>
+      <div class="cs-actions">
+        <a class="button" href="/detail/{$c.id}">查看课程大纲</a>
+        <a class="button secondary" href="/video/{$c.id}">我已解锁，进入学习</a>
+      </div>
+    </div>
+    <div class="cs-right">
+      <div class="cs-rt"><b>课程目录</b><small>共 {$c.lessons} 节 / {$c.chapters_all} 章</small></div>
+      <ol class="cs-chaps">
+        {foreach $c.chapters as $i => $ch}{if $i < 6}
+        <li><span class="cs-no">{$ch.no}</span><span class="cs-name">{$ch.title}</span><small>{$ch.lessons} 节</small></li>
+        {/if}{/foreach}
+      </ol>
+      {if $c.chapters_all > 6}<span class="cs-more">还有 {:($c.chapters_all - 6)} 章 →</span>{/if}
+    </div>
+  </div>
+  {/foreach}
+</section>
+{/if}
+
+<section class="store-container section-block how-block">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">怎么学</span>
+      <h2>拿到卡密，三步开练</h2>
+    </div>
+  </div>
+  <div class="how-grid">
+    <div class="how-item">
+      <b>01</b>
+      <h3>先看大纲，确认要学什么</h3>
+      <p>每门课都列出章节和课时，点开就知道讲什么、能不能解决你的问题。</p>
+    </div>
+    <div class="how-item">
+      <b>02</b>
+      <h3>卡密解锁整门课</h3>
+      <p>拿到卡密后在课程页输入一次，权益存进你的账号，换手机换电脑登录就能看。</p>
+    </div>
+    <div class="how-item">
+      <b>03</b>
+      <h3>跟着录屏做一遍</h3>
+      <p>按课时顺序操作，卡住就拖回上一段重看；需要的素材可下载，跟着做就能复现。</p>
+    </div>
+  </div>
+</section>
+
+{if $skillCats}
+<section class="store-container section-block" id="cats">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">Skill 技能 · 选配</span>
+      <h2>现成技能，装上就能用</h2>
+    </div>
+    <a href="/list?res_type=skill">全部技能（{$skillTotal}） →</a>
+  </div>
+  <div class="cat-grid">
+    {foreach $skillCats as $i => $c}{if $i < 10}
+    <a class="cat-tile" href="/list?category_id={$c.id}">
+      <i class="fa-solid {$c.icon}"></i>
+      <span>{$c.name}</span>
+      <small>{$c.count}</small>
+    </a>
+    {/if}{/foreach}
+  </div>
+</section>
+{/if}
+
 <section class="store-container section-block">
   <div class="section-head">
     <div>
-      <span class="eyebrow">三大板块</span>
-      <h2>这里有什么</h2>
+      <span class="eyebrow">最新上架</span>
+      <h2>刚上新的技能与资料</h2>
+    </div>
+    <a href="/list">查看全部 →</a>
+  </div>
+  <div class="resource-grid">
+    {foreach $products as $item}{include file="material/card" item=$item /}{/foreach}
+  </div>
+  {if empty($products)}
+  <div class="store-empty">内容正在整理入库，稍后再来看看。</div>
+  {/if}
+</section>
+
+<section class="store-container section-block">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">还有什么</span>
+      <h2>测评、全部内容与更多入口</h2>
     </div>
   </div>
   <div class="section-grid">
@@ -190,67 +322,6 @@
       <span class="sc-foot"><b>{$s.count}</b> {$s.unit|default='个资源'} <i class="fa-solid fa-arrow-right"></i></span>
     </a>
     {/foreach}
-  </div>
-</section>
-
-<section class="store-container section-block" id="cats">
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">按场景找</span>
-      <h2>你想解决的，是哪件事</h2>
-    </div>
-    <a href="/list?res_type=skill">全部技能 →</a>
-  </div>
-  <div class="cat-grid">
-    {foreach $skillCats as $c}
-    <a class="cat-tile" href="/list?category_id={$c.id}">
-      <i class="fa-solid {$c.icon}"></i>
-      <span>{$c.name}</span>
-      <small>{$c.count}</small>
-    </a>
-    {/foreach}
-  </div>
-</section>
-
-<section class="store-container section-block">
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">最新上架</span>
-      <h2>刚收进来的技能</h2>
-    </div>
-    <a href="/list">查看全部 →</a>
-  </div>
-  <div class="resource-grid">
-    {foreach $products as $item}{include file="material/card" item=$item /}{/foreach}
-  </div>
-  {if empty($products)}
-  <div class="store-empty">技能正在整理入库，稍后再来看看。</div>
-  {/if}
-</section>
-
-<section class="store-container section-block how-block">
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">三步用上</span>
-      <h2>不用懂技术，也不用改代码</h2>
-    </div>
-  </div>
-  <div class="how-grid">
-    <div class="how-item">
-      <b>01</b>
-      <h3>下载压缩包</h3>
-      <p>免费领取后，得到一个 zip 文件，里面是技能说明和素材。</p>
-    </div>
-    <div class="how-item">
-      <b>02</b>
-      <h3>发给你的 AI</h3>
-      <p>把 zip 拖进你正在用的 AI 对话框（Claude、ChatGPT、豆包、通义、Kimi 等都可以），说「帮我装这个技能」。</p>
-    </div>
-    <div class="how-item">
-      <b>03</b>
-      <h3>直接对话使用</h3>
-      <p>之后正常提需求，AI 会自己判断该不该用这个技能。</p>
-    </div>
   </div>
 </section>
 {/block}

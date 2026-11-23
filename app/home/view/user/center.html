@@ -1,70 +1,50 @@
-{extend name="layout/base" /}
-{block name="css"}
-<link rel="stylesheet" href="/static/css/home/account.css?v=20261015c">
-{/block}
-{block name="content"}
-<div class="account-page">
-  <div class="home-container">
-    <div class="user-layout">
-
-      <!-- 左侧个人信息 -->
-      {assign name="active" value="center" /}
-      {include file="user/sidebar" /}
-
-      <!-- 右侧内容 -->
-      <div class="user-main">
-        <div class="account-page-head">
-          <div>
-            <h1>我的资料</h1>
-            <p>已购资料会保存在这里，可随时查看和下载。</p>
-          </div>
-          <span class="account-count"><b>{$result.total}</b> 份资料</span>
-        </div>
-
-        {if !empty($result.list)}
-        <div class="purchase-list">
-          {foreach $result.list as $order}
-          <div class="purchase-item" id="item-{$order.material_id}">
-            {if !empty($order.cover)}
-            <img src="{$order.cover|thumb}" class="purchase-cover" alt="" loading="lazy">
-            {else}
-            <div class="purchase-cover-ph"><i class="fa-solid fa-book"></i></div>
-            {/if}
-            <div class="purchase-info">
-              <div class="purchase-title">{$order.title}</div>
-              <div class="purchase-meta">
-                <span><i class="fa-regular fa-clock"></i> {:date('Y-m-d H:i', $order.pay_time)}</span>
-                <span><i class="fa-solid fa-yen-sign"></i> {$order.amount}</span>
-                <span><i class="fa-regular fa-file-lines"></i> {$order.order_no}</span>
-              </div>
-              <div class="purchase-actions">
-                <button class="btn-sm btn-sm-green" onclick="download({$order.material_id})">
-                  <i class="fa-solid fa-download"></i> 下载资料
-                </button>
-                <a href="/detail/{$order.material_id}" class="btn-sm btn-sm-outline">
-                  <i class="fa-solid fa-eye"></i> 查看详情
-                </a>
-              </div>
-            </div>
-          </div>
-          {/foreach}
-        </div>
-
-          <!-- 分页 -->
-          {:include_pager($result.total, $result.page, 10, [])}
-
-        {else}
-        <div class="account-empty">
-          <div class="account-empty-icon"><i class="fa-solid fa-book-open"></i></div>
-          <h2>还没有已购资料</h2>
-          <p>找到需要的内容后，购买成功的资料会自动出现在这里。</p>
-          <a href="/list" class="btn-sm btn-sm-primary"><i class="fa-solid fa-compass"></i> 浏览资料库</a>
-        </div>
-        {/if}
+{extend name="layout/base" /}{block name="content"}
+<div class="store-container user-layout">
+  {assign name="active" value="center" /}
+  {include file="user/sidebar" /}
+  <section class="user-main">
+    <div class="collection-heading">
+      <div>
+        <span class="eyebrow">YOUR LIBRARY</span>
+        <h1>我的资料</h1>
       </div>
-
+      <span>共 {$result.total} 份资料</span>
     </div>
-  </div>
+
+    {if !empty($result.list)}
+    <div class="user-row-list">
+      {foreach $result.list as $order}
+      <div class="user-row" id="item-{$order.material_id}">
+        {if !empty($order.cover)}<a class="ur-thumb" href="/detail/{$order.material_id}"
+          ><img src="{$order.cover|thumb}" alt="{$order.title}" loading="lazy" /></a
+        >{else}<span class="ur-thumb"><i class="fa-solid fa-book"></i></span>{/if}
+        <div class="ur-info">
+          <div class="ur-kicker">订单号 {$order.order_no}</div>
+          <div class="ur-title">{$order.title}</div>
+          <div class="ur-meta">
+            <span><i class="fa-regular fa-clock"></i>{:date('Y-m-d H:i', $order.pay_time)}</span>
+            <span><i class="fa-solid fa-yen-sign"></i>{$order.amount}</span>
+          </div>
+        </div>
+        <div class="ur-actions">
+          <button class="button" onclick="download({$order.material_id})"
+            ><i class="fa-solid fa-download"></i> 下载资料</button
+          ><a class="button secondary" href="/detail/{$order.material_id}">查看详情</a>
+        </div>
+      </div>
+      {/foreach}
+    </div>
+
+    {:include_pager($result.total, $result.page, 10, [])}
+
+    {else}
+    <div class="store-empty">
+      <h2>还没有已购资料</h2>
+      <p>购买成功的资料会自动出现在这里，可随时回来下载。</p>
+      <a class="button" href="/list">浏览资料库</a>
+    </div>
+    {/if}
+  </section>
 </div>
 
 <!-- 下载弹窗 -->

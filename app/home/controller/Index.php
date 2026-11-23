@@ -72,14 +72,8 @@ class Index extends Base
         }
         usort($skillCats, fn ($a, $b) => $b['count'] <=> $a['count']);
 
-        // 三大板块入口
+        // 补充入口：课程和 Skill 都有专属区块，这里不再重复，只放"还有什么"
         $sections = [
-            [
-                'name' => 'Skill 技能', 'en' => 'AI SKILLS',
-                'desc' => '下载压缩包，直接发给 AI 就能用',
-                'count' => (int) ($typeCounts['skill'] ?? 0), 'unit' => '个技能',
-                'url' => '/list?res_type=skill', 'icon' => 'fa-wand-magic-sparkles', 'tone' => 'blue',
-            ],
             [
                 'name' => '软件与资料', 'en' => 'TOOLS & DOCS',
                 'desc' => '效率工具、模板、行业报告',
@@ -91,6 +85,12 @@ class Index extends Base
                 'desc' => '自助式测评，做完立即出报告',
                 'count' => (int) ($typeCounts['test'] ?? 0), 'unit' => '份测评',
                 'url' => '/test', 'icon' => 'fa-clipboard-list', 'tone' => 'pink',
+            ],
+            [
+                'name' => '全部资源', 'en' => 'ALL MATERIALS',
+                'desc' => '课程、技能、工具，一站找齐',
+                'count' => (int) ($counts[0] ?? 0), 'unit' => '个内容',
+                'url' => '/list', 'icon' => 'fa-layer-group', 'tone' => 'amber',
             ],
         ];
 
@@ -111,8 +111,24 @@ class Index extends Base
             $products = array_values(array_filter($products, fn ($p) => !in_array((int) $p['id'], $fids, true)));
         }
 
+        // 首页主推：录播课。章节数、课时数、总时长一次查完算好，模板里直接取
+        $courses     = $this->courseCards(6);        $courseTotal = \app\common\model\Material::where('goods_type', 3)
+            ->where('status', 1)->where('is_hidden', 0)->count();
+        $lessonTotal = (int) \app\common\model\VideoLesson::where('status', 1)->count();
+        $lessonSecs  = (int) \app\common\model\VideoLesson::where('status', 1)->sum('duration');
+
+        // 课程已有专属区块（且价格是卡密），最新上架里不再重复露脸
+        $products = array_values(array_filter(
+            $products,
+            fn ($p) => (int) ($p['goods_type'] ?? 0) !== 3
+        ));
+
         return $this->view('index/index', [
             'products' => $products,
+            'courses' => $courses,
+            'courseTotal' => $courseTotal,
+            'lessonTotal' => $lessonTotal,
+            'lessonHours' => \app\common\service\VideoService::hoursText($lessonSecs),
             'featured' => $featured,
             'featuredList' => $featuredList,
             'featuredFirst' => $featuredFirst,
@@ -121,8 +137,64 @@ class Index extends Base
             'skillTotal' => (int) ($typeCounts['skill'] ?? 0),
             'testTotal' => (int) ($typeCounts['test'] ?? 0),
             'resourceCount' => $counts[0] ?? 0,
-            'seo_title' => SystemConfigService::get('site_name', '知集科技') . ' - 开源 AI 技能与数字资源库',
-            'seo_description' => '知集科技收录上千个开源可商用的 AI 技能（Skill），覆盖电商运营、营销销售、自媒体、文案写作、办公效率；另有心理测评与效率工具，下载即用，全部免费。',
+            'seo_title' => SystemConfigService::get('site_name', '知集科技') . ' - AI 实战录播课与技能库',
+            'seo_description' => '知集科技做 AI 实战录播课：从任务设计到 Agent 落地，全程真人录屏、逐节跟练，卡密解锁长期可看；另收录开源可商用的 AI 技能（Skill）、效率工具与心理测评。',
         ]);
+    }
+
+    /**
+     * 首页课程卡：一节一行地算章节/课时/时长，避免每张卡查一次库
+     */
+    private function courseCards(int $limit = 6): array
+    {
+        $rows = \app\common\model\Material::where('goods_type', 3)
+            ->where('status', 1)
+            ->where('is_hidden', 0)
+            ->order('sort', 'desc')->order('id', 'desc')
+            ->limit($limit)->select()->toArray();
+        if (!$rows) {
+            return [];
+        }
+
+        $ids     = array_map(fn ($r) => (int) $r['id'], $rows);
+        $lessons = \app\common\model\VideoLesson::whereIn('material_id', $ids)
+            ->where('status', 1)
+            ->field('material_id,chapter_no,chapter_title,duration')
+            ->order('chapter_no', 'asc')->order('lesson_no', 'asc')
+            ->select()->toArray();
+
+        $stat = [];
+        foreach ($lessons as $l) {
+            $mid = (int) $l['material_id'];
+            $no  = (int) $l['chapter_no'];
+            $stat[$mid] ??= ['chapters' => [], 'lessons' => 0, 'seconds' => 0];
+            if (!isset($stat[$mid]['chapters'][$no])) {
+                $stat[$mid]['chapters'][$no] = [
+                    'no'      => $no,
+                    'title'   => (string) $l['chapter_title'],
+                    'lessons' => 0,
+                ];
+            }
+            $stat[$mid]['chapters'][$no]['lessons']++;
+            $stat[$mid]['lessons']++;
+            $stat[$mid]['seconds'] += (int) $l['duration'];
+        }
+
+        $out = [];
+        foreach ($rows as $r) {
+            $mid = (int) $r['id'];
+            $s   = $stat[$mid] ?? ['chapters' => [], 'lessons' => 0, 'seconds' => 0];
+            $out[] = [
+                'id'        => $mid,
+                'title'     => (string) $r['title'],
+                'summary'   => mb_substr(trim((string) $r['summary']), 0, 76),
+                'cover_url' => !empty($r['cover']) ? $r['cover'] : '/static/img/sample-fallback.svg',
+                'chapters'  => array_values($s['chapters']),
+                'chapters_all' => count($s['chapters']),
+                'lessons'   => (int) $s['lessons'],
+                'hours'     => \app\common\service\VideoService::hoursText((int) $s['seconds']),
+            ];
+        }
+        return $out;
     }
 }

@@ -30,6 +30,7 @@ function categoryTreeOpts(cats) {
             <div class="form-item-label">商品类型</div>
             <biz-select v-model="form.goods_type" :options="goodsTypeOpts" :full="true"></biz-select>
             <div class="form-hint" v-if="form.goods_type == 2">卡密商品：用户付款后自动从「卡密仓库」发一张卡密，并显示使用地址和说明。</div>
+            <div class="form-hint" v-if="form.goods_type == 3">视频课：上传视频后到「卡密仓库」导入卡密，买家在播放页输入卡密即可观看（可限次下载）。站内不走下单流程。</div>
           </div>
           <div class="form-row">
             <div class="form-item">
@@ -81,6 +82,78 @@ function categoryTreeOpts(cats) {
               站内常用标签，点一下加进来：
               <a class="hint-chip" v-for="t in tagSuggest" :key="t" @click="addTagValue(t)">[[ t ]]</a>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 视频课：视频文件与观看/下载策略 -->
+      <div class="admin-card" v-if="form.goods_type == 3">
+        <div class="admin-card-header">
+          <i class="fa-solid fa-film" style="color:var(--primary)"></i>
+          <h3>视频文件</h3>
+        </div>
+        <div class="admin-card-body">
+          <label class="file-upload-zone" v-if="!form.video_path"
+                 :style="videoUploading ? 'pointer-events:none;opacity:.75' : ''">
+            <i class="fa-solid fa-video"></i>
+            <span>[[ videoUploading ? '上传中 ' + videoProgress + '%' : '点击选择视频文件' ]]</span>
+            <span style="font-size:12px">支持 mp4 / mov，单个不超过 3GB；自动分片上传，断了只补传失败的那一片</span>
+            <input type="file" accept="video/mp4,video/quicktime,.mp4,.mov" style="display:none"
+                   @change="uploadVideo" :disabled="videoUploading">
+          </label>
+          <div v-else class="file-info">
+            <i class="fa-solid fa-file-video"></i>
+            <span class="file-name">[[ videoName ]]</span>
+            <span class="file-size">[[ BizHelper.formatSize(form.video_size) ]][[ videoMetaText ]]</span>
+            <button class="biz-btn biz-btn-del" @click="delVideo" style="flex-shrink:0"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div v-if="videoUploading" style="margin-top:12px">
+            <div style="height:6px;background:#eef2f8;border-radius:999px;overflow:hidden">
+              <div :style="'height:100%;width:' + videoProgress + '%;background:var(--primary);transition:width .2s'"></div>
+            </div>
+            <div class="form-hint" style="margin-top:6px">[[ videoStage ]]</div>
+          </div>
+
+          <div class="form-hint" style="margin-top:10px" v-if="form.video_path">
+            视频存放在网站根目录之外，页面源码里拿不到地址；用户必须输入卡密解锁后才能播放。
+          </div>
+
+          <div class="form-item" style="margin-top:16px">
+            <div class="form-item-label">观看方式</div>
+            <label class="form-switch-wrap">
+              <input type="checkbox" :checked="form.video_download==1"
+                     @change="form.video_download = $event.target.checked ? 1 : 0">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+              <span>[[ form.video_download==1 ? '在线看 + 可下载' : '仅在线观看（禁止下载）' ]]</span>
+            </label>
+          </div>
+          <div class="form-item" v-if="form.video_download==1" style="margin-top:12px">
+            <div class="form-item-label">下载次数上限</div>
+            <input class="form-input" type="number" min="0" step="1" v-model.number="form.video_dl_limit" placeholder="3">
+            <div class="form-hint">默认 3 次，填 0 表示不限次数；超过后只能在线观看。</div>
+          </div>
+
+          <div class="form-item" style="margin-top:12px">
+            <div class="form-item-label">可绑定设备数</div>
+            <input class="form-input" type="number" min="0" step="1" v-model.number="form.video_dev_limit" placeholder="0">
+            <div class="form-hint">
+              填 0 表示不限（推荐，买家换手机不用找你）；填 2 或 3 可以防一码传多人，
+              超出后买家需联系你到「卡密仓库」点「解绑设备」。
+            </div>
+          </div>
+
+          <div class="form-hint" style="margin-top:16px" v-if="materialId">
+            卡密库存 <b>[[ stock ]]</b> 张 ·
+            <a :href="'/admin/card?material_id=' + materialId" style="color:var(--primary)">去卡密仓库导入 →</a>
+            <br>
+            <a :href="'/admin/course?material_id=' + materialId" style="color:var(--primary)">
+              管理课程章节与课时 →
+            </a>
+            <span style="color:var(--text-muted)">（一门课拆成多节时用这里）</span>
+          </div>
+          <div class="form-hint" style="margin-top:16px" v-else>
+            先保存商品，然后到「卡密仓库」导入卡密，买家输入卡密即可观看。
           </div>
         </div>
       </div>
@@ -231,7 +304,7 @@ function categoryTreeOpts(cats) {
       </div>
 
       <!-- 文件信息：小程序详情页展示「667 页内容」「PDF 电子版」 -->
-      <div class="admin-card" v-if="form.goods_type != 2">
+      <div class="admin-card" v-if="form.goods_type != 2 && form.goods_type != 3">
         <div class="admin-card-header">
           <i class="fa-solid fa-file-lines" style="color:var(--primary)"></i>
           <h3>文件信息</h3>
@@ -250,7 +323,7 @@ function categoryTreeOpts(cats) {
       </div>
 
       <!-- 发货方式：卡密商品不需要 -->
-      <div class="admin-card" v-if="form.goods_type != 2">
+      <div class="admin-card" v-if="form.goods_type != 2 && form.goods_type != 3">
         <div class="admin-card-header">
           <i class="fa-solid fa-truck" style="color:var(--primary)"></i>
           <h3>发货方式</h3>
@@ -433,6 +506,11 @@ _createAdminApp({
         goods_type: _m.goods_type||1, use_url: _m.use_url||'', use_guide: _m.use_guide||'',
         delivery_type: _m.delivery_type||1, pan_url: _m.pan_url||'', pan_code: _m.pan_code||'',
         file_path: _m.file_path||'', file_name: _m.file_name||'', file_size: _m.file_size||0,
+        video_path: _m.video_path||'', video_size: _m.video_size||0, video_duration: _m.video_duration||0,
+        video_width: _m.video_width||0, video_height: _m.video_height||0,
+        video_download: (_m.video_download === undefined ? 1 : (Number(_m.video_download)?1:0)),
+        video_dl_limit: (_m.video_dl_limit === undefined ? 3 : Number(_m.video_dl_limit)),
+        video_dev_limit: (_m.video_dev_limit === undefined ? 0 : Number(_m.video_dev_limit)),
         wechat: _m.wechat||'', tags: _m.tags||'',
         seo_title: _m.seo_title||'', seo_keywords: _m.seo_keywords||'', seo_description: _m.seo_description||'',
         is_hot: _m.is_hot||0, is_recommend: _m.is_recommend||0, is_hidden: _m.is_hidden||0, sort: _m.sort||0,
@@ -445,7 +523,7 @@ _createAdminApp({
       // 目录动辄几十上百条，默认收起来；还没有目录时直接展开，省得再点一下才能加第一条
       catalogOpen: !(_m.catalog && (typeof _m.catalog === 'string' ? JSON.parse(_m.catalog) : _m.catalog).length),
       stock: _m.stock || 0,
-      goodsTypeOpts: [{ value: 1, label: '资料（网盘 / 文件）' }, { value: 2, label: '卡密商品（激活码软件）' }],
+      goodsTypeOpts: [{ value: 1, label: '资料（网盘 / 文件）' }, { value: 2, label: '卡密商品（激活码软件）' }, { value: 3, label: '视频课（卡密解锁观看）' }],
       resTypeOpts: [
         { value: 'skill', label: 'Skill 技能（AI 可执行的技能包）' },
         { value: 'doc', label: '资料文档（PDF / Word / 表格模板）' },
@@ -466,10 +544,30 @@ _createAdminApp({
       categories: window.CATEGORIES || [],
       categoryOpts: [{value:'', label:'请选择分类'}, ...categoryTreeOpts(window.CATEGORIES || [])],
       saving: false,
-      uploadingPreview: false
+      uploadingPreview: false,
+      videoUploading: false,
+      videoProgress: 0,
+      videoStage: ''
     };
   },
   computed: {
+    videoName() {
+      const p = String(this.form.video_path || '');
+      return p ? p.split('/').pop() : '';
+    },
+    // 「 · 05:32 · 1080P」，没有的信息就不显示
+    videoMetaText() {
+      const parts = [];
+      const s = Number(this.form.video_duration || 0);
+      if (s > 0) {
+        const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+        parts.push(h ? h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0')
+                     : String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0'));
+      }
+      const short = Math.min(Number(this.form.video_width||0), Number(this.form.video_height||0));
+      if (short > 0) parts.push(short + 'P');
+      return parts.length ? ' · ' + parts.join(' · ') : '';
+    },
     // 站内常用标签里，去掉已经加过的
     tagSuggest() {
       const all = (window.SUGGEST || {}).tags || {};
@@ -518,6 +616,8 @@ _createAdminApp({
       if (!this.form.title) return BizHelper.toast('请填写资料标题','warning');
       if (!this.form.category_id) return BizHelper.toast('请选择分类','warning');
       if (!this.form.price && this.form.price !== 0) return BizHelper.toast('请填写价格','warning');
+      if (this.form.goods_type == 3 && !this.form.video_path) return BizHelper.toast('请先上传视频文件','warning');
+      if (this.videoUploading) return BizHelper.toast('视频还在上传，等传完再保存','warning');
       this.saving = true;
       this.form.status      = status;
       this.form.tags        = this.tagList.join(',');
@@ -536,6 +636,90 @@ _createAdminApp({
         BizHelper.toast(r.msg, 'error');
       }
     },
+    /**
+     * 视频分片上传。
+     * 按 8M 一片切，每片都是普通小请求：断了只补传那一片，也不会撞上
+     * nginx / PHP 的单请求体积上限（服务端已调到 256M，留足余量）。
+     */
+    async uploadVideo(e) {
+      const file = e.target.files[0];
+      e.target.value = '';
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024 * 1024) return BizHelper.toast('单个视频不能超过 3GB', 'error');
+
+      const CHUNK = 8 * 1024 * 1024;
+      const chunks = Math.ceil(file.size / CHUNK);
+      this.videoUploading = true;
+      this.videoProgress = 0;
+      this.videoStage = '正在创建上传会话...';
+
+      try {
+        const init = await BizHelper.request('/admin/video/init', { name: file.name, size: file.size, chunks });
+        if (init.code !== 0) throw new Error(init.msg);
+        const uploadId = init.data.upload_id;
+
+        for (let i = 0; i < chunks; i++) {
+          const blob = file.slice(i * CHUNK, Math.min((i + 1) * CHUNK, file.size));
+          let ok = false, lastMsg = '';
+          // 每片重试 3 次：网络抖动、偶发 502 不必整个视频重来
+          for (let attempt = 0; attempt < 3 && !ok; attempt++) {
+            try {
+              const fd = new FormData();
+              fd.append('upload_id', uploadId);
+              fd.append('index', i);
+              fd.append('file', blob, 'chunk');
+              const res = await fetch('/admin/video/chunk', {
+                method: 'POST', body: fd,
+                headers: { 'X-CSRF-TOKEN': window.CSRF_TOKEN || '' }
+              });
+              const data = await this.parseUploadResponse(res);
+              if (data.code === 0) ok = true; else lastMsg = data.msg;
+            } catch (_) {
+              lastMsg = '网络中断';
+            }
+            if (!ok) await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
+          }
+          if (!ok) throw new Error('第 ' + (i + 1) + ' 片上传失败：' + (lastMsg || '请重试'));
+          this.videoProgress = Math.round((i + 1) / chunks * 92);
+          this.videoStage = '已上传 ' + (i + 1) + ' / ' + chunks + ' 片';
+        }
+
+        this.videoStage = '视频处理中（写入播放索引，大文件可能要十几秒）...';
+        this.videoProgress = 96;
+        const fin = await BizHelper.request('/admin/video/finish', { upload_id: uploadId });
+        if (fin.code !== 0) throw new Error(fin.msg);
+
+        const d = fin.data;
+        this.form.video_path = d.path;
+        this.form.video_size = d.size;
+        this.form.video_duration = d.duration;
+        this.form.video_width = d.width;
+        this.form.video_height = d.height;
+        this.videoProgress = 100;
+        BizHelper.toast('视频上传完成');
+        if (d.warning) setTimeout(() => BizHelper.toast(d.warning, 'warning'), 700);
+      } catch (err) {
+        BizHelper.toast(err && err.message ? err.message : '视频上传失败', 'error');
+        this.videoProgress = 0;
+      } finally {
+        this.videoUploading = false;
+        this.videoStage = '';
+      }
+    },
+
+    async delVideo() {
+      const ok = await BizHelper.confirm('删除这个视频？删除后买家将无法观看。');
+      if (!ok) return;
+      const r = await BizHelper.request('/admin/video/remove', { path: this.form.video_path });
+      if (r.code !== 0) return BizHelper.toast(r.msg, 'error');
+      this.form.video_path = '';
+      this.form.video_size = 0;
+      this.form.video_duration = 0;
+      this.form.video_width = 0;
+      this.form.video_height = 0;
+      BizHelper.toast('已删除');
+    },
+
     async parseUploadResponse(response) {
       const contentType = response.headers.get('Content-Type') || '';
       if (contentType.includes('application/json')) return response.json();

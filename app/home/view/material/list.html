@@ -1,8 +1,8 @@
 {extend name="layout/base" /}{block name="content"}
 <div class="store-container catalog-heading">
-  <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span>{if $currentCat}<a href="/list">全部资源</a><span>/</span><b>{$currentCat.name}</b>{else}<b>全部资源</b>{/if}</nav>
+  <nav class="crumbs" aria-label="面包屑"><a href="/">首页</a><span>/</span>{if !empty($params.res_type) && isset($typeNames[$params.res_type])}<a href="/list">全部资源</a><span>/</span><b>{$typeNames[$params.res_type]}</b>{elseif $currentCat}<a href="/list">全部资源</a><span>/</span><b>{$currentCat.name}</b>{else}<b>全部资源</b>{/if}</nav>
   <h1>
-    {if !empty($params.q)}“{$params.q}” 的结果{elseif $currentCat}{$currentCat.name}{else}全部资源{/if}<sup>{$result.total}</sup>
+    {if !empty($params.q)}“{$params.q}” 的结果{elseif !empty($params.res_type) && isset($typeNames[$params.res_type])}{$typeNames[$params.res_type]}{elseif $currentCat}{$currentCat.name}{else}全部资源{/if}<sup>{$result.total}</sup>
   </h1>
   <p>下载即用，全部开源可商用。装进 AI 后，它会自己判断什么时候该用。</p>
 </div>
@@ -12,6 +12,7 @@
     <div class="side-list">
     <a class="{$params.res_type==''?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'','page'=>1]))}">全部资源 <span>{$typeCounts.all??0}</span></a>
     <a class="{$params.res_type=='skill'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'skill','page'=>1]))}"><i class="fa-solid fa-wand-magic-sparkles"></i>Skill 技能 <span>{$typeCounts.skill??0}</span></a>
+    {if ($typeCounts.course??0) > 0}<a class="{$params.res_type=='course'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'course','page'=>1]))}"><i class="fa-solid fa-clapperboard"></i>视频课 <span>{$typeCounts.course??0}</span></a>{/if}
     {if ($typeCounts.doc??0) > 0}<a class="{$params.res_type=='doc'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'doc','page'=>1]))}"><i class="fa-solid fa-file-alt"></i>资料文档 <span>{$typeCounts.doc??0}</span></a>{/if}
     {if ($typeCounts.software??0) > 0}<a class="{$params.res_type=='software'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'software','page'=>1]))}"><i class="fa-solid fa-compact-disc"></i>软件工具 <span>{$typeCounts.software??0}</span></a>{/if}
     {if ($typeCounts.test??0) > 0}<a class="{$params.res_type=='test'?'active':''}" href="?{:http_build_query(array_merge($params,['res_type'=>'test','page'=>1]))}"><i class="fa-solid fa-clipboard-list"></i>心理测试 <span>{$typeCounts.test??0}</span></a>{/if}

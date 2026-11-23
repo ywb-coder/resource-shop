@@ -1,78 +1,62 @@
-{extend name="layout/base" /}
-{block name="css"}
-<link rel="stylesheet" href="/static/css/home/account.css?v=20261015c">
-{/block}
-{block name="content"}
-<div class="account-page">
-  <div class="home-container">
-    <div class="user-layout">
+{extend name="layout/base" /}{block name="content"}
+<div class="store-container user-layout">
+  {assign name="active" value="questions" /}
+  {include file="user/sidebar" /}
+  <section class="user-main">
+    <div class="collection-heading">
+      <div>
+        <span class="eyebrow">SUPPORT</span>
+        <h1>问题反馈</h1>
+      </div>
+      {if $result.total > 0}<span>共 {$result.total} 条提问</span>{/if}
+    </div>
 
-      <!-- 左侧个人信息 -->
-      {assign name="active" value="questions" /}
-      {include file="user/sidebar" /}
+    <!-- 提问表单 -->
+    <div class="q-form">
+      <textarea id="q-content" class="q-textarea" rows="4" maxlength="1000"
+                placeholder="请描述你遇到的问题，比如：付款后没收到资料、网盘链接打不开…"></textarea>
+      <div class="q-form-foot">
+        <input id="q-contact" class="q-contact" maxlength="100" placeholder="联系方式（选填，方便我们联系你）">
+        <button class="button" id="q-submit" onclick="submitQuestion()">
+          <i class="fa-solid fa-paper-plane"></i> 提交问题
+        </button>
+      </div>
+    </div>
 
-      <!-- 右侧内容 -->
-      <div class="user-main">
-        <div class="account-page-head">
-          <div>
-            <h1>我有问题</h1>
-            <p>使用中遇到任何问题都可以提交，我们看到后会尽快回复。</p>
-          </div>
-          {if $result.total > 0}
-          <span class="account-count"><b>{$result.total}</b> 条提问</span>
-          {/if}
+    {if !empty($result.list)}
+    <div class="q-list">
+      {foreach $result.list as $q}
+      <div class="q-item">
+        <div class="q-item-head">
+          <span class="q-status {$q.status == 1 ? 'replied' : 'pending'}">
+            {$q.status == 1 ? '已回复' : '待回复'}
+          </span>
+          <span class="q-time"><i class="fa-regular fa-clock"></i> {:date('Y-m-d H:i', $q.create_time)}</span>
         </div>
+        <div class="q-content">{$q.content}</div>
 
-        <!-- 提问表单 -->
-        <div class="q-form">
-          <textarea id="q-content" class="q-textarea" rows="4" maxlength="1000"
-                    placeholder="请描述你遇到的问题，比如：付款后没收到资料、网盘链接打不开…"></textarea>
-          <div class="q-form-foot">
-            <input id="q-contact" class="q-contact" maxlength="100" placeholder="联系方式（选填，方便我们联系你）">
-            <button class="btn-sm btn-sm-primary" id="q-submit" onclick="submitQuestion()">
-              <i class="fa-solid fa-paper-plane"></i> 提交问题
-            </button>
+        {if $q.status == 1}
+        <div class="q-reply">
+          <div class="q-reply-head">
+            <i class="fa-solid fa-headset"></i> 客服回复
+            <span class="q-time">{:date('Y-m-d H:i', $q.reply_time)}</span>
           </div>
-        </div>
-
-        {if !empty($result.list)}
-        <div class="q-list">
-          {foreach $result.list as $q}
-          <div class="q-item">
-            <div class="q-item-head">
-              <span class="q-status {$q.status == 1 ? 'replied' : 'pending'}">
-                {$q.status == 1 ? '已回复' : '待回复'}
-              </span>
-              <span class="q-time"><i class="fa-regular fa-clock"></i> {:date('Y-m-d H:i', $q.create_time)}</span>
-            </div>
-            <div class="q-content">{$q.content}</div>
-
-            {if $q.status == 1}
-            <div class="q-reply">
-              <div class="q-reply-head">
-                <i class="fa-solid fa-headset"></i> 客服回复
-                <span class="q-time">{:date('Y-m-d H:i', $q.reply_time)}</span>
-              </div>
-              <div class="q-reply-body">{$q.reply}</div>
-            </div>
-            {/if}
-          </div>
-          {/foreach}
-        </div>
-
-        {:include_pager($result.total, $result.page, 10, [])}
-
-        {else}
-        <div class="account-empty">
-          <div class="account-empty-icon"><i class="fa-regular fa-comments"></i></div>
-          <h2>还没有提过问题</h2>
-          <p>遇到问题随时在上面提交，我们会尽快处理。</p>
+          <div class="q-reply-body">{$q.reply}</div>
         </div>
         {/if}
       </div>
-
+      {/foreach}
     </div>
-  </div>
+
+    {:include_pager($result.total, $result.page, 10, [])}
+
+    {else}
+    <div class="store-empty">
+      <h2>还没有提过问题</h2>
+      <p>遇到问题随时在上面提交，我们会尽快处理。</p>
+    </div>
+    {/if}
+  </section>
 </div>
 {/block}
 

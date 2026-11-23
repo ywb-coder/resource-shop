@@ -55,15 +55,18 @@ function categoryTreeOpts(cats) {
                   </span>
                   <span v-if="item.is_hot" class="badge badge-warning" style="margin-right:4px">热门</span>
                   <span v-if="item.is_recommend" class="badge badge-primary" style="margin-right:4px">推荐</span>
-                  <span v-if="item.goods_type==2" class="badge" :class="item.stock>0?'badge-primary':'badge-danger'" title="卡密商品，付款后自动发卡">
+                  <span v-if="item.goods_type==3" class="badge badge-success" style="margin-right:4px" title="视频课：卡密解锁观看">
+                    <i class="fa-solid fa-film"></i> 视频课
+                  </span>
+                  <span v-if="item.goods_type==2||item.goods_type==3" class="badge" :class="item.stock>0?'badge-primary':'badge-danger'" :title="item.goods_type==3?'视频课卡密库存':'卡密商品，付款后自动发卡'">
                     <i class="fa-solid fa-key"></i> 卡密 · 库存 [[ item.stock ]]
                   </span>
-                  <!-- 两种发货方式各是一个独立徽章，都配了就并排显示两个；卡密商品不显示 -->
-                  <span v-if="item.goods_type!=2 && (item.delivery_type==1 || item.delivery_type==3)"
+                  <!-- 两种发货方式各是一个独立徽章，都配了就并排显示两个；卡密商品/视频课不显示 -->
+                  <span v-if="item.goods_type!=2&&item.goods_type!=3 && (item.delivery_type==1 || item.delivery_type==3)"
                         class="badge badge-default" style="margin-right:4px" title="提供网盘链接">
                     <i class="fa-solid fa-cloud"></i> 网盘
                   </span>
-                  <span v-if="item.goods_type!=2 && (item.delivery_type==2 || item.delivery_type==3)"
+                  <span v-if="item.goods_type!=2&&item.goods_type!=3 && (item.delivery_type==2 || item.delivery_type==3)"
                         class="badge badge-default" title="提供文件直接下载">
                     <i class="fa-solid fa-download"></i> 直链
                   </span>

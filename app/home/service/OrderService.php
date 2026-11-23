@@ -100,6 +100,10 @@ class OrderService
 
             // 卡密商品先看库存，没货不让下单；付款瞬间被别人买空的极端情况由补货补发兜底
             foreach ($materials as $m) {
+                // 视频课是「站外卖卡密、站内兑换」的模式，不走站内下单，避免付了钱却拿不到卡
+                if (\app\common\service\VideoService::isVideo($m)) {
+                    throw new \RuntimeException('「' . $m->title . '」是卡密视频课，请到播放页输入卡密观看');
+                }
                 if (\app\common\service\CardKeyService::isCard($m) && \app\common\service\CardKeyService::stock((int) $m->id) < 1) {
                     throw new \RuntimeException('「' . $m->title . '」已售罄，请稍后再来');
                 }
